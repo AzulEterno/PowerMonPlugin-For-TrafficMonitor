@@ -1,0 +1,426 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 163, 135
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "天气设置"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,52,114,50,14
+    PUSHBUTTON      "取消",IDCANCEL,106,114,50,14
+    LTEXT           "城市：",IDC_STATIC,7,9,25,8
+    EDITTEXT        IDC_CITY_EDIT,34,7,66,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "选择城市(&S)...",IDC_SELECT_CITY_BUTTON,104,6,52,14
+    LTEXT           "天气显示:",IDC_STATIC,7,28,34,8
+    COMBOBOX        IDC_WEATHER_TYPE_COMBO,44,27,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "在鼠标提示中显示天气",IDC_SHOW_TOOLTIPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,104,10
+    CONTROL         "使用天气图标",IDC_USE_WEATHER_ICON_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,113,10
+    PUSHBUTTON      "手动更新天气(&U)",IDC_UPDATE_WEATHER_BUTTON,7,42,70,14
+END
+
+IDD_SELECT_CITY_DIALOG DIALOGEX 0, 0, 161, 135
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "选择城市"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,49,114,50,14
+    PUSHBUTTON      "取消",IDCANCEL,104,114,50,14
+    CONTROL         "",IDC_CITY_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,22,147,88
+    EDITTEXT        IDC_SEARCH_EDIT,7,7,147,12,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_OPTIONS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 156
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_SELECT_CITY_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 154
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_OPTIONS_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
+
+IDD_SELECT_CITY_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 100,
+    0, 0, 0, 0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_WEATHER             ICON                    "res\\weather.ico"
+
+IDI_SNOWSTORM           ICON                    "res\\暴雪.ico"
+
+IDI_RAINSTORM           ICON                    "res\\暴雨.ico"
+
+IDI_HAIL                ICON                    "res\\冰雹.ico"
+
+IDI_HEAVY_STORM         ICON                    "res\\大暴雨.ico"
+
+IDI_HEAVY_SNOW          ICON                    "res\\大雪.ico"
+
+IDI_HEAVY_RAIN          ICON                    "res\\大雨.ico"
+
+IDI_CLOUDY2             ICON                    "res\\多云.ico"
+
+IDI_DUST2               ICON                    "res\\浮尘.ico"
+
+IDI_THUNDERSTORM        ICON                    "res\\雷雨.ico"
+
+IDI_THUNDERSHOWER       ICON                    "res\\雷阵雨.ico"
+
+IDI_SUNNY               ICON                    "res\\晴.ico"
+
+IDI_SANDSTORM           ICON                    "res\\沙尘暴.ico"
+
+IDI_FROST               ICON                    "res\\霜.ico"
+
+IDI_TYPHOON             ICON                    "res\\台风.ico"
+
+IDI_UNKOWN_WEATHER      ICON                    "res\\未知.ico"
+
+IDI_FOG                 ICON                    "res\\雾.ico"
+
+IDI_SMOG                ICON                    "res\\雾霾.ico"
+
+IDI_LIGHT_SNOW          ICON                    "res\\小雪.ico"
+
+IDI_LIGHT_RAIN          ICON                    "res\\小雨.ico"
+
+IDI_DUST                ICON                    "res\\杨尘.ico"
+
+IDI_CLOUDY              ICON                    "res\\阴.ico"
+
+IDI_RAIN_AND_SNOW       ICON                    "res\\雨夹雪.ico"
+
+IDI_SHOWER              ICON                    "res\\阵雨.ico"
+
+IDI_MODERATE_SNOW       ICON                    "res\\中雪.ico"
+
+IDI_MODERATE_RAIN       ICON                    "res\\中雨.ico"
+
+IDI_SNOW_SHOWER         ICON                    "res\\阵雪.ico"
+
+IDI_SUNNY_NIGHT         ICON                    "res\\晴_夜晚.ico"
+
+IDI_CLOUDY_NIGHT        ICON                    "res\\多云_夜晚.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,1,0
+ PRODUCTVERSION 1,0,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName", "By ZhongYang"
+            VALUE "FileDescription", "Weather Plugin for TrafficMonitor"
+            VALUE "FileVersion", "1.0.1.0"
+            VALUE "InternalName", "Weather.dll"
+            VALUE "LegalCopyright", "Copyright (C) 2021 By ZhongYang"
+            VALUE "OriginalFilename", "Weather.dll"
+            VALUE "ProductName", "Weather Plugin for TrafficMonitor"
+            VALUE "ProductVersion", "1.0.1.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU
+BEGIN
+    POPUP "1"
+    BEGIN
+        MENUITEM "选项(&O)...",                   40001
+        MENUITEM "更新天气(&U)",                    ID_UPDATE_WEATHER
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_WEATHER             "天气"
+    IDS_PLUGIN_NAME         "天气插件"
+    IDS_PLUGIN_DESCRIPTION  "用于TrafficMonitor的天气插件。"
+    IDS_CITY                "城市"
+    IDS_CITY_CODE           "城市代码"
+    IDS_CLEAR_SEARCH_RESULT "清除搜索结果"
+    IDS_INPUT_KEY_WORD      "在此键入搜索"
+    IDS_TODAY_WEATHER       "今天"
+    IDS_TOMMORROW_WEATHER   "明天"
+    IDS_UPDATE_TIME         "更新时间"
+    IDS_THE_DAY_AFTER_TOMMORROW_WEATHER "后天"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_CURRENT_WEATHER     "实时天气"
+END
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(美国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 170, 135
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Weather settings"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,59,114,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,113,114,50,14
+    LTEXT           "City:",IDC_STATIC,7,9,25,8
+    EDITTEXT        IDC_CITY_EDIT,34,7,66,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Select city...",IDC_SELECT_CITY_BUTTON,104,6,59,14
+    LTEXT           "Weather display:",IDC_STATIC,7,28,58,8
+    COMBOBOX        IDC_WEATHER_TYPE_COMBO,65,27,98,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Show weather in tool tip",IDC_SHOW_TOOLTIPS_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,140,10
+    CONTROL         "Use weather icon",IDC_USE_WEATHER_ICON_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,127,10
+    PUSHBUTTON      "&Update weather manually",IDC_UPDATE_WEATHER_BUTTON,7,42,106,14
+END
+
+IDD_SELECT_CITY_DIALOG DIALOGEX 0, 0, 170, 135
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select city"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,57,114,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,113,114,50,14
+    CONTROL         "",IDC_CITY_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,22,156,88
+    EDITTEXT        IDC_SEARCH_EDIT,7,7,156,12,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_OPTIONS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_SELECT_CITY_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_OPTIONS_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
+
+IDD_SELECT_CITY_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 100,
+    0, 0, 0, 0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_WEATHER             "Weather"
+    IDS_PLUGIN_NAME         "Weather plugin"
+    IDS_PLUGIN_DESCRIPTION  "Weather plug-in for TrafficMonitor."
+    IDS_CITY                "City"
+    IDS_CITY_CODE           "City code"
+    IDS_CLEAR_SEARCH_RESULT "Clear search result"
+    IDS_INPUT_KEY_WORD      "Type here to search"
+    IDS_TODAY_WEATHER       "Today"
+    IDS_TOMMORROW_WEATHER   "Tomorrow"
+    IDS_UPDATE_TIME         "Update time"
+    IDS_THE_DAY_AFTER_TOMMORROW_WEATHER "The day after tomorrow"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_CURRENT_WEATHER     "Real time weather"
+END
+
+#endif    // 英语(美国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
