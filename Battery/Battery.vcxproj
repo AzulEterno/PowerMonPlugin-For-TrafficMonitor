@@ -144,9 +144,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IncludePath>$(ProjectDir)..\include;$(IncludePath)</IncludePath>
-    <IntDir>$(SolutionDir)temp\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">
     <LinkIncremental>true</LinkIncremental>
@@ -160,9 +160,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IncludePath>$(ProjectDir)..\include;$(IncludePath)</IncludePath>
-    <IntDir>$(SolutionDir)temp\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
     <LinkIncremental>false</LinkIncremental>
