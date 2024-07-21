@@ -1,5 +1,8 @@
-# TrafficMonitorPlugins
-用于TrafficMonitor的插件。
+# 这时一个简易的电池功耗计量插件
 
-**[插件下载](./download/plugin_download.md)**
+感谢你来到这里下载。本人的源码水平相当丑陋所以暂时不~~懒得~~开源。
 
+# 日志
+
+2024-05-22
+> 使用最新构建工具重新构建。添加了ARM64EC平台的支持。

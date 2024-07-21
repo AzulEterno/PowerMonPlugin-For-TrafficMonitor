@@ -18,8 +18,9 @@
 #define IDS_BATTERY_NONEXISTS           114
 #define IDS_BATTERY_INFO_UNKNOWN        115
 #define IDC_CHECKBOX_DBGMODE            1001
-#define IDC_BUTTON1                     1002
 #define IDC_BUTTON_BTRDRIVER            1003
+#define IDC_Change_Unit_String          1005
+#define IDC_PWR_UNIT_STR_INPUT          1008
 
 // Next default values for new objects
 // 
@@ -27,7 +28,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        109
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1009
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif
