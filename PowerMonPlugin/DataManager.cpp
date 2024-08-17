@@ -49,23 +49,73 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 	m_config_path += L".ini";
 	//TODO: 在此添加载入配置的代码
 	{
+		m_setting_data.settings_altered_counter = (GetPrivateProfileInt(L"config", L"settings_altered_counter", 0, m_config_path.c_str()) != 0);
 		m_setting_data.is_dbg_mode = (GetPrivateProfileInt(L"config", L"is_dbg_mode", 0, m_config_path.c_str()) != 0);
-		::GetPrivateProfileString(L"config", L"pwr_unit_str", L"", m_setting_data.pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1), PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
 
-		if (m_setting_data.pwr_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+		::GetPrivateProfileString(L"config", L"pwr_unit_str", L"",
+			m_setting_data.pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+		::GetPrivateProfileString(L"config", L"electric_capacity_unit_str", L"",
+			m_setting_data.electric_capacity_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+
+		::GetPrivateProfileString(L"config", L"electric_voltage_unit_str", L"",
+			m_setting_data.electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+
+		bool isFirstInital = FirstInitalCheck(m_setting_data), altered_flag = false;
+		if (isFirstInital) {
+
+			altered_flag = true;
+		}
+
+		if (isFirstInital ||
+			m_setting_data.pwr_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
 			m_setting_data.pwr_unit_str = "W";
+			altered_flag = true;
+		}
+		if (isFirstInital ||
+			m_setting_data.electric_capacity_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.electric_capacity_unit_str = "Wh";
+			altered_flag = true;
+		}
+		if (isFirstInital ||
+			m_setting_data.electric_voltage_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.electric_voltage_unit_str = "V";
+			altered_flag = true;
+		}
+
+		if (altered_flag) {
+			m_setting_data.settings_altered_counter += 1;
+			SaveConfig();
 		}
 	}
 }
+
+
 
 void CDataManager::SaveConfig() const
 {
 	if (!m_config_path.empty())
 	{
 		//TODO: 在此添加保存配置的代码 
-		WritePrivateProfileInt(L"config", L"is_dbg_mode", (m_setting_data.is_dbg_mode), m_config_path.c_str());
-		WritePrivateProfileString(L"config", L"pwr_unit_str", m_setting_data.pwr_unit_str, m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"settings_altered_counter",
+			(m_setting_data.settings_altered_counter), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"is_dbg_mode",
+			(m_setting_data.is_dbg_mode), m_config_path.c_str());
+
+		WritePrivateProfileString(L"config", L"pwr_unit_str",
+			m_setting_data.pwr_unit_str, m_config_path.c_str());
+		WritePrivateProfileString(L"config", L"electric_capacity_unit_str",
+			m_setting_data.electric_capacity_unit_str, m_config_path.c_str());
+		WritePrivateProfileString(L"config", L"electric_voltage_unit_str",
+			m_setting_data.electric_voltage_unit_str, m_config_path.c_str());
 	}
+}
+
+bool CDataManager::FirstInitalCheck(SettingData setting_data) {
+
+	return setting_data.settings_altered_counter <= 0;
 }
 
 const CString& CDataManager::StringRes(UINT id)

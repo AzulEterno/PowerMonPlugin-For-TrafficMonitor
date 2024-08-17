@@ -9,11 +9,30 @@
 
 #define PWR_UNIT_STR_MAXLEN 12
 
+#define GBS_HASBATTERY 0x1
+#define GBS_ONBATTERY  0x2
 
 // 添加要在此处预编译的标头
 #include "framework.h"
-
+#include <batclass.h>
 #include "resource.h"
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <cmath>
+#include <cwchar>
+#include <iomanip>
+#include "poclass.h"
+#include "ioapiset.h"
+#include "windows.h"
+#include "WinBase.h"
+#include "SetupAPI.h"
+#pragma comment (lib, "SetupApi.lib")
+#include "BatClass.h"
+#include "devguid.h"
+#include "winioctl.h"
+
+#include "PluginInterface.h"
 
 
 #define SAFE_DELETE(p) do \

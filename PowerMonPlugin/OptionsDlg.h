@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include "DataManager.h"
 
-#include "windows.h"
+#include "windows.h" 
+#include "UnitStringSettingPage.h"
+#include "InformationPage.h"
 // COptionsDlg 对话框
 
 class COptionsDlg : public CDialog
@@ -25,10 +27,18 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+
+
+	CTabCtrl m_tab;
+	int m_CurSelTab;
+	UnitStringSettingPage unit_string_page;
+	InformationPage info_page;
+	CDialog* pDialogs[2];
 public:
 	virtual BOOL OnInitDialog();
-	afx_msg void OnBnClickedCheckboxDbgmode();
-	afx_msg void OnBnClickedButtonBtrdriver();
-	afx_msg void OnEnChangePwrUnitStrInput();
+	int SyncWidgetWithSettingData();
+	int SyncSettingDataWithWidget();
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedRevertConfiguration();
+	afx_msg void OnTcnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult);
 };

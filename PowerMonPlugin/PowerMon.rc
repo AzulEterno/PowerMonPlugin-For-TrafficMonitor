@@ -51,17 +51,37 @@ END
 // Dialog
 //
 
-IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 190, 134
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 227, 201
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "帕沃萌设置"
 FONT 9, "微软雅黑", 400, 0, 0x86
 BEGIN
-    DEFPUSHBUTTON   "确 认",IDOK,80,113,50,14
-    PUSHBUTTON      "取消",IDCANCEL,132,113,50,14
-    CONTROL         "调试模式",IDC_CHECKBOX_DBGMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,117,43,10
-    PUSHBUTTON      "电池驱动",IDC_BUTTON_BTRDRIVER,12,101,52,13
-    EDITTEXT        IDC_PWR_UNIT_STR_INPUT,87,17,59,14,ES_CENTER | ES_AUTOHSCROLL
-    CTEXT           "功耗单位文本",IDC_Change_Unit_String,15,17,67,13,SS_CENTERIMAGE
+    DEFPUSHBUTTON   "确 认",IDOK,173,183,50,14
+    PUSHBUTTON      "取消",IDCANCEL,118,183,50,14
+    CONTROL         "",IDC_TAB_MAIN,"SysTabControl32",0x0,3,3,220,176
+    PUSHBUTTON      "恢复设置",ID_REVERT_CONFIGURATION,3,183,50,14
+END
+
+IDD_UNIT_DISPLAY_PAGE DIALOGEX 0, 0, 204, 171
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VSCROLL | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CTEXT           "Watts",IDC_Change_Unit_String,23,17,64,16,SS_CENTERIMAGE
+    CTEXT           "Watts * Hour",IDC_Change_Unit_String2,22,39,64,16,SS_CENTERIMAGE
+    CTEXT           "Voltage",IDC_Change_Unit_String3,23,62,64,16,SS_CENTERIMAGE
+    EDITTEXT        IDC_PWR_UNIT_STR_INPUT,95,19,55,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_WH_UNIT_STR_INPUT,95,41,55,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_VOLT_UNIT_STR_INPUT,95,64,55,12,ES_CENTER | ES_AUTOHSCROLL
+END
+
+IDD_INFO_PAGE DIALOGEX 0, 0, 276, 229
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VSCROLL | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Repo URL",IDC_BUTTON_REPO_URL,7,7,50,14
+    LTEXT           "Placeholder Stuff",IDC_TEXT_DESCRIPTION,7,26,251,196
+    CONTROL         "Debug Mode",IDC_DEBUG_MODE_SWITCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,64,7,59,15
+    PUSHBUTTON      "电池驱动",IDC_BUTTON_BTRDRIVER,126,7,64,16
 END
 
 
@@ -75,10 +95,26 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_OPTIONS_DIALOG, DIALOG
     BEGIN
+        LEFTMARGIN, 3
+        RIGHTMARGIN, 223
+        TOPMARGIN, 3
+        BOTTOMMARGIN, 197
+    END
+
+    IDD_UNIT_DISPLAY_PAGE, DIALOG
+    BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 183
+        RIGHTMARGIN, 186
         TOPMARGIN, 7
-        BOTTOMMARGIN, 127
+        BOTTOMMARGIN, 164
+    END
+
+    IDD_INFO_PAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 258
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 222
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -95,9 +131,7 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 100,
-    0, 0, 0, 0
+    100, 100, 0, 0
 END
 
 IDD_SELECT_CITY_DIALOG AFX_DIALOG_LAYOUT
@@ -109,6 +143,16 @@ BEGIN
     0, 0, 0, 0
 END
 
+IDD_UNIT_DISPLAY_PAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_INFO_PAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -116,8 +160,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,1,0,0
- PRODUCTVERSION 1,1,0,0
+ FILEVERSION 1,2,5,0
+ PRODUCTVERSION 1,2,5,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -134,12 +178,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Ázuroso"
             VALUE "FileDescription", "PowerMon Plugin for TrafficMonitor"
-            VALUE "FileVersion", "1.1.0.0"
+            VALUE "FileVersion", "1.2.5.0"
             VALUE "InternalName", "PowerMonPlugin.dll"
             VALUE "LegalCopyright", "Copyright (C) 2021 @Ázuroso"
             VALUE "OriginalFilename", "PowerMonPlugin.dll"
             VALUE "ProductName", "PowerMon Plugin for TrafficMonitor"
-            VALUE "ProductVersion", "1.1.0.0"
+            VALUE "ProductVersion", "1.2.5.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -157,8 +201,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_PLUGIN_NAME         "帕沃萌"
-    IDS_PLUGIN_DESCRIPTION  "一个简易的电池功耗监测插件"
-    IDS_PLUGIN_ITEM_NAME    "电池功耗"
+    IDS_PLUGIN_DESCRIPTION  "一个简易的功耗监测插件"
+    IDS_PLUGIN_BATTERY_POWER_ITEM_NAME "电池功耗"
     IDS_BATTERY_POWER_DISPLAY_LABEL "功耗:"
     IDS_BATTERY_CAPACITY_DISPLAY_LABEL "电量:"
     IDS_DISCRIPTIVE_BATERY_POWER_HEADER "电池功耗："
@@ -173,6 +217,18 @@ BEGIN
     IDS_BATTERY_DRIVER_REBUILDING "正在创建电池驱动信息存取器。"
     IDS_BATTERY_NONEXISTS   "系统电池不存在。"
     IDS_BATTERY_INFO_UNKNOWN "系统无法获取电池信息"
+    IDS_DISCRIPTIVE_BATERY_PERCENTAGE_HEADER "电池百分比："
+    IDS_UNKNOWN             "未知"
+    IDS_NO_DATA_SOURCE      "无数据源"
+    IDS_PLUGIN_BATTERY_PERCENTAGE_ITEM_NAME "电池百分比"
+    IDS_BATTERY             "电池"
+    IDS_PLUGIN_BATTERY_CAPACITY_ITEM_NAME "电池电量"
+    IDS_PLUGIN_BATTERY_VOLTAGE_ITEM_NAME "电池电压"
+    IDS_BATTERY_VOLTAGE_DISPLAY_LABEL "电压："
+    IDS_WARNING             "警告"
+    IDS_REVERT_SETTING_CONFIG "你将要重置所有你更改的内容至初始状态，你确定要这样做吗？"
+    IDS_PLUGIN_BATTERY_TIME_ITEM_NAME "电池时间"
+    IDS_BATTERY_TIME_LABEL  "时间:"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -190,17 +246,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDHELP DIALOGEX 0, 0, 193, 133
-STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDHELP DIALOGEX 0, 0, 242, 192
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "PowerMon Settings"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,80,111,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,136,111,50,14
-    CONTROL         "DBG mode",IDC_CHECKBOX_DBGMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,115,49,10
-    PUSHBUTTON      "Btr Driver",IDC_BUTTON_BTRDRIVER,14,100,59,13
-    EDITTEXT        IDC_PWR_UNIT_STR_INPUT,96,16,65,13,ES_CENTER | ES_AUTOHSCROLL | ES_OEMCONVERT
-    CTEXT           "PWR Unit String",IDC_Change_Unit_String,16,16,73,12,SS_CENTERIMAGE
+    DEFPUSHBUTTON   "OK",IDOK,185,171,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,131,171,50,14
+    PUSHBUTTON      "Revert",ID_REVERT_CONFIGURATION,7,172,55,13
+    CONTROL         "",IDC_TAB_MAIN,"SysTabControl32",0x0,7,7,228,162
 END
 
 
@@ -215,9 +269,9 @@ BEGIN
     IDHELP, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 186
+        RIGHTMARGIN, 235
         TOPMARGIN, 7
-        BOTTOMMARGIN, 126
+        BOTTOMMARGIN, 185
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -233,9 +287,7 @@ BEGIN
     0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 100,
+    100, 100, 0, 0,
     0, 0, 0, 0
 END
 
@@ -249,9 +301,9 @@ STRINGTABLE
 BEGIN
     IDS_PLUGIN_NAME         "PowerMon"
     IDS_PLUGIN_DESCRIPTION  "Simple tool built for monitoring power in PC."
-    IDS_PLUGIN_ITEM_NAME    "Battery Power"
-    IDS_BATTERY_POWER_DISPLAY_LABEL "BP:"
-    IDS_BATTERY_CAPACITY_DISPLAY_LABEL "BC:"
+    IDS_PLUGIN_BATTERY_POWER_ITEM_NAME "Battery Power"
+    IDS_BATTERY_POWER_DISPLAY_LABEL "PWR:"
+    IDS_BATTERY_CAPACITY_DISPLAY_LABEL "Cap:"
     IDS_DISCRIPTIVE_BATERY_POWER_HEADER "Battery Power Input: "
     IDS_DISCRIPTIVE_BATERY_CAPACITY_HEADER "Remaining Battery Energy: "
     IDS_RELOADING_BATTERY_DRIVER_TIP 
@@ -265,6 +317,19 @@ BEGIN
     IDS_BATTERY_DRIVER_REBUILDING "Rebuilding battery driver handler..."
     IDS_BATTERY_NONEXISTS   "This system dose not have any batteries."
     IDS_BATTERY_INFO_UNKNOWN "Unable to retreive battery info from system."
+    IDS_DISCRIPTIVE_BATERY_PERCENTAGE_HEADER "Battery Percentage: "
+    IDS_UNKNOWN             "Unknown"
+    IDS_NO_DATA_SOURCE      "No Data Src"
+    IDS_PLUGIN_BATTERY_PERCENTAGE_ITEM_NAME "Battery Percentage"
+    IDS_BATTERY             "Battery"
+    IDS_PLUGIN_BATTERY_CAPACITY_ITEM_NAME "Battery Capacity"
+    IDS_PLUGIN_BATTERY_VOLTAGE_ITEM_NAME "Battery Voltage"
+    IDS_BATTERY_VOLTAGE_DISPLAY_LABEL "Volt:"
+    IDS_WARNING             "Warning"
+    IDS_REVERT_SETTING_CONFIG 
+                            "You are about to revert all settings to last state. Click OK to continue."
+    IDS_PLUGIN_BATTERY_TIME_ITEM_NAME "Battery Lifetime"
+    IDS_BATTERY_TIME_LABEL  "Time:"
 END
 
 #endif    // 英语(美国) resources

@@ -22,15 +22,18 @@ COptionsDlg::~COptionsDlg()
 
 void COptionsDlg::DoDataExchange(CDataExchange* pDX)
 {
+	DDX_Control(pDX, IDC_TAB_MAIN, m_tab);
 	CDialog::DoDataExchange(pDX);
+
 }
 
 
 BEGIN_MESSAGE_MAP(COptionsDlg, CDialog)
-	ON_BN_CLICKED(IDC_CHECKBOX_DBGMODE, &COptionsDlg::OnBnClickedCheckboxDbgmode)
-	ON_BN_CLICKED(IDC_BUTTON_BTRDRIVER, &COptionsDlg::OnBnClickedButtonBtrdriver)
-	ON_EN_CHANGE(IDC_PWR_UNIT_STR_INPUT, &COptionsDlg::OnEnChangePwrUnitStrInput)
 	ON_BN_CLICKED(IDOK, &COptionsDlg::OnBnClickedOk)
+	ON_BN_CLICKED(ID_REVERT_CONFIGURATION, &COptionsDlg::OnBnClickedRevertConfiguration)
+
+
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_MAIN, &COptionsDlg::OnTcnSelchangeTabMain)
 END_MESSAGE_MAP()
 
 
@@ -41,14 +44,49 @@ BOOL COptionsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	{
+		//为Tab Control增加两个页面
+		m_tab.InsertItem(0, _T("单位设置"));
+		m_tab.InsertItem(1, _T("信息"));
+
+		//创建两个对话框
+		unit_string_page.Create(IDD_UNIT_DISPLAY_PAGE, &m_tab);
+		info_page.Create(IDD_INFO_PAGE, &m_tab);
+		//设定在Tab内显示的范围
+		CRect rc;
+		m_tab.GetClientRect(rc);
+		m_tab.AdjustRect(FALSE, &rc);
+
+		//rc.top += 40;
+		//rc.bottom -= 0;
+		//rc.left += 0;
+		//rc.right -= 0;
+		unit_string_page.MoveWindow(&rc);
+		info_page.MoveWindow(&rc);
+
+		//把对话框对象指针保存起来
+		pDialogs[0] = &unit_string_page;
+		pDialogs[1] = &info_page;
+		//显示初始页面
+		pDialogs[0]->ShowWindow(SW_SHOW);
+		pDialogs[1]->ShowWindow(SW_HIDE);
+		//保存当前选择
+
+	}
+
 	// TODO:  在此添加额外的初始化
 	{
-		CheckDlgButton(IDC_CHECKBOX_DBGMODE, m_data.is_dbg_mode);
+
+
+
 
 		//unit_str_temp_store = m_data.pwr_unit_str;
+		SyncWidgetWithSettingData();
 
 
-		SetDlgItemText(IDC_PWR_UNIT_STR_INPUT, m_data.pwr_unit_str.GetString());
+
+
+
 	}
 
 
@@ -57,75 +95,50 @@ BOOL COptionsDlg::OnInitDialog()
 	// 异常: OCX 属性页应返回 FALSE
 }
 
+int COptionsDlg::SyncWidgetWithSettingData() {
 
-void COptionsDlg::OnBnClickedCheckboxDbgmode()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//m_data.is_dbg_mode = (bool)IsDlgButtonChecked(IDC_CHECKBOX_DBGMODE);
+	CheckDlgButton(IDC_CHECKBOX_DBGMODE, m_data.is_dbg_mode);
+	//SetDlgItemText(IDC_PWR_UNIT_STR_INPUT, m_data.pwr_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_PWR_UNIT_STR_INPUT, m_data.pwr_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_WH_UNIT_STR_INPUT, m_data.electric_capacity_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_VOLT_UNIT_STR_INPUT, m_data.electric_voltage_unit_str.GetString());
 
+	info_page.CheckDlgButton(IDC_DEBUG_MODE_SWITCH, m_data.is_dbg_mode);
 
-
-	//MessageBox(NULL, PowerMon::Instance().is_dbg, L"调试信息窗口",
-	//    MB_ICONWARNING | MB_OKCANCEL | MB_DEFBUTTON2);
+	return 0;
 }
 
 
+int COptionsDlg::SyncSettingDataWithWidget() {
 
+	m_data.is_dbg_mode = (bool)info_page.IsDlgButtonChecked(IDC_CHECKBOX_DBGMODE);
 
-void COptionsDlg::OnBnClickedButtonBtrdriver()
-{
-	// TODO: 在此添加控件通知处理程序代码
+	wchar_t unit_str_temp_store[PWR_UNIT_STR_MAXLEN + 1] = L"W";
 
-	{
-		PowerMon& inf_obj = PowerMon::Instance();
-		std::wstringstream info_str;
+	//PWR Unit
+	unit_string_page.GetDlgItemText(IDC_PWR_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
+	StrCpyNW(m_data.pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+		unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
 
+	unit_string_page.GetDlgItemText(IDC_WH_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
+	StrCpyNW(m_data.electric_capacity_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+		unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
 
-		info_str << "Current Battery Handler:" << std::hex << (void*)inf_obj.hBattery << std::endl;
-		info_str << "Current PSP_DEVICE_INTERFACE_DETAIL_DATA:" << std::hex << (void*)inf_obj.pdidd << std::endl;
-		info_str << "Current BATTERY_WAIT_STATUS:" << std::hex << (void*)&inf_obj.qry_bws_inf << std::endl;
-		info_str << "Current BATTERY_TAG:" << inf_obj.qry_bws_inf.BatteryTag << std::endl;
-		info_str << "Debug Mode:" << inf_obj.is_dbg << std::endl;
-		info_str << "Press OK to reset battery driver." << std::endl;
+	unit_string_page.GetDlgItemText(IDC_VOLT_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
+	StrCpyNW(m_data.electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+		unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
 
+	SyncWidgetWithSettingData();
 
-		int msgboxID = ::MessageBox(NULL, info_str.str().c_str(), L"Debug Information",
-			MB_OK | MB_ICONINFORMATION);
-
-		if (msgboxID == IDOK) {
-			inf_obj.free_res_mem();
-			inf_obj.update_battery_base_info();
-		}
-		//return 1;
-
-	}
+	return 0;
 }
 
-
-void COptionsDlg::OnEnChangePwrUnitStrInput()
-{
-	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
-	// 函数并调用 CRichEditCtrl().SetEventMask()，
-	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
-
-	// TODO:  在此添加控件通知处理程序代码
-
-
-}
 
 
 void COptionsDlg::OnBnClickedOk()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	m_data.is_dbg_mode = (bool)IsDlgButtonChecked(IDC_CHECKBOX_DBGMODE);
 
-	wchar_t unit_str_temp_store[PWR_UNIT_STR_MAXLEN + 1] = L"W";
-
-	GetDlgItemText(IDC_PWR_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
-
-
-	StrCpy(m_data.pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1), unit_str_temp_store);
+	SyncSettingDataWithWidget();
 
 	if (m_data.is_dbg_mode) {
 		std::wstringstream info_str;
@@ -134,11 +147,50 @@ void COptionsDlg::OnBnClickedOk()
 
 		info_str << "PWR Unit Str:" << m_data.pwr_unit_str.GetString() << std::endl;
 
-		::MessageBox(NULL, info_str.str().c_str(), L"Debug Config Info", MB_OK | MB_ICONINFORMATION);
+		::MessageBox(GetSafeHwnd(), info_str.str().c_str(), L"Debug Config Info", MB_OK | MB_ICONINFORMATION);
 
 
 	}
 
+	//ExportConfig
+	m_data.settings_altered_counter += 1;
 
 	CDialog::OnOK();
+}
+
+
+
+void COptionsDlg::OnBnClickedRevertConfiguration()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+
+
+	int msgboxID = ::MessageBox(GetSafeHwnd(),
+		g_data.StringRes(IDS_REVERT_SETTING_CONFIG),
+		g_data.StringRes(IDS_WARNING),
+		MB_OKCANCEL | MB_ICONINFORMATION);
+
+	if (msgboxID == IDOK) {
+		//inf_obj.GetBatteryInfoProvider().ReleaseResources();
+		g_data.m_setting_data.CopyTo(&m_data);
+		SyncWidgetWithSettingData();
+	}
+
+
+}
+
+
+
+void COptionsDlg::OnTcnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+		//把当前的页面隐藏起来
+	pDialogs[m_CurSelTab]->ShowWindow(SW_HIDE);
+	//得到新的页面索引
+	m_CurSelTab = m_tab.GetCurSel();
+	//把新的页面显示出来
+	pDialogs[m_CurSelTab]->ShowWindow(SW_SHOW);
+
+	*pResult = 0;
 }
