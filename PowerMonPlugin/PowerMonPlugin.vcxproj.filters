@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="PowerMon.cpp" />
+    <ClCompile Include="Common.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitStringSettingPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionsDlg.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="InformationPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="BatteryInfoHandler.cpp">
+      <Filter>DataClass</Filter>
+    </ClCompile>
+    <ClCompile Include="ValueUnitStringFormatter.cpp">
+      <Filter>DataClass</Filter>
+    </ClCompile>
+    <ClCompile Include="BatteryPowerMonItem.cpp">
+      <Filter>Monitor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PowerMon.h" />
+    <ClInclude Include="Common.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStringSettingPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionsDlg.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="InformationPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="BatteryInfoHandler.h">
+      <Filter>DataClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ValueUnitStringFormatter.h">
+      <Filter>DataClass</Filter>
+    </ClInclude>
+    <ClInclude Include="BatteryPowerMonItem.h">
+      <Filter>Monitor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PowerMon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Base">
+      <UniqueIdentifier>{d2cbc4f1-284c-4f3e-af83-f0a15041f515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{c2235a4a-8165-4ff0-a46b-4de0262f5530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataClass">
+      <UniqueIdentifier>{b9585138-2c2e-42a9-bf29-63683912e062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Monitor">
+      <UniqueIdentifier>{ec0ac050-a17d-4500-9faa-8be6155b91f7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
