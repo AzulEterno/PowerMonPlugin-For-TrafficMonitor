@@ -20,16 +20,16 @@ PowerMon::PowerMon()
 
 	_bih.is_dbg = this->is_dbg;
 
-	std::shared_ptr<ValueUnitStringFormatter> sptr_vusf = std::shared_ptr<ValueUnitStringFormatter>(&_vusf);
-	std::shared_ptr<BatteryInfoHandler> sptr_bih = std::shared_ptr<BatteryInfoHandler>(&_bih);
+	//std::shared_ptr<ValueUnitStringFormatter> sptr_vusf = std::shared_ptr<ValueUnitStringFormatter>(&_vusf);
+	//std::shared_ptr<BatteryInfoHandler> sptr_bih = std::shared_ptr<BatteryInfoHandler>(&_bih);
 
-	bp_m_item.SetDataSource(sptr_bih, sptr_vusf);
+	bp_m_item.SetDataSource(&_bih, &_vusf);
 
-	b_percentage_m_item.SetDataSource(sptr_bih, sptr_vusf);
+	b_percentage_m_item.SetDataSource(&_bih, &_vusf);
 
-	b_cap_m_item.SetDataSource(sptr_bih, sptr_vusf);
-	b_volt_m_item.SetDataSource(sptr_bih, sptr_vusf);
-	b_time_m_item.SetDataSource(sptr_bih, sptr_vusf);
+	b_cap_m_item.SetDataSource(&_bih, &_vusf);
+	b_volt_m_item.SetDataSource(&_bih, &_vusf);
+	b_time_m_item.SetDataSource(&_bih, &_vusf);
 
 }
 

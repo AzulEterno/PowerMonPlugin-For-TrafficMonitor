@@ -63,11 +63,9 @@ public:
 	//BATTERY_QUERY_INFORMATION* lp_bty_qry_inf = nullptr;
 protected:
 	ValueUnitStringFormatter _vusf;
-
-
 	BatteryInfoHandler _bih;
 	//bool is_relative_battery_rate = false;
-	static PowerMon m_instance;
+
 	BatteryPowerMonItem bp_m_item;
 	BatteryPercentageMonItem b_percentage_m_item;
 	BatteryCapacityMonItem b_cap_m_item;
@@ -76,6 +74,8 @@ protected:
 
 	std::wstring m_tooltip_info;
 
+private:
+	static PowerMon m_instance;
 };
 
 #ifdef __cplusplus

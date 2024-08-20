@@ -39,12 +39,18 @@
 #define IDC_Change_Unit_String2         1006
 #define IDC_Change_Unit_String3         1007
 #define IDC_PWR_UNIT_STR_INPUT          1008
+#define IDC_Change_Unit_String4         1009
+#define IDC_Change_Unit_String5         1010
 #define IDC_TAB_MAIN                    1014
 #define IDC_BUTTON_REPO_URL             1016
 #define IDC_DEBUG_MODE_SWITCH           1017
 #define IDC_TEXT_DESCRIPTION            1018
 #define IDC_WH_UNIT_STR_INPUT           1020
 #define IDC_VOLT_UNIT_STR_INPUT         1021
+#define IDC_UNIT_STRING_GRP             1022
+#define IDC_HOUR_UNIT_STR_INPUT         1023
+#define IDC_VOLT_UNIT_STR_INPUT2        1024
+#define IDC_MINUTE_UNIT_STR_INPUT       1024
 
 // Next default values for new objects
 // 
@@ -52,7 +58,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        113
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1022
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif

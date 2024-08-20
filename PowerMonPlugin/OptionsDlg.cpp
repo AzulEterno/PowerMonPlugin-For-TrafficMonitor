@@ -103,6 +103,9 @@ int COptionsDlg::SyncWidgetWithSettingData() {
 	unit_string_page.SetDlgItemText(IDC_WH_UNIT_STR_INPUT, m_data.electric_capacity_unit_str.GetString());
 	unit_string_page.SetDlgItemText(IDC_VOLT_UNIT_STR_INPUT, m_data.electric_voltage_unit_str.GetString());
 
+	unit_string_page.SetDlgItemText(IDC_HOUR_UNIT_STR_INPUT, m_data.hour_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_MINUTE_UNIT_STR_INPUT, m_data.minute_unit_str.GetString());
+
 	info_page.CheckDlgButton(IDC_DEBUG_MODE_SWITCH, m_data.is_dbg_mode);
 
 	return 0;
@@ -113,7 +116,7 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 
 	m_data.is_dbg_mode = (bool)info_page.IsDlgButtonChecked(IDC_CHECKBOX_DBGMODE);
 
-	wchar_t unit_str_temp_store[PWR_UNIT_STR_MAXLEN + 1] = L"W";
+	wchar_t unit_str_temp_store[PWR_UNIT_STR_MAXLEN + 1] = L"";
 
 	//PWR Unit
 	unit_string_page.GetDlgItemText(IDC_PWR_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
@@ -126,6 +129,14 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 
 	unit_string_page.GetDlgItemText(IDC_VOLT_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
 	StrCpyNW(m_data.electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+		unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
+
+	unit_string_page.GetDlgItemText(IDC_HOUR_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
+	StrCpyNW(m_data.hour_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+		unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
+
+	unit_string_page.GetDlgItemText(IDC_MINUTE_UNIT_STR_INPUT, unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
+	StrCpyNW(m_data.minute_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
 		unit_str_temp_store, PWR_UNIT_STR_MAXLEN);
 
 	SyncWidgetWithSettingData();

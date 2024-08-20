@@ -9,17 +9,17 @@ class BatteryGrpMonBaseCLS : public IPluginItem {
 
 protected:
 	//wchar_t pwr_unit_str[PWR_UNIT_STR_MAXLEN + 1] = L"W";
-	std::shared_ptr < ValueUnitStringFormatter> _lpFormatHandler{};
+	ValueUnitStringFormatter* _lpFormatHandler = nullptr;
 	//BatteryInfoHandler* _lpBatteryInfoHandler = nullptr;
-	std::shared_ptr <BatteryInfoHandler> _lpBatteryInfoHandler{};
+	BatteryInfoHandler* _lpBatteryInfoHandler = nullptr;
 public:
 
 	bool ReadyToPrint() const {
 		return _lpBatteryInfoHandler && _lpFormatHandler;
 	}
 
-	bool SetDataSource(std::shared_ptr <BatteryInfoHandler> lpBateryInfoHandler,
-		std::shared_ptr<ValueUnitStringFormatter> lpFormatHandler
+	bool SetDataSource(BatteryInfoHandler* lpBateryInfoHandler,
+		ValueUnitStringFormatter* lpFormatHandler
 	) {
 		if (lpBateryInfoHandler) {
 

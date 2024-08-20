@@ -12,9 +12,13 @@ struct SettingData
 
 	INT64 settings_altered_counter = 0;
 	bool is_dbg_mode = false;
+	bool enable_gpu_monitor = false;
+	bool enable_cpu_monitor = false;
 	CString pwr_unit_str{};
 	CString electric_capacity_unit_str{};
 	CString electric_voltage_unit_str{};
+	CString hour_unit_str{};
+	CString minute_unit_str{};
 
 	int CopyTo(SettingData* targetObject) const {
 		if (targetObject == nullptr) {
@@ -34,6 +38,15 @@ struct SettingData
 			targetObject->is_dbg_mode = this->is_dbg_mode;
 			altered += 1;
 		}
+		if (this->enable_gpu_monitor != targetObject->enable_gpu_monitor) {
+			targetObject->enable_gpu_monitor = this->enable_gpu_monitor;
+			altered += 1;
+		}
+		if (this->enable_cpu_monitor != targetObject->enable_cpu_monitor) {
+			targetObject->enable_cpu_monitor = this->enable_cpu_monitor;
+			altered += 1;
+		}
+
 		if (!StrCmp(this->pwr_unit_str.GetString(),
 			targetObject->pwr_unit_str.GetString())) {
 
@@ -57,7 +70,20 @@ struct SettingData
 				PWR_UNIT_STR_MAXLEN);
 			altered += 1;
 		}
-
+		if (!StrCmp(this->hour_unit_str.GetString(),
+			targetObject->hour_unit_str.GetString())) {
+			StrCpyNW(targetObject->hour_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
+				this->hour_unit_str.GetString(),
+				PWR_UNIT_STR_MAXLEN);
+			altered += 1;
+		}
+		if (!StrCmp(this->minute_unit_str.GetString(),
+			targetObject->minute_unit_str.GetString())) {
+			StrCpyNW(targetObject->minute_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
+				this->minute_unit_str.GetString(),
+				PWR_UNIT_STR_MAXLEN);
+			altered += 1;
+		}
 		return altered;
 	}
 };

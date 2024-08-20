@@ -62,16 +62,21 @@ BEGIN
     PUSHBUTTON      "恢复设置",ID_REVERT_CONFIGURATION,3,183,50,14
 END
 
-IDD_UNIT_DISPLAY_PAGE DIALOGEX 0, 0, 204, 171
+IDD_UNIT_DISPLAY_PAGE DIALOGEX 0, 0, 223, 241
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VSCROLL | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CTEXT           "Watts",IDC_Change_Unit_String,23,17,64,16,SS_CENTERIMAGE
-    CTEXT           "Watts * Hour",IDC_Change_Unit_String2,22,39,64,16,SS_CENTERIMAGE
-    CTEXT           "Voltage",IDC_Change_Unit_String3,23,62,64,16,SS_CENTERIMAGE
-    EDITTEXT        IDC_PWR_UNIT_STR_INPUT,95,19,55,12,ES_CENTER | ES_AUTOHSCROLL
-    EDITTEXT        IDC_WH_UNIT_STR_INPUT,95,41,55,12,ES_CENTER | ES_AUTOHSCROLL
-    EDITTEXT        IDC_VOLT_UNIT_STR_INPUT,95,64,55,12,ES_CENTER | ES_AUTOHSCROLL
+    CTEXT           "Watts",IDC_Change_Unit_String,37,27,64,16,SS_CENTERIMAGE
+    CTEXT           "Watts * Hour",IDC_Change_Unit_String2,35,49,64,16,SS_CENTERIMAGE
+    CTEXT           "Voltage",IDC_Change_Unit_String3,37,72,64,16,SS_CENTERIMAGE
+    EDITTEXT        IDC_PWR_UNIT_STR_INPUT,109,29,55,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_WH_UNIT_STR_INPUT,109,51,55,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_VOLT_UNIT_STR_INPUT,108,74,55,12,ES_CENTER | ES_AUTOHSCROLL
+    GROUPBOX        "Unit String",IDC_UNIT_STRING_GRP,7,7,191,144
+    CTEXT           "Hour",IDC_Change_Unit_String4,36,94,64,16,SS_CENTERIMAGE
+    EDITTEXT        IDC_HOUR_UNIT_STR_INPUT,108,96,55,12,ES_CENTER | ES_AUTOHSCROLL
+    CTEXT           "Minute",IDC_Change_Unit_String5,36,114,64,16,SS_CENTERIMAGE
+    EDITTEXT        IDC_MINUTE_UNIT_STR_INPUT,108,116,55,12,ES_CENTER | ES_AUTOHSCROLL
 END
 
 IDD_INFO_PAGE DIALOGEX 0, 0, 276, 229
@@ -104,9 +109,9 @@ BEGIN
     IDD_UNIT_DISPLAY_PAGE, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 186
+        RIGHTMARGIN, 205
         TOPMARGIN, 7
-        BOTTOMMARGIN, 164
+        BOTTOMMARGIN, 236
     END
 
     IDD_INFO_PAGE, DIALOG
@@ -160,8 +165,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,5,0
- PRODUCTVERSION 1,2,5,0
+ FILEVERSION 1,2,6,0
+ PRODUCTVERSION 1,2,6,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -178,12 +183,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Ázuroso"
             VALUE "FileDescription", "PowerMon Plugin for TrafficMonitor"
-            VALUE "FileVersion", "1.2.5.0"
+            VALUE "FileVersion", "1.2.6.0"
             VALUE "InternalName", "PowerMonPlugin.dll"
             VALUE "LegalCopyright", "Copyright (C) 2021 @Ázuroso"
             VALUE "OriginalFilename", "PowerMonPlugin.dll"
             VALUE "ProductName", "PowerMon Plugin for TrafficMonitor"
-            VALUE "ProductVersion", "1.2.5.0"
+            VALUE "ProductVersion", "1.2.6.0"
         END
     END
     BLOCK "VarFileInfo"

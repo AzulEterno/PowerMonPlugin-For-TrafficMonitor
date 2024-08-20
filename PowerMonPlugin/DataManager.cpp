@@ -51,6 +51,8 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 	{
 		m_setting_data.settings_altered_counter = (GetPrivateProfileInt(L"config", L"settings_altered_counter", 0, m_config_path.c_str()) != 0);
 		m_setting_data.is_dbg_mode = (GetPrivateProfileInt(L"config", L"is_dbg_mode", 0, m_config_path.c_str()) != 0);
+		m_setting_data.enable_cpu_monitor = (GetPrivateProfileInt(L"config", L"enable_cpu_monitor", 0, m_config_path.c_str()) != 0);
+		m_setting_data.enable_gpu_monitor = (GetPrivateProfileInt(L"config", L"enable_gpu_monitor", 0, m_config_path.c_str()) != 0);
 
 		::GetPrivateProfileString(L"config", L"pwr_unit_str", L"",
 			m_setting_data.pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
@@ -61,6 +63,12 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 
 		::GetPrivateProfileString(L"config", L"electric_voltage_unit_str", L"",
 			m_setting_data.electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+		::GetPrivateProfileString(L"config", L"hour_unit_str", L"",
+			m_setting_data.hour_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
+			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+		::GetPrivateProfileString(L"config", L"minute_unit_str", L"",
+			m_setting_data.minute_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
 			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
 
 		bool isFirstInital = FirstInitalCheck(m_setting_data), altered_flag = false;
@@ -84,6 +92,16 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 			m_setting_data.electric_voltage_unit_str = "V";
 			altered_flag = true;
 		}
+		if (isFirstInital ||
+			m_setting_data.hour_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.hour_unit_str = "H";
+			altered_flag = true;
+		}
+		if (isFirstInital ||
+			m_setting_data.minute_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.minute_unit_str = "M";
+			altered_flag = true;
+		}
 
 		if (altered_flag) {
 			m_setting_data.settings_altered_counter += 1;
@@ -103,6 +121,10 @@ void CDataManager::SaveConfig() const
 			(m_setting_data.settings_altered_counter), m_config_path.c_str());
 		WritePrivateProfileInt(L"config", L"is_dbg_mode",
 			(m_setting_data.is_dbg_mode), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"enable_cpu_monitor",
+			(m_setting_data.enable_cpu_monitor), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"enable_gpu_monitor",
+			(m_setting_data.enable_gpu_monitor), m_config_path.c_str());
 
 		WritePrivateProfileString(L"config", L"pwr_unit_str",
 			m_setting_data.pwr_unit_str, m_config_path.c_str());
@@ -110,6 +132,10 @@ void CDataManager::SaveConfig() const
 			m_setting_data.electric_capacity_unit_str, m_config_path.c_str());
 		WritePrivateProfileString(L"config", L"electric_voltage_unit_str",
 			m_setting_data.electric_voltage_unit_str, m_config_path.c_str());
+		WritePrivateProfileString(L"config", L"hour_unit_str",
+			m_setting_data.hour_unit_str, m_config_path.c_str());
+		WritePrivateProfileString(L"config", L"minute_unit_str",
+			m_setting_data.minute_unit_str, m_config_path.c_str());
 	}
 }
 

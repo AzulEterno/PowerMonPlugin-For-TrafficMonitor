@@ -8,7 +8,9 @@ class ValueUnitStringFormatter
 protected:
 	wchar_t pwr_unit_str[PWR_UNIT_STR_MAXLEN] = L"W",
 		electric_capcaity_unit_str[PWR_UNIT_STR_MAXLEN] = L"Wh",
-		voltage_unit_str[PWR_UNIT_STR_MAXLEN] = L"V";
+		voltage_unit_str[PWR_UNIT_STR_MAXLEN] = L"V",
+		hour_unit_str[PWR_UNIT_STR_MAXLEN] = L"H",
+		minute_unit_str[PWR_UNIT_STR_MAXLEN] = L"M";
 
 public:
 
@@ -102,8 +104,8 @@ public:
 		if (seconds < 0) {
 			return swprintf_s(out_val_text, safe_length, L"?");
 		}
-		return swprintf_s(out_val_text, safe_length, L"%d:%02d", (int)floor(seconds / 3600),
-			(int)floor(seconds / 60) % 60);
+		return swprintf_s(out_val_text, safe_length, L"%d%s%02d%s", (int)floor(seconds / 3600), hour_unit_str,
+			(int)floor(seconds / 60) % 60, minute_unit_str);
 
 	}
 
@@ -124,6 +126,12 @@ public:
 	const wchar_t* GetVoltageString()const {
 		return voltage_unit_str;
 	}
+	const wchar_t* GetHourString()const {
+		return hour_unit_str;
+	}
+	const wchar_t* GetMinuteString()const {
+		return minute_unit_str;
+	}
 
 	bool SetPowerUnitStr(const LPCWSTR new_val) {
 
@@ -142,11 +150,26 @@ public:
 			PWR_UNIT_STR_MAXLEN);
 		return true;
 	}
+	bool SetHourUnitStr(const LPCWSTR new_val) {
+		StrCpyNW(hour_unit_str, new_val,
+			PWR_UNIT_STR_MAXLEN);
+		return true;
+	}
+	bool SetMinuteUnitStr(const LPCWSTR new_val) {
+		StrCpyNW(minute_unit_str, new_val,
+			PWR_UNIT_STR_MAXLEN);
+		return true;
+	}
+
 
 	int LoadFromSettings(const SettingData setting_data) {
 
 		SetPowerUnitStr(setting_data.pwr_unit_str);
 		SetElectricCapacityUnitStr(setting_data.electric_capacity_unit_str);
+		SetElectricVoltageUnitStr(setting_data.electric_voltage_unit_str);
+		SetHourUnitStr(setting_data.hour_unit_str);
+		SetMinuteUnitStr(setting_data.minute_unit_str);
+
 
 		return 0;
 	}

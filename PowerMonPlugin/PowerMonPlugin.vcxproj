@@ -378,6 +378,7 @@
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="InformationPage.h" />
+    <ClInclude Include="LibreHWMonInterOp.h" />
     <ClInclude Include="OptionsDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
@@ -391,6 +392,7 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="InformationPage.cpp" />
+    <ClCompile Include="LibreHWMonInterOp.cpp" />
     <ClCompile Include="OptionsDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -411,6 +413,11 @@
     <ResourceCompile Include="PowerMon.rc">
       <DeploymentContent>true</DeploymentContent>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="LibreHardwareMonitorLib">
+      <HintPath>lib\LibreHardwareMonitorLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,9 +8,6 @@
     <ClCompile Include="pch.cpp">
       <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="DataManager.cpp">
-      <Filter>Base</Filter>
-    </ClCompile>
     <ClCompile Include="UnitStringSettingPage.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -29,6 +26,12 @@
     <ClCompile Include="BatteryPowerMonItem.cpp">
       <Filter>Monitor</Filter>
     </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>DataClass</Filter>
+    </ClCompile>
+    <ClCompile Include="LibreHWMonInterOp.cpp">
+      <Filter>DataClass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PowerMon.h" />
@@ -42,9 +45,6 @@
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="DataManager.h">
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="UnitStringSettingPage.h">
@@ -64,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="BatteryPowerMonItem.h">
       <Filter>Monitor</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>DataClass</Filter>
+    </ClInclude>
+    <ClInclude Include="LibreHWMonInterOp.h">
+      <Filter>DataClass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
