@@ -46,12 +46,15 @@ BOOL COptionsDlg::OnInitDialog()
 
 	{
 		//为Tab Control增加两个页面
-		m_tab.InsertItem(0, _T("单位设置"));
-		m_tab.InsertItem(1, _T("信息"));
+		m_tab.InsertItem(0, L"单位设置");
+		m_tab.InsertItem(1, L"硬件监控");
+		m_tab.InsertItem(2, L"信息");
 
 		//创建两个对话框
 		unit_string_page.Create(IDD_UNIT_DISPLAY_PAGE, &m_tab);
 		info_page.Create(IDD_INFO_PAGE, &m_tab);
+		hw_sensor_page.Create(IDD_HARDWARE_SENSOR_PAGE, &m_tab);
+
 		//设定在Tab内显示的范围
 		CRect rc;
 		m_tab.GetClientRect(rc);
@@ -62,14 +65,17 @@ BOOL COptionsDlg::OnInitDialog()
 		//rc.left += 0;
 		//rc.right -= 0;
 		unit_string_page.MoveWindow(&rc);
+		hw_sensor_page.MoveWindow(&rc);
 		info_page.MoveWindow(&rc);
 
 		//把对话框对象指针保存起来
 		pDialogs[0] = &unit_string_page;
-		pDialogs[1] = &info_page;
+		pDialogs[1] = &hw_sensor_page;
+		pDialogs[2] = &info_page;
 		//显示初始页面
 		pDialogs[0]->ShowWindow(SW_SHOW);
 		pDialogs[1]->ShowWindow(SW_HIDE);
+		pDialogs[2]->ShowWindow(SW_HIDE);
 		//保存当前选择
 
 	}
@@ -97,7 +103,7 @@ BOOL COptionsDlg::OnInitDialog()
 
 int COptionsDlg::SyncWidgetWithSettingData() {
 
-	CheckDlgButton(IDC_CHECKBOX_DBGMODE, m_data.is_dbg_mode);
+	//CheckDlgButton(IDC_CHECKBOX_DBGMODE, m_data.is_dbg_mode);
 	//SetDlgItemText(IDC_PWR_UNIT_STR_INPUT, m_data.pwr_unit_str.GetString());
 	unit_string_page.SetDlgItemText(IDC_PWR_UNIT_STR_INPUT, m_data.pwr_unit_str.GetString());
 	unit_string_page.SetDlgItemText(IDC_WH_UNIT_STR_INPUT, m_data.electric_capacity_unit_str.GetString());
@@ -107,7 +113,8 @@ int COptionsDlg::SyncWidgetWithSettingData() {
 	unit_string_page.SetDlgItemText(IDC_MINUTE_UNIT_STR_INPUT, m_data.minute_unit_str.GetString());
 
 	info_page.CheckDlgButton(IDC_DEBUG_MODE_SWITCH, m_data.is_dbg_mode);
-
+	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_CPU_MON, m_data.enable_cpu_monitor);
+	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_GPU_MON, m_data.enable_gpu_monitor);
 	return 0;
 }
 
@@ -115,7 +122,8 @@ int COptionsDlg::SyncWidgetWithSettingData() {
 int COptionsDlg::SyncSettingDataWithWidget() {
 
 	m_data.is_dbg_mode = (bool)info_page.IsDlgButtonChecked(IDC_CHECKBOX_DBGMODE);
-
+	m_data.enable_cpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_CPU_MON);
+	m_data.enable_gpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_GPU_MON);
 	wchar_t unit_str_temp_store[PWR_UNIT_STR_MAXLEN + 1] = L"";
 
 	//PWR Unit

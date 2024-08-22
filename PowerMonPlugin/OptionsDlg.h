@@ -4,6 +4,7 @@
 #include "windows.h" 
 #include "UnitStringSettingPage.h"
 #include "InformationPage.h"
+#include "HardwareSensorPage.h"
 // COptionsDlg 对话框
 
 class COptionsDlg : public CDialog
@@ -30,10 +31,11 @@ protected:
 
 
 	CTabCtrl m_tab;
-	int m_CurSelTab;
+	int m_CurSelTab = 0;
 	UnitStringSettingPage unit_string_page;
 	InformationPage info_page;
-	CDialog* pDialogs[2];
+	HardwareSensorPage hw_sensor_page;
+	CDialog* pDialogs[5];
 public:
 	virtual BOOL OnInitDialog();
 	int SyncWidgetWithSettingData();

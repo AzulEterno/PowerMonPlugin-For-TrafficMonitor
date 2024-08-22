@@ -1,6 +1,11 @@
 #pragma once
 #include "pch.h"
 #include "DataManager.h"
+#include <cmath>
+#include <cstdio>
+#include <minwindef.h>
+#include <Shlwapi.h>
+#include <winnt.h>
 
 
 class ValueUnitStringFormatter
@@ -37,7 +42,7 @@ public:
 		// Build format string based on decimal places and force_sign flag
 
 		int decimal_places = ((fixed_decimal_places < 0) ?
-			max(floor(log10(fabs(value))), 0) : fixed_decimal_places);
+			max(maximal_adaptive_decimal_places - floor(log10(fabs(value))), 0) : fixed_decimal_places);
 
 		const int format_buffer_size = 16;
 		static wchar_t format_buffer[format_buffer_size];
@@ -59,14 +64,27 @@ public:
 	}
 
 	int FormatPowerWattsStringFromMili(wchar_t* out_val_text, int safe_length,
-		int value,
+		double mili_watts_value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = true,
 		int maximal_adaptive_decimal_places = 2,
 		int fixed_decimal_places = -1
 	) const {
 		return FormatFloatValue(out_val_text, safe_length,
-			value / 1000.0, GetPowerUnitString(), zero_value_alternative,
+			mili_watts_value / 1000.0f, GetPowerUnitString(), zero_value_alternative,
+			force_sign, maximal_adaptive_decimal_places,
+			fixed_decimal_places);
+
+	}
+	int FormatPowerWattsString(wchar_t* out_val_text, int safe_length,
+		double watts_value,
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = true,
+		int maximal_adaptive_decimal_places = 2,
+		int fixed_decimal_places = -1
+	) const {
+		return FormatFloatValue(out_val_text, safe_length,
+			watts_value, GetPowerUnitString(), zero_value_alternative,
 			force_sign, maximal_adaptive_decimal_places,
 			fixed_decimal_places);
 
@@ -79,7 +97,7 @@ public:
 		int fixed_decimal_places = -1
 	) const {
 		return FormatFloatValue(out_val_text, safe_length,
-			value / 1000.0, GetPowerCapacityString(), zero_value_alternative,
+			value / 1000.f, GetPowerCapacityString(), zero_value_alternative,
 			force_sign, maximal_adaptive_decimal_places, fixed_decimal_places);
 
 	}
@@ -93,7 +111,7 @@ public:
 	)const {
 
 		return FormatFloatValue(out_val_text, safe_length,
-			value / 1000.0, GetVoltageString(), zero_value_alternative,
+			value / 1000.0f, GetVoltageString(), zero_value_alternative,
 			force_sign, maximal_adaptive_decimal_places, fixed_decimal_places);
 	}
 

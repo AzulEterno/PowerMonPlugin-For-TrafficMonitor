@@ -21,6 +21,11 @@
 #include <algorithm>
 #include <cmath>
 #include <cwchar>
+#include <vector>
+#include <set>
+#include <functional>
+#include <map>
+#include <iostream>
 #include <iomanip>
 #include "poclass.h"
 #include "ioapiset.h"
@@ -31,9 +36,9 @@
 #include "BatClass.h"
 #include "devguid.h"
 #include "winioctl.h"
-
+//#include "collection.h"
 #include "PluginInterface.h"
-
+#define ENABLE_DEBUG_POP_WINDOWS false
 
 #define SAFE_DELETE(p) do \
 {\

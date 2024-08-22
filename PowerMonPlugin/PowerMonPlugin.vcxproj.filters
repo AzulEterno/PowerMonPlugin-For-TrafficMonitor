@@ -24,13 +24,19 @@
       <Filter>DataClass</Filter>
     </ClCompile>
     <ClCompile Include="BatteryPowerMonItem.cpp">
-      <Filter>Monitor</Filter>
+      <Filter>MonitorInterface</Filter>
     </ClCompile>
     <ClCompile Include="DataManager.cpp">
       <Filter>DataClass</Filter>
     </ClCompile>
     <ClCompile Include="LibreHWMonInterOp.cpp">
       <Filter>DataClass</Filter>
+    </ClCompile>
+    <ClCompile Include="HardwareSensorPage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="HardwareSensorMon.cpp">
+      <Filter>MonitorInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -63,13 +69,19 @@
       <Filter>DataClass</Filter>
     </ClInclude>
     <ClInclude Include="BatteryPowerMonItem.h">
-      <Filter>Monitor</Filter>
+      <Filter>MonitorInterface</Filter>
     </ClInclude>
     <ClInclude Include="DataManager.h">
       <Filter>DataClass</Filter>
     </ClInclude>
     <ClInclude Include="LibreHWMonInterOp.h">
       <Filter>DataClass</Filter>
+    </ClInclude>
+    <ClInclude Include="HardwareSensorPage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="HardwareSensorMon.h">
+      <Filter>MonitorInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -85,7 +97,7 @@
     <Filter Include="DataClass">
       <UniqueIdentifier>{b9585138-2c2e-42a9-bf29-63683912e062}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Monitor">
+    <Filter Include="MonitorInterface">
       <UniqueIdentifier>{ec0ac050-a17d-4500-9faa-8be6155b91f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

@@ -1,14 +1,15 @@
 ﻿#pragma once
-#define ENABLE_DEBUG_POP_WINDOWS false
+
 
 
 #include "pch.h"
 
 #include "BatteryPowerMonItem.h"
-
-#include "DataManager.h"
 #include "BatteryInfoHandler.h"
 #include "ValueUnitStringFormatter.h"
+#include <string>
+#include <PluginInterface.h>
+#include "LibreHWMonInterOp.h"
 
 
 
@@ -39,31 +40,17 @@ public:
 		return _bih;
 	}
 
-	//bool update_battery_base_info(bool debug_mode);
+	InterOpLibreHWMon::HardwareSensorDataProvider& GetHWPowerSensorDataProvider() {
+		return _hwpdp;
+	}
 
-	//bool update_battery_base_info();
-	//bool do_update_info();
-	//void free_res_mem(bool debug_mode);
-	//void free_res_mem();
-
-	//BATTERY_STATUS qry_res_inf = { 0 };
-
-	//SYSTEM_POWER_STATUS sys_pwr_state = { 0 };
-
-	//DWORD on_battery;
-
-
-	//HANDLE hBattery = INVALID_HANDLE_VALUE;
-	//PSP_DEVICE_INTERFACE_DETAIL_DATA pdidd;
-
-	//BATTERY_WAIT_STATUS  qry_bws_inf = { 0 };
 
 	bool is_dbg = ENABLE_DEBUG_POP_WINDOWS;
 
-	//BATTERY_QUERY_INFORMATION* lp_bty_qry_inf = nullptr;
 protected:
 	ValueUnitStringFormatter _vusf;
 	BatteryInfoHandler _bih;
+	InterOpLibreHWMon::HardwareSensorDataProvider _hwpdp;
 	//bool is_relative_battery_rate = false;
 
 	BatteryPowerMonItem bp_m_item;
@@ -71,6 +58,7 @@ protected:
 	BatteryCapacityMonItem b_cap_m_item;
 	BatteryVoltageMonItem b_volt_m_item;
 	BatteryTimeMonItem b_time_m_item;
+	SmartPowerMeterMonItem sm_m_item;
 
 	std::wstring m_tooltip_info;
 

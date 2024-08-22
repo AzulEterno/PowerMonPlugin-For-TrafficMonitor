@@ -1,7 +1,5 @@
 ﻿#pragma once
-#include <string>
-#include <map>
-#include "resource.h"
+#include "pch.h"
 
 #define g_data CDataManager::Instance()
 
@@ -19,72 +17,44 @@ struct SettingData
 	CString electric_voltage_unit_str{};
 	CString hour_unit_str{};
 	CString minute_unit_str{};
-
-	int CopyTo(SettingData* targetObject) const {
-		if (targetObject == nullptr) {
-			return -1;
-		}
-		if (this == targetObject) {
-			return -2;
+	// Assignment operator
+	SettingData& operator=(const SettingData& other) {
+		if (this == &other) {
+			return *this; // Handle self-assignment
 		}
 
-		int altered = 0;
+		// Copy primitive types
+		this->settings_altered_counter = other.settings_altered_counter;
+		this->is_dbg_mode = other.is_dbg_mode;
+		this->enable_gpu_monitor = other.enable_gpu_monitor;
+		this->enable_cpu_monitor = other.enable_cpu_monitor;
 
-		if (this->settings_altered_counter != targetObject->settings_altered_counter) {
-			targetObject->settings_altered_counter = this->settings_altered_counter;
-			altered += 1;
-		}
-		if (this->is_dbg_mode != targetObject->is_dbg_mode) {
-			targetObject->is_dbg_mode = this->is_dbg_mode;
-			altered += 1;
-		}
-		if (this->enable_gpu_monitor != targetObject->enable_gpu_monitor) {
-			targetObject->enable_gpu_monitor = this->enable_gpu_monitor;
-			altered += 1;
-		}
-		if (this->enable_cpu_monitor != targetObject->enable_cpu_monitor) {
-			targetObject->enable_cpu_monitor = this->enable_cpu_monitor;
-			altered += 1;
-		}
+		// Copy CString members using StrCpyNW
+		StrCpyNW(this->pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
+			other.pwr_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
+		StrCpyNW(this->electric_capacity_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
+			other.electric_capacity_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
+		StrCpyNW(this->electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
+			other.electric_voltage_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
+		StrCpyNW(this->hour_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
+			other.hour_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
+		StrCpyNW(this->minute_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
+			other.minute_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
 
-		if (!StrCmp(this->pwr_unit_str.GetString(),
-			targetObject->pwr_unit_str.GetString())) {
+		// Release the buffers
+		this->pwr_unit_str.ReleaseBuffer();
+		this->electric_capacity_unit_str.ReleaseBuffer();
+		this->electric_voltage_unit_str.ReleaseBuffer();
+		this->hour_unit_str.ReleaseBuffer();
+		this->minute_unit_str.ReleaseBuffer();
 
-			StrCpyNW(targetObject->pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-				this->pwr_unit_str.GetString(),
-				PWR_UNIT_STR_MAXLEN);
-			targetObject->pwr_unit_str = this->pwr_unit_str;
-			altered += 1;
-		}
-		if (!StrCmp(this->electric_capacity_unit_str.GetString(),
-			targetObject->electric_capacity_unit_str.GetString())) {
-			StrCpyNW(targetObject->electric_capacity_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-				this->electric_capacity_unit_str.GetString(),
-				PWR_UNIT_STR_MAXLEN);
-			altered += 1;
-		}
-		if (!StrCmp(this->electric_voltage_unit_str.GetString(),
-			targetObject->electric_voltage_unit_str.GetString())) {
-			StrCpyNW(targetObject->electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-				this->electric_voltage_unit_str.GetString(),
-				PWR_UNIT_STR_MAXLEN);
-			altered += 1;
-		}
-		if (!StrCmp(this->hour_unit_str.GetString(),
-			targetObject->hour_unit_str.GetString())) {
-			StrCpyNW(targetObject->hour_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-				this->hour_unit_str.GetString(),
-				PWR_UNIT_STR_MAXLEN);
-			altered += 1;
-		}
-		if (!StrCmp(this->minute_unit_str.GetString(),
-			targetObject->minute_unit_str.GetString())) {
-			StrCpyNW(targetObject->minute_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-				this->minute_unit_str.GetString(),
-				PWR_UNIT_STR_MAXLEN);
-			altered += 1;
-		}
-		return altered;
+		return *this;
+	}
+	bool CopyTo(SettingData* targetObject) const {
+
+		(*targetObject) = *this;
+
+		return true;
 	}
 };
 
