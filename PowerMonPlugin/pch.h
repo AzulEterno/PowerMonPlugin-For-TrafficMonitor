@@ -33,11 +33,24 @@
 #include "WinBase.h"
 #include "SetupAPI.h"
 #pragma comment (lib, "SetupApi.lib")
-#include "BatClass.h"
+#pragma comment(lib, "Version.lib")
+//#include "BatClass.h"
 #include "devguid.h"
 #include "winioctl.h"
 //#include "collection.h"
 #include "PluginInterface.h"
+
+#ifndef PrintValueBuffer
+#define PrintValueBuffer 32
+#endif
+
+#ifdef MAX_PATH
+#undef MAX_PATH
+#define MAX_PATH 32767
+#endif
+
+
+
 #define ENABLE_DEBUG_POP_WINDOWS false
 
 #define SAFE_DELETE(p) do \
@@ -48,6 +61,8 @@
         p = nullptr; \
     } \
 } while (false)
+
+
 
 
 #endif //PCH_H

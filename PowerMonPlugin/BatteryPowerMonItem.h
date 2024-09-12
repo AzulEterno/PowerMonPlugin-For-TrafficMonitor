@@ -19,8 +19,9 @@ public:
 		return _lpBatteryInfoHandler && _lpFormatHandler;
 	}
 
-	bool SetDataSource(BatteryInfoHandler* lpBateryInfoHandler,
-		ValueUnitStringFormatter* lpFormatHandler
+	bool SetDataSource(ValueUnitStringFormatter* lpFormatHandler,
+		BatteryInfoHandler* lpBateryInfoHandler
+
 	) {
 		if (lpBateryInfoHandler) {
 
@@ -187,47 +188,5 @@ public:
 
 
 
-
-};
-
-
-class SmartPowerMeterMonItem :public BatteryGrpMonBaseCLS {
-
-protected:
-	InterOpLibreHWMon::HardwareSensorDataProvider* _lpHWSensorDP = nullptr;
-public:
-
-	bool ReadyToPrint() const {
-		return _lpBatteryInfoHandler && _lpFormatHandler && _lpHWSensorDP;
-	}
-
-	bool SetDataSource(BatteryInfoHandler* lpBateryInfoHandler,
-		ValueUnitStringFormatter* lpFormatHandler,
-		InterOpLibreHWMon::HardwareSensorDataProvider* lpHWSensorDP
-
-	) {
-		BatteryGrpMonBaseCLS::SetDataSource(lpBateryInfoHandler, lpFormatHandler);
-
-		if (lpHWSensorDP) {
-			_lpHWSensorDP = lpHWSensorDP;
-
-		}
-		return ReadyToPrint();
-	}
-
-
-	virtual const wchar_t* GetItemName() const override {
-		return g_data.StringRes(IDS_PLUGIN_SMART_POWER_METER_ITEM_NAME);
-	};
-	virtual const wchar_t* GetItemId() const override {
-		return L"SmartPowerMeterMon";
-	};
-	virtual const wchar_t* GetItemLableText() const override {
-		return  g_data.StringRes(IDS_POWER_DISPLAY_LABEL);
-	};
-	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override {
-		return GetItemValueText();
-	};
 
 };

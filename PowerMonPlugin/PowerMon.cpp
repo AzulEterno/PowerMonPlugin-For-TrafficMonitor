@@ -2,6 +2,7 @@
 #include "PowerMon.h"
 #include "DataManager.h"
 #include "OptionsDlg.h"
+#include "WinCPP_Utility.h"
 
 
 
@@ -23,14 +24,17 @@ PowerMon::PowerMon()
 	//std::shared_ptr<ValueUnitStringFormatter> sptr_vusf = std::shared_ptr<ValueUnitStringFormatter>(&_vusf);
 	//std::shared_ptr<BatteryInfoHandler> sptr_bih = std::shared_ptr<BatteryInfoHandler>(&_bih);
 
-	bp_m_item.SetDataSource(&_bih, &_vusf);
+	bp_m_item.SetDataSource(&_vusf, &_bih);
 
-	b_percentage_m_item.SetDataSource(&_bih, &_vusf);
+	b_percentage_m_item.SetDataSource(&_vusf, &_bih);
 
-	b_cap_m_item.SetDataSource(&_bih, &_vusf);
-	b_volt_m_item.SetDataSource(&_bih, &_vusf);
-	b_time_m_item.SetDataSource(&_bih, &_vusf);
-	sm_m_item.SetDataSource(&_bih, &_vusf, &_hwpdp);
+	b_cap_m_item.SetDataSource(&_vusf, &_bih);
+	b_volt_m_item.SetDataSource(&_vusf, &_bih);
+	b_time_m_item.SetDataSource(&_vusf, &_bih);
+	sm_m_item.SetDataSource(&_vusf, &_bih, &_hwpdp);
+
+	cpu_m_item.SetDataSource(&_vusf, &_hwpdp);
+	gpu_m_item.SetDataSource(&_vusf, &_hwpdp);
 
 }
 
@@ -55,6 +59,11 @@ IPluginItem* PowerMon::GetItem(int index)
 		return &b_volt_m_item;
 	case 4:
 		return &b_time_m_item;
+
+	case 6:
+		return &cpu_m_item;
+	case 7:
+		return &gpu_m_item;
 	default:
 		break;
 	}
@@ -209,7 +218,15 @@ ITMPlugin::OptionReturn PowerMon::ShowOptionsDialog(void* hParent)
 
 const wchar_t* PowerMon::GetInfo(PluginInfoIndex index)
 {
-	static CString str;
+	static FILEVERSIONINFOSTRUCT* infoStorePtr = nullptr;
+
+	if (infoStorePtr == nullptr) {
+
+		infoStorePtr = new FILEVERSIONINFOSTRUCT;
+		*infoStorePtr = GetSelfFileVersionInfoStructData();
+	}
+
+	//static CString str;
 	switch (index)
 	{
 	case TMI_NAME:
@@ -218,17 +235,17 @@ const wchar_t* PowerMon::GetInfo(PluginInfoIndex index)
 		return g_data.StringRes(IDS_PLUGIN_DESCRIPTION).GetString();
 	case TMI_AUTHOR:
 		//TODO: 在此返回作者的名字
-		return L"Ázuroso";
+		return infoStorePtr->companyName.c_str();
 	case TMI_COPYRIGHT:
 		//TODO: 在此返回版权信息
-		return L"Copyright (C) by Ázuroso 2022";
+		return infoStorePtr->legalCopyright.c_str();
 	case ITMPlugin::TMI_URL:
 		//TODO: 在此返回URL
 		return L"https://github.com/AzulEterno/PowerMonPlugin-For-TrafficMonitor";
 		break;
 	case TMI_VERSION:
 		//TODO: 在此修改插件的版本
-		return L"1.3";
+		return infoStorePtr->productVersion.c_str();
 	default:
 		break;
 	}

@@ -10,6 +10,7 @@
 #include <string>
 #include <PluginInterface.h>
 #include "LibreHWMonInterOp.h"
+#include "HardwareSensorMon.h"
 
 
 
@@ -59,6 +60,8 @@ protected:
 	BatteryVoltageMonItem b_volt_m_item;
 	BatteryTimeMonItem b_time_m_item;
 	SmartPowerMeterMonItem sm_m_item;
+	CPUPowerMonItem cpu_m_item;
+	GPUPowerMonItem gpu_m_item;
 
 	std::wstring m_tooltip_info;
 

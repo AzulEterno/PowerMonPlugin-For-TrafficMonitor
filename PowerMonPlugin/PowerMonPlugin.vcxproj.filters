@@ -83,6 +83,9 @@
     <ClInclude Include="HardwareSensorMon.h">
       <Filter>MonitorInterface</Filter>
     </ClInclude>
+    <ClInclude Include="WinCPP_Utility.h">
+      <Filter>Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PowerMon.rc" />
