@@ -121,7 +121,7 @@ int COptionsDlg::SyncWidgetWithSettingData() {
 
 int COptionsDlg::SyncSettingDataWithWidget() {
 
-	m_data.is_dbg_mode = (bool)info_page.IsDlgButtonChecked(IDC_CHECKBOX_DBGMODE);
+	m_data.is_dbg_mode = (bool)info_page.IsDlgButtonChecked(IDC_DEBUG_MODE_SWITCH);
 	m_data.enable_cpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_CPU_MON);
 	m_data.enable_gpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_GPU_MON);
 	wchar_t unit_str_temp_store[PWR_UNIT_STR_MAXLEN + 1] = L"";
