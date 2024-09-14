@@ -20,7 +20,10 @@
 #define IDS_UPDATE_TIME                 110
 #define IDS_THE_DAY_AFTER_TOMMORROW_WEATHER 111
 #define IDS_CURRENT_WEATHER             112
+#define IDS_CUR_POSITION                113
+#define IDS_LOCATION_FAILED             114
 #define IDI_WEATHER                     115
+#define IDS_UPDATE_WEATHER              115
 #define IDI_SNOWSTORM                   116
 #define IDI_RAINSTORM                   117
 #define IDI_HAIL                        118
@@ -50,6 +53,8 @@
 #define IDI_SUNNY_NIGHT                 142
 #define IDI_CLOUDY_NIGHT                143
 #define IDR_MENU1                       144
+#define IDI_ICON1                       145
+#define IDI_UPDATE                      145
 #define IDC_CITY_EDIT                   1001
 #define IDC_CITY_LIST                   1005
 #define IDC_SELECT_CITY_BUTTON          1006
@@ -59,6 +64,10 @@
 #define IDC_SEARCH_EDIT                 1010
 #define IDC_DISPLAY_WIDTH_EDIT          1011
 #define IDC_UPDATE_WEATHER_BUTTON       1012
+#define IDC_TEST_BUTTON                 1013
+#define IDC_AUTO_LOCATE_CHECK           1014
+#define IDC_AUTO_LOCATE_RESULT_STATIC   1015
+#define IDC_HELP_SYSLINK                1016
 #define ID_OPTIONS                      40001
 #define ID_1_40002                      40002
 #define ID_UPDATE_WEATHER               40003
@@ -67,9 +76,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        145
+#define _APS_NEXT_RESOURCE_VALUE        146
 #define _APS_NEXT_COMMAND_VALUE         40004
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

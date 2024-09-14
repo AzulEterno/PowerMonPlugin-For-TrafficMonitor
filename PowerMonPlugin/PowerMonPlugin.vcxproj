@@ -162,6 +162,7 @@
     <IncludePath>$(ProjectDir)..\include;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -189,6 +190,7 @@
     <IncludePath>$(ProjectDir)..\include;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
     <LinkIncremental>false</LinkIncremental>
@@ -196,6 +198,7 @@
     <IncludePath>$(ProjectDir)..\include;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
@@ -203,6 +206,7 @@
     <IncludePath>$(ProjectDir)..\include;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -506,6 +510,18 @@
   <ItemGroup>
     <ResourceCompile Include="PowerMon.rc">
       <DeploymentContent>true</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>

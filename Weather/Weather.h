@@ -18,10 +18,15 @@ public:
     virtual OptionReturn ShowOptionsDialog(void* hParent) override;
     virtual const wchar_t* GetInfo(PluginInfoIndex index) override;
     virtual void OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data) override;
+    virtual void* GetPluginIcon() override;
     void SendWetherInfoQequest();
     void ShowContextMenu(CWnd* pWnd);
     void DisableUpdateWeatherCommand();
     void EnableUpdateWeatherCommand();
+    int GetCommandCount() override;
+    const wchar_t* GetCommandName(int command_index) override;
+    void* GetCommandIcon(int command_index) override;
+    void OnPluginCommand(int command_index, void* hWnd, void* para) override;
 
 private:
     static UINT ThreadCallback(LPVOID dwUser);

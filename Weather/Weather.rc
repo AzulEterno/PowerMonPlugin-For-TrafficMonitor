@@ -60,11 +60,15 @@ BEGIN
     LTEXT           "城市：",IDC_STATIC,7,9,25,8
     EDITTEXT        IDC_CITY_EDIT,34,7,66,12,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "选择城市(&S)...",IDC_SELECT_CITY_BUTTON,104,6,52,14
-    LTEXT           "天气显示:",IDC_STATIC,7,28,34,8
-    COMBOBOX        IDC_WEATHER_TYPE_COMBO,44,27,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "在鼠标提示中显示天气",IDC_SHOW_TOOLTIPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,104,10
-    CONTROL         "使用天气图标",IDC_USE_WEATHER_ICON_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,113,10
-    PUSHBUTTON      "手动更新天气(&U)",IDC_UPDATE_WEATHER_BUTTON,7,42,70,14
+    LTEXT           "天气显示:",IDC_STATIC,7,36,34,8
+    COMBOBOX        IDC_WEATHER_TYPE_COMBO,44,35,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "在鼠标提示中显示天气",IDC_SHOW_TOOLTIPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,68,104,10
+    CONTROL         "使用天气图标",IDC_USE_WEATHER_ICON_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,80,113,10
+    PUSHBUTTON      "手动更新天气(&U)",IDC_UPDATE_WEATHER_BUTTON,7,50,70,14
+    PUSHBUTTON      "Test",IDC_TEST_BUTTON,7,98,24,14
+    CONTROL         "自动定位",IDC_AUTO_LOCATE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,22,53,10
+    LTEXT           "",IDC_AUTO_LOCATE_RESULT_STATIC,64,23,92,8
+    CONTROL         "<a>帮助</a>",IDC_HELP_SYSLINK,"SysLink",WS_TABSTOP,7,118,24,10
 END
 
 IDD_SELECT_CITY_DIALOG DIALOGEX 0, 0, 161, 135
@@ -116,6 +120,10 @@ BEGIN
     0,
     100, 100, 0, 0,
     100, 100, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
@@ -201,6 +209,8 @@ IDI_SUNNY_NIGHT         ICON                    "res\\晴_夜晚.ico"
 
 IDI_CLOUDY_NIGHT        ICON                    "res\\多云_夜晚.ico"
 
+IDI_UPDATE              ICON                    "res\\update.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -208,8 +218,8 @@ IDI_CLOUDY_NIGHT        ICON                    "res\\多云_夜晚.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,1,0
- PRODUCTVERSION 1,0,1,0
+ FILEVERSION 1,0,2,0
+ PRODUCTVERSION 1,0,2,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -226,12 +236,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "By ZhongYang"
             VALUE "FileDescription", "Weather Plugin for TrafficMonitor"
-            VALUE "FileVersion", "1.0.1.0"
+            VALUE "FileVersion", "1.0.2.0"
             VALUE "InternalName", "Weather.dll"
-            VALUE "LegalCopyright", "Copyright (C) 2021 By ZhongYang"
+            VALUE "LegalCopyright", "Copyright (C) 2022 By ZhongYang"
             VALUE "OriginalFilename", "Weather.dll"
             VALUE "ProductName", "Weather Plugin for TrafficMonitor"
-            VALUE "ProductVersion", "1.0.1.0"
+            VALUE "ProductVersion", "1.0.2.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -279,6 +289,9 @@ END
 STRINGTABLE
 BEGIN
     IDS_CURRENT_WEATHER     "实时天气"
+    IDS_CUR_POSITION        "当前位置："
+    IDS_LOCATION_FAILED     "自动定位失败！"
+    IDS_UPDATE_WEATHER      "更新天气"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -307,12 +320,15 @@ BEGIN
     LTEXT           "City:",IDC_STATIC,7,9,25,8
     EDITTEXT        IDC_CITY_EDIT,34,7,66,12,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "Select city...",IDC_SELECT_CITY_BUTTON,104,6,59,14
-    LTEXT           "Weather display:",IDC_STATIC,7,28,58,8
-    COMBOBOX        IDC_WEATHER_TYPE_COMBO,65,27,98,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Weather display:",IDC_STATIC,7,48,58,8
+    COMBOBOX        IDC_WEATHER_TYPE_COMBO,65,47,98,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Show weather in tool tip",IDC_SHOW_TOOLTIPS_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,140,10
-    CONTROL         "Use weather icon",IDC_USE_WEATHER_ICON_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,127,10
-    PUSHBUTTON      "&Update weather manually",IDC_UPDATE_WEATHER_BUTTON,7,42,106,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,80,140,10
+    CONTROL         "Use weather icon",IDC_USE_WEATHER_ICON_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,92,127,10
+    PUSHBUTTON      "&Update weather manually",IDC_UPDATE_WEATHER_BUTTON,7,62,106,14
+    CONTROL         "Automatic positioning",IDC_AUTO_LOCATE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,22,144,9
+    LTEXT           "",IDC_AUTO_LOCATE_RESULT_STATIC,7,33,156,10
+    CONTROL         "<a>Help</a>",IDC_HELP_SYSLINK,"SysLink",WS_TABSTOP,7,119,26,9
 END
 
 IDD_SELECT_CITY_DIALOG DIALOGEX 0, 0, 170, 135
@@ -371,6 +387,9 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0
 END
 
@@ -381,6 +400,21 @@ BEGIN
     100, 100, 0, 0,
     0, 0, 100, 100,
     0, 0, 0, 0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU
+BEGIN
+    POPUP "1"
+    BEGIN
+        MENUITEM "&Options...",                 40001
+        MENUITEM "&Update weather",             ID_UPDATE_WEATHER
+    END
 END
 
 
@@ -407,6 +441,9 @@ END
 STRINGTABLE
 BEGIN
     IDS_CURRENT_WEATHER     "Real time weather"
+    IDS_CUR_POSITION        "Current location: "
+    IDS_LOCATION_FAILED     "Automatic positioning failed!"
+    IDS_UPDATE_WEATHER      "Update weather"
 END
 
 #endif    // 英语(美国) resources

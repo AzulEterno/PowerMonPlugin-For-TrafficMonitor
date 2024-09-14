@@ -6,6 +6,7 @@
 #include "utilities/yyjson/yyjson.h"
 #include "OptionsDlg.h"
 #include <sstream>
+#include "CurLocationHelper.h"
 
 CWeather CWeather::m_instance;
 
@@ -52,6 +53,19 @@ UINT CWeather::ThreadCallback(LPVOID dwUser)
         //禁用选项设置中的“更新”按钮
         m_instance.DisableUpdateWeatherCommand();
 
+        if (g_data.m_setting_data.auto_locate)      //自动获取当前城市
+        {
+            std::wstring cur_city = CCurLocationHelper::GetCurrentCity();
+            CCurLocationHelper::Location location = CCurLocationHelper::ParseCityName(cur_city);
+            int auto_located_city = CCurLocationHelper::FindCityCodeItem(location);
+            g_data.m_auto_locate_succeed = (auto_located_city >= 0);
+            g_data.m_auto_located = true;
+            if (g_data.m_auto_locate_succeed)
+                g_data.m_setting_data.m_city_index = auto_located_city;
+            if (m_instance.m_option_dlg != nullptr)
+                m_instance.m_option_dlg->UpdateAutoLocteResult();
+        }
+
         //获取天气信息
         std::wstring url{ L"http://t.weather.itboy.net/api/weather/city/" };
         url += g_data.CurCity().code;
@@ -84,7 +98,6 @@ void ParseWeatherInfo(CDataManager::WeatherInfo& weather_info, yyjson_val* forec
 
 void CWeather::ParseJsonData(std::string json_data)
 {
-    //int a = 0;
     std::ofstream stream{ g_data.m_config_dir + L"Weather.dll.log" };
     stream << json_data;
 
@@ -188,7 +201,8 @@ ITMPlugin::OptionReturn CWeather::ShowOptionsDialog(void* hParent)
     m_option_dlg = nullptr;
     if (rtn == IDOK)
     {
-        bool city_changed{ g_data.m_setting_data.m_city_index != dlg.m_data.m_city_index };
+        bool city_changed{ g_data.m_setting_data.m_city_index != dlg.m_data.m_city_index ||
+            g_data.m_setting_data.auto_locate != dlg.m_data.auto_locate };
         g_data.m_setting_data = dlg.m_data;
         if (city_changed)
         {
@@ -217,7 +231,7 @@ const wchar_t* CWeather::GetInfo(PluginInfoIndex index)
         return L"https://github.com/zhongyang219/TrafficMonitorPlugins";
         break;
     case TMI_VERSION:
-        return L"1.01";
+        return L"1.02";
     default:
         break;
     }
@@ -235,6 +249,11 @@ void CWeather::OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data)
     default:
         break;
     }
+}
+
+void* CWeather::GetPluginIcon()
+{
+    return g_data.GetIcon(IDI_WEATHER);
 }
 
 void CWeather::SendWetherInfoQequest()
@@ -293,6 +312,46 @@ void CWeather::EnableUpdateWeatherCommand()
         m_instance.m_option_dlg->EnableUpdateBtn(true);
     if (m_menu.m_hMenu != NULL)
         m_menu.EnableMenuItem(ID_UPDATE_WEATHER, MF_BYCOMMAND | MF_ENABLED);
+}
+
+const wchar_t* CWeather::GetCommandName(int command_index)
+{
+    switch (command_index)
+    {
+    case 0:
+        return g_data.StringRes(IDS_UPDATE_WEATHER).GetString();
+    default:
+        return nullptr;
+    }
+}
+
+void* CWeather::GetCommandIcon(int command_index)
+{
+    switch (command_index)
+    {
+    case 0:
+        return g_data.GetIcon(IDI_UPDATE);
+        break;
+    default:
+        return nullptr;
+    }
+}
+
+void CWeather::OnPluginCommand(int command_index, void* hWnd, void* para)
+{
+    switch (command_index)
+    {
+    case 0:
+        SendWetherInfoQequest();
+        break;
+    default:
+        break;
+    }
+}
+
+int CWeather::GetCommandCount()
+{
+    return 1;
 }
 
 ITMPlugin* TMPluginGetInstance()

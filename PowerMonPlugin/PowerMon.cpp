@@ -12,17 +12,16 @@ PowerMon::PowerMon()
 {
 	//Initalizing code
 
-	g_data.LoadConfig(L"");
-	sync_g_settings();
+	//g_data.LoadConfig(L"");
+
 	//update_battery_base_info();
 
 
 	//_bih = BatteryInfoHandler();
 
-	_bih.is_dbg = this->is_dbg;
 
-	//std::shared_ptr<ValueUnitStringFormatter> sptr_vusf = std::shared_ptr<ValueUnitStringFormatter>(&_vusf);
-	//std::shared_ptr<BatteryInfoHandler> sptr_bih = std::shared_ptr<BatteryInfoHandler>(&_bih);
+		//std::shared_ptr<ValueUnitStringFormatter> sptr_vusf = std::shared_ptr<ValueUnitStringFormatter>(&_vusf);
+		//std::shared_ptr<BatteryInfoHandler> sptr_bih = std::shared_ptr<BatteryInfoHandler>(&_bih);
 
 	bp_m_item.SetDataSource(&_vusf, &_bih);
 
@@ -259,6 +258,8 @@ void PowerMon::OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data)
 	case ITMPlugin::EI_CONFIG_DIR:
 		//从配置文件读取配置
 		g_data.LoadConfig(std::wstring(data));
+
+		sync_g_settings();
 		break;
 	default:
 		break;
@@ -269,7 +270,7 @@ void PowerMon::OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data)
 void PowerMon::sync_g_settings()
 {
 	this->is_dbg = g_data.m_setting_data.is_dbg_mode;
-
+	_bih.is_dbg = this->is_dbg;
 
 	_vusf.LoadFromSettings(g_data.m_setting_data);
 	_hwpdp.SyncFromSettingData(g_data.m_setting_data);

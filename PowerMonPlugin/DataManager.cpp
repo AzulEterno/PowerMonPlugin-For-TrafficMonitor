@@ -47,6 +47,8 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 		m_config_path = config_dir + module_file_name;
 	}
 	m_config_path += L".ini";
+
+
 	//TODO: 在此添加载入配置的代码
 	{
 		m_setting_data.settings_altered_counter = (GetPrivateProfileInt(L"config", L"settings_altered_counter", 0, m_config_path.c_str()) != 0);
