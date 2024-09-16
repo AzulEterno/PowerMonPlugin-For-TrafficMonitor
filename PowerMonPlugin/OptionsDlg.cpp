@@ -175,6 +175,8 @@ void COptionsDlg::OnBnClickedOk()
 	m_data.settings_altered_counter += 1;
 
 	CDialog::OnOK();
+	//Save immediately 
+	//g_data.SaveConfig();
 }
 
 
