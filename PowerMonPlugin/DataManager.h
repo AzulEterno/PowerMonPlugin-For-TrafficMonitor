@@ -30,16 +30,16 @@ struct SettingData
 		this->enable_cpu_monitor = other.enable_cpu_monitor;
 
 		// Copy CString members using StrCpyNW
-		StrCpyNW(this->pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-			other.pwr_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
-		StrCpyNW(this->electric_capacity_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-			other.electric_capacity_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
-		StrCpyNW(this->electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-			other.electric_voltage_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
-		StrCpyNW(this->hour_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-			other.hour_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
-		StrCpyNW(this->minute_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN),
-			other.minute_unit_str.GetString(), PWR_UNIT_STR_MAXLEN);
+		StrCpyNW(this->pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN),
+			other.pwr_unit_str.GetString(), UNIT_STR_MAXLEN);
+		StrCpyNW(this->electric_capacity_unit_str.GetBuffer(UNIT_STR_MAXLEN),
+			other.electric_capacity_unit_str.GetString(), UNIT_STR_MAXLEN);
+		StrCpyNW(this->electric_voltage_unit_str.GetBuffer(UNIT_STR_MAXLEN),
+			other.electric_voltage_unit_str.GetString(), UNIT_STR_MAXLEN);
+		StrCpyNW(this->hour_unit_str.GetBuffer(UNIT_STR_MAXLEN),
+			other.hour_unit_str.GetString(), UNIT_STR_MAXLEN);
+		StrCpyNW(this->minute_unit_str.GetBuffer(UNIT_STR_MAXLEN),
+			other.minute_unit_str.GetString(), UNIT_STR_MAXLEN);
 
 		// Release the buffers
 		this->pwr_unit_str.ReleaseBuffer();

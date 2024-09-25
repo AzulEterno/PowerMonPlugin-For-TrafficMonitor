@@ -163,7 +163,7 @@ std::wstring PowerMon::GetBatteryPowerToolTipString(int updatePwrStateResult, in
 		switch (updateBatteryInfoResult) {
 		case 0:
 		{
-			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_PERCENTAGE_HEADER).GetString() << _bih.GetSystemBatteryLifePercent() << "%" << std::endl;
+			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_PERCENTAGE_HEADER).GetString() << _bih.GetSystemBatteryLifePercent() << " %" << std::endl;
 			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_POWER_HEADER).GetString() << ((_bih.GetBatteryStatusPowerRate() > 0) ? "+" : "") << _bih.GetBatteryStatusPowerRate() << " mW" << std::endl;
 			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_CAPACITY_HEADER).GetString() << _bih.GetBatteryCapacity() << " mWh" << std::endl;
 			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_VOLTAGE_HEADER).GetString() << _bih.GetBatteryStatusVoltage() << " mV" << std::endl;

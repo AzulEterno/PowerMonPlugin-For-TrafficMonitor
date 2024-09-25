@@ -9,7 +9,7 @@
 class BatteryGrpMonBaseCLS : public IPluginItem {
 
 protected:
-	//wchar_t pwr_unit_str[PWR_UNIT_STR_MAXLEN + 1] = L"W";
+	//wchar_t pwr_unit_str[UNIT_STR_MAXLEN + 1] = L"W";
 	ValueUnitStringFormatter* _lpFormatHandler = nullptr;
 	//BatteryInfoHandler* _lpBatteryInfoHandler = nullptr;
 	BatteryInfoHandler* _lpBatteryInfoHandler = nullptr;

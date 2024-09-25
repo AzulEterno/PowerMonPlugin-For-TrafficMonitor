@@ -7,7 +7,7 @@
 #ifndef PCH_H
 #define PCH_H
 
-#define PWR_UNIT_STR_MAXLEN 12
+#define UNIT_STR_MAXLEN 12
 
 #define GBS_HASBATTERY 0x1
 #define GBS_ONBATTERY  0x2

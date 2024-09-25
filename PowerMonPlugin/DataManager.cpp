@@ -57,21 +57,21 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 		m_setting_data.enable_gpu_monitor = (GetPrivateProfileInt(L"config", L"enable_gpu_monitor", 0, m_config_path.c_str()) != 0);
 
 		::GetPrivateProfileString(L"config", L"pwr_unit_str", L"",
-			m_setting_data.pwr_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
-			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+			m_setting_data.pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
+			UNIT_STR_MAXLEN, m_config_path.c_str());
 		::GetPrivateProfileString(L"config", L"electric_capacity_unit_str", L"",
-			m_setting_data.electric_capacity_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
-			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+			m_setting_data.electric_capacity_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
+			UNIT_STR_MAXLEN, m_config_path.c_str());
 
 		::GetPrivateProfileString(L"config", L"electric_voltage_unit_str", L"",
-			m_setting_data.electric_voltage_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
-			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+			m_setting_data.electric_voltage_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
+			UNIT_STR_MAXLEN, m_config_path.c_str());
 		::GetPrivateProfileString(L"config", L"hour_unit_str", L"",
-			m_setting_data.hour_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
-			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+			m_setting_data.hour_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
+			UNIT_STR_MAXLEN, m_config_path.c_str());
 		::GetPrivateProfileString(L"config", L"minute_unit_str", L"",
-			m_setting_data.minute_unit_str.GetBuffer(PWR_UNIT_STR_MAXLEN + 1),
-			PWR_UNIT_STR_MAXLEN, m_config_path.c_str());
+			m_setting_data.minute_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
+			UNIT_STR_MAXLEN, m_config_path.c_str());
 
 		bool isFirstInital = FirstInitalCheck(m_setting_data), altered_flag = false;
 		if (isFirstInital) {
@@ -80,27 +80,27 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 		}
 
 		if (isFirstInital ||
-			m_setting_data.pwr_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.pwr_unit_str.GetLength() >= UNIT_STR_MAXLEN) {
 			m_setting_data.pwr_unit_str = "W";
 			altered_flag = true;
 		}
 		if (isFirstInital ||
-			m_setting_data.electric_capacity_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.electric_capacity_unit_str.GetLength() >= UNIT_STR_MAXLEN) {
 			m_setting_data.electric_capacity_unit_str = "Wh";
 			altered_flag = true;
 		}
 		if (isFirstInital ||
-			m_setting_data.electric_voltage_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.electric_voltage_unit_str.GetLength() >= UNIT_STR_MAXLEN) {
 			m_setting_data.electric_voltage_unit_str = "V";
 			altered_flag = true;
 		}
 		if (isFirstInital ||
-			m_setting_data.hour_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.hour_unit_str.GetLength() >= UNIT_STR_MAXLEN) {
 			m_setting_data.hour_unit_str = "H";
 			altered_flag = true;
 		}
 		if (isFirstInital ||
-			m_setting_data.minute_unit_str.GetLength() >= PWR_UNIT_STR_MAXLEN) {
+			m_setting_data.minute_unit_str.GetLength() >= UNIT_STR_MAXLEN) {
 			m_setting_data.minute_unit_str = "M";
 			altered_flag = true;
 		}

@@ -8,25 +8,37 @@
 #include <winnt.h>
 
 
+std::wstring GenerateRepeatString(const std::wstring& str, const int& x);
+
 class ValueUnitStringFormatter
 {
 protected:
-	wchar_t pwr_unit_str[PWR_UNIT_STR_MAXLEN] = L"W",
-		electric_capcaity_unit_str[PWR_UNIT_STR_MAXLEN] = L"Wh",
-		voltage_unit_str[PWR_UNIT_STR_MAXLEN] = L"V",
-		hour_unit_str[PWR_UNIT_STR_MAXLEN] = L"H",
-		minute_unit_str[PWR_UNIT_STR_MAXLEN] = L"M";
+	wchar_t pwr_unit_str[UNIT_STR_MAXLEN] = L"W",
+		electric_capcaity_unit_str[UNIT_STR_MAXLEN] = L"Wh",
+		voltage_unit_str[UNIT_STR_MAXLEN] = L"V",
+		hour_unit_str[UNIT_STR_MAXLEN] = L"H",
+		minute_unit_str[UNIT_STR_MAXLEN] = L"M";
+
+	int _default_value_unit_space = 1;
 
 public:
 
-	static int FormatFloatValue(wchar_t* out_val_text, int safe_length,
-		float value, const wchar_t* unit_str,
+	int FormatFloatValue(
+		wchar_t* out_val_text,
+		int safe_length,
+		float value,
+		const wchar_t* unit_str,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
 		int maximal_adaptive_decimal_places = 2,
-		int fixed_decimal_places = -1
-	) {
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const {
 		const wchar_t* format_str = nullptr;
+
+		if (value_unit_space < 0) {
+			value_unit_space = _default_value_unit_space;
+		}
 
 		if (fabs(value) < 1e-5) {
 			if (zero_value_alternative) {
@@ -34,7 +46,7 @@ public:
 			}
 			else {
 
-				swprintf_s(out_val_text, safe_length, L"0 %s", unit_str);
+				swprintf_s(out_val_text, safe_length, L"0%s", unit_str);
 			}
 			return 0;
 		}
@@ -44,13 +56,19 @@ public:
 		int decimal_places = ((fixed_decimal_places < 0) ?
 			max(maximal_adaptive_decimal_places - floor(log10(fabs(value))), 0) : fixed_decimal_places);
 
-		const int format_buffer_size = 16;
-		static wchar_t format_buffer[format_buffer_size];
+		const int format_buffer_size = 24, extended_unit_size = UNIT_STR_MAXLEN + 4;
+		static wchar_t value_unit_str_pre_format[extended_unit_size] = L"";
+		static wchar_t format_buffer[format_buffer_size] = L"";
+
+		//Pre-format string with space interval
+		swprintf_s(value_unit_str_pre_format, extended_unit_size, L"%s%s", GenerateRepeatString(L" ", value_unit_space).c_str(), unit_str);
+
+
 		if (force_sign) {
-			swprintf_s(format_buffer, format_buffer_size, L"%%+.%df %%s", decimal_places);
+			swprintf_s(format_buffer, format_buffer_size, L"%%+.%df%%s", decimal_places);
 		}
 		else {
-			swprintf_s(format_buffer, format_buffer_size, L"%%.%df %%s", decimal_places);
+			swprintf_s(format_buffer, format_buffer_size, L"%%.%df%%s", decimal_places);
 		}
 		format_str = format_buffer;
 
@@ -58,7 +76,7 @@ public:
 
 		//OutputDebugString(format_buffer);
 		// Format the output string
-		swprintf_s(out_val_text, safe_length, format_str, value, unit_str);
+		swprintf_s(out_val_text, safe_length, format_str, value, value_unit_str_pre_format);
 
 		return 0;
 	}
@@ -153,29 +171,29 @@ public:
 
 	bool SetPowerUnitStr(const LPCWSTR new_val) {
 
-		StrCpyNW(pwr_unit_str, new_val, PWR_UNIT_STR_MAXLEN);
+		StrCpyNW(pwr_unit_str, new_val, UNIT_STR_MAXLEN);
 		return true;
 	}
 
 	bool SetElectricCapacityUnitStr(const LPCWSTR new_val) {
 		StrCpyNW(electric_capcaity_unit_str, new_val,
-			PWR_UNIT_STR_MAXLEN);
+			UNIT_STR_MAXLEN);
 		return true;
 	}
 
 	bool SetElectricVoltageUnitStr(const LPCWSTR new_val) {
 		StrCpyNW(voltage_unit_str, new_val,
-			PWR_UNIT_STR_MAXLEN);
+			UNIT_STR_MAXLEN);
 		return true;
 	}
 	bool SetHourUnitStr(const LPCWSTR new_val) {
 		StrCpyNW(hour_unit_str, new_val,
-			PWR_UNIT_STR_MAXLEN);
+			UNIT_STR_MAXLEN);
 		return true;
 	}
 	bool SetMinuteUnitStr(const LPCWSTR new_val) {
 		StrCpyNW(minute_unit_str, new_val,
-			PWR_UNIT_STR_MAXLEN);
+			UNIT_STR_MAXLEN);
 		return true;
 	}
 

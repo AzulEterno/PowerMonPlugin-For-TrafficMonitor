@@ -330,8 +330,18 @@ namespace InterOpLibreHWMon {
 		std::wstring _name = L"";
 
 		std::map<std::wstring, SensorRepresentiveBase> _sensors = {};
+
+		bool _has_package_power_sensor = false;
+
 	public:
 
+		bool GetHasPackagePowerSensor() const {
+			return _has_package_power_sensor;
+		}
+
+		void SetHasPackagePowerSensor(bool has_p_sensor) {
+			_has_package_power_sensor = has_p_sensor;
+		}
 
 
 		INT64 GetUpdateIterIndex()const {
@@ -415,13 +425,24 @@ namespace InterOpLibreHWMon {
 	protected:
 		UINT64 _VRAM_size = 0;
 
+		INT64 _intergated_gpu_cpu_id = -1;
+
 	public:
 		GPUHardwareRep() {};
 		// Constructor with required ID and optional name
 		GPUHardwareRep(const std::wstring& identity, const std::wstring& name = L"",
-			UINT64 VRAM_size = 0, UINT64 update_iter_index = 0)
-			: HardwareRepresentiveBase(identity, name, update_iter_index), _VRAM_size(VRAM_size) {
+			UINT64 VRAM_size = 0, INT64 intergated_gpu_cpu_id = -1, UINT64 update_iter_index = 0)
+			: HardwareRepresentiveBase(identity, name, update_iter_index), _VRAM_size(VRAM_size), _intergated_gpu_cpu_id(intergated_gpu_cpu_id) {
 		}
+
+
+		INT64 GetIntergatedCpuId() const {
+			return _intergated_gpu_cpu_id;
+		}
+		INT64 GetVRamSize() const {
+			return _VRAM_size;
+		}
+
 	};
 
 	//非托管类，可以自由使用C++数据结构
@@ -560,7 +581,11 @@ namespace InterOpLibreHWMon {
 			std::wstring hwid = ClrStringToStdWstring(hw->Identifier->ToString());
 
 			if (!val_store.contains(hwid)) {
-				val_store[hwid] = GPUHardwareRep(hwid, ClrStringToStdWstring(hw->Name));
+				INT64 cpu_bind_id = -1;
+				if (hwid.find(L"integrated") != std::wstring::npos) {
+					cpu_bind_id = 0;
+				}
+				val_store[hwid] = GPUHardwareRep(hwid, ClrStringToStdWstring(hw->Name), 0, cpu_bind_id);
 			}
 
 			val_store[hwid].SetUpdateIterIndex(_update_index);
@@ -597,22 +622,25 @@ namespace InterOpLibreHWMon {
 
 		double GetCPUTotalPower() {
 			double power_cal = 0.;
-			for (const auto& [cpu_key, cpu_instance] : _cpu_map) {
+			for (auto& [cpu_key, cpu_instance] : _cpu_map) {
 				power_cal += GetDevicePower(cpu_instance);
 			}
 			return power_cal;
 		}
 
-		double GetDevicePower(const HardwareRepresentiveBase hw) {
+		double GetDevicePower(HardwareRepresentiveBase& hw) {
 			const auto& wanted_sensor_keys = hw.GetSelectedSensorKeyList(SensorRepresentiveBase::select_power_sensor_fun);
-			//First Scan if there's package power. Other wise add all power meters.
+			//First Scan if there's package power. Otherwise add all power meters.
 			const auto& gpu_sensors = hw.SelectSensorsByKey(wanted_sensor_keys);
 
 			double device_power = 0.;
 
+			hw.SetHasPackagePowerSensor(false);
+
 			for (const auto& sensor : gpu_sensors) {
 				if (sensor.GetName().find(L"Package") != std::wstring::npos) {
 					device_power = sensor.GetValue();
+					hw.SetHasPackagePowerSensor(true);
 					break;
 				}
 
@@ -628,10 +656,10 @@ namespace InterOpLibreHWMon {
 
 
 
-			for (const auto& [gpu_key, gpu_instance] : _gpu_map) {
+			for (auto& [gpu_key, gpu_instance] : _gpu_map) {
 
 				//Skip the integrated GPU if necessary.
-				if (skip_intergated_gpu && gpu_instance.GetId().find(L"integrated") != std::wstring::npos) {
+				if (skip_intergated_gpu && gpu_instance.GetIntergatedCpuId() >= 0) {
 					continue;
 				}
 
@@ -700,37 +728,42 @@ namespace InterOpLibreHWMon {
 		std::wstring GetPowerSummaryStr(const ValueUnitStringFormatter& vusf) {
 			std::wstringstream wss_res, wss_cpu, wss_gpu;
 
+			const static int max_format_len = 128;
+			wchar_t format_str_buffer[max_format_len] = L"";
+
 			double power_cal = 0.;
 			if (g_data.m_setting_data.enable_cpu_monitor)
 			{
-				for (const auto& [cpu_key, cpu_instance] : _cpu_map) {
+				for (auto& [cpu_key, cpu_instance] : _cpu_map) {
 					double device_pwr = GetDevicePower(cpu_instance);
 
+					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 2);
+
 					wss_cpu << L"\t" <<
-						cpu_instance.GetName() << ": " <<
-						device_pwr << vusf.GetPowerUnitString() << std::endl;
+						cpu_instance.GetName() << ": " << format_str_buffer
+						<< std::endl;
 
 					power_cal += device_pwr;
 				}
-
-				wss_res << "CPU: <" << power_cal << vusf.GetPowerUnitString() <<
+				vusf.FormatPowerWattsString(format_str_buffer, max_format_len, power_cal, nullptr, false, -1, 2);
+				wss_res << "CPU: <" << format_str_buffer <<
 					">" << std::endl << wss_cpu.str();
 			}
 
 			power_cal = 0.;
 			if (g_data.m_setting_data.enable_cpu_monitor)
 			{
-				for (const auto& [gpu_key, gpu_instance] : _gpu_map) {
+				for (auto& [gpu_key, gpu_instance] : _gpu_map) {
 					double device_pwr = GetDevicePower(gpu_instance);
+					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 2);
 					wss_gpu << L"\t" <<
-						gpu_instance.GetName() << ": " <<
-						device_pwr << vusf.GetPowerUnitString() << std::endl;
+						gpu_instance.GetName() << ": " << format_str_buffer << std::endl;
 
 					power_cal += device_pwr;
 
 				}
-
-				wss_res << "GPU: <" << power_cal << vusf.GetPowerUnitString() <<
+				vusf.FormatPowerWattsString(format_str_buffer, max_format_len, power_cal, nullptr, false, -1, 2);
+				wss_res << "GPU: <" << format_str_buffer <<
 					">" << std::endl << wss_gpu.str();
 			}
 
