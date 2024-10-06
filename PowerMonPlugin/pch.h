@@ -53,6 +53,9 @@
 
 #define ENABLE_DEBUG_POP_WINDOWS false
 
+
+#define WINRT_USE_FLAG (_M_CEE)
+
 #define SAFE_DELETE(p) do \
 {\
     if(p != nullptr) \

@@ -2,7 +2,7 @@
 #include "HardwareSensorMon.h"
 
 
-
+#if WINRT_USE_FLAG
 const wchar_t* SmartPowerMeterMonItem::GetItemValueText() const
 {
 
@@ -68,3 +68,5 @@ const wchar_t* GPUPowerMonItem::GetItemValueText() const
 	}
 	return out_val_text;
 }
+
+#endif

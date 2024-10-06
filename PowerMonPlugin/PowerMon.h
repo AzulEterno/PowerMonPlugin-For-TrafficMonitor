@@ -9,9 +9,11 @@
 #include "ValueUnitStringFormatter.h"
 #include <string>
 #include <PluginInterface.h>
+
+#if WINRT_USE_FLAG
 #include "LibreHWMonInterOp.h"
 #include "HardwareSensorMon.h"
-
+#endif
 
 
 
@@ -40,10 +42,11 @@ public:
 	BatteryInfoHandler& GetBatteryInfoProvider() {
 		return _bih;
 	}
-
+#if WINRT_USE_FLAG
 	InterOpLibreHWMon::HardwareSensorDataProvider& GetHWPowerSensorDataProvider() {
 		return _hwpdp;
 	}
+#endif
 
 
 	bool is_dbg = ENABLE_DEBUG_POP_WINDOWS;
@@ -51,7 +54,7 @@ public:
 protected:
 	ValueUnitStringFormatter _vusf;
 	BatteryInfoHandler _bih;
-	InterOpLibreHWMon::HardwareSensorDataProvider _hwpdp;
+
 	//bool is_relative_battery_rate = false;
 
 	BatteryPowerMonItem bp_m_item;
@@ -59,9 +62,12 @@ protected:
 	BatteryCapacityMonItem b_cap_m_item;
 	BatteryVoltageMonItem b_volt_m_item;
 	BatteryTimeMonItem b_time_m_item;
+#if WINRT_USE_FLAG
+	InterOpLibreHWMon::HardwareSensorDataProvider _hwpdp;
 	SmartPowerMeterMonItem sm_m_item;
 	CPUPowerMonItem cpu_m_item;
 	GPUPowerMonItem gpu_m_item;
+#endif
 
 	std::wstring m_tooltip_info;
 

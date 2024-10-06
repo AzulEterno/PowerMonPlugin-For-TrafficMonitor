@@ -3,8 +3,12 @@
 #include "ValueUnitStringFormatter.h"
 
 #pragma once
+
+#if WINRT_USE_FLAG
 using namespace System;
 using namespace LibreHardwareMonitor::Hardware;
+
+
 //using namespace Windows::Foundation::Collections;
 namespace InterOpLibreHWMon {
 	//将CRL的String类型转换成C++的std::wstring类型
@@ -169,7 +173,7 @@ namespace InterOpLibreHWMon {
 		}
 	};
 
-	//Exact copy
+	//Exact copy of items from LibreHWMonInterOp
 	public enum SensorTypeCopy
 	{
 		Voltage, // V
@@ -772,3 +776,6 @@ namespace InterOpLibreHWMon {
 	};
 
 };
+
+
+#endif

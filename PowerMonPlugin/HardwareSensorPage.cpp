@@ -37,6 +37,8 @@ END_MESSAGE_MAP()
 // HardwareSensorPage 消息处理程序
 
 void HardwareSensorPage::SyncTreeViewContent() {
+#if WINRT_USE_FLAG
+
 	auto& datasrc = PowerMon::Instance().GetHWPowerSensorDataProvider();
 
 	auto m_TreeCtrl = (CTreeCtrl*)this->GetDlgItem(IDC_SENSOR_TREE);
@@ -110,7 +112,8 @@ void HardwareSensorPage::SyncTreeViewContent() {
 		//delete& gpu_iterator;
 
 	}
-
+	return;
+#endif
 }
 
 void HardwareSensorPage::OnBnClickedButtonRefreshCpuSensor()

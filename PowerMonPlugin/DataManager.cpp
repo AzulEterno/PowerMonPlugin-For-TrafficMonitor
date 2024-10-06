@@ -55,6 +55,8 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 		m_setting_data.is_dbg_mode = (GetPrivateProfileInt(L"config", L"is_dbg_mode", 0, m_config_path.c_str()) != 0);
 		m_setting_data.enable_cpu_monitor = (GetPrivateProfileInt(L"config", L"enable_cpu_monitor", 0, m_config_path.c_str()) != 0);
 		m_setting_data.enable_gpu_monitor = (GetPrivateProfileInt(L"config", L"enable_gpu_monitor", 0, m_config_path.c_str()) != 0);
+		m_setting_data.default_value_unit_space = (GetPrivateProfileInt(L"config", L"default_value_unit_space", 1, m_config_path.c_str()) != 0);
+		m_setting_data.default_adaptive_decimal_places = (GetPrivateProfileInt(L"config", L"default_adaptive_decimal_places", 2, m_config_path.c_str()) != 0);
 
 		::GetPrivateProfileString(L"config", L"pwr_unit_str", L"",
 			m_setting_data.pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
@@ -127,6 +129,10 @@ void CDataManager::SaveConfig() const
 			(m_setting_data.enable_cpu_monitor), m_config_path.c_str());
 		WritePrivateProfileInt(L"config", L"enable_gpu_monitor",
 			(m_setting_data.enable_gpu_monitor), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"default_value_unit_space",
+			(m_setting_data.default_value_unit_space), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"default_adaptive_decimal_places",
+			(m_setting_data.default_adaptive_decimal_places), m_config_path.c_str());
 
 		WritePrivateProfileString(L"config", L"pwr_unit_str",
 			m_setting_data.pwr_unit_str, m_config_path.c_str());

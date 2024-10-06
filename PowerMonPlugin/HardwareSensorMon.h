@@ -3,6 +3,7 @@
 #pragma once
 
 
+#if WINRT_USE_FLAG
 class HardwareSensorMonBase :public IPluginItem {
 
 
@@ -141,3 +142,5 @@ public:
 	};
 
 };
+
+#endif

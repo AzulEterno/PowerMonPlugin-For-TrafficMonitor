@@ -12,6 +12,8 @@ struct SettingData
 	bool is_dbg_mode = false;
 	bool enable_gpu_monitor = false;
 	bool enable_cpu_monitor = false;
+	INT64 default_value_unit_space = 1;
+	INT64 default_adaptive_decimal_places = 2;
 	CString pwr_unit_str{};
 	CString electric_capacity_unit_str{};
 	CString electric_voltage_unit_str{};
@@ -28,6 +30,8 @@ struct SettingData
 		this->is_dbg_mode = other.is_dbg_mode;
 		this->enable_gpu_monitor = other.enable_gpu_monitor;
 		this->enable_cpu_monitor = other.enable_cpu_monitor;
+		this->default_value_unit_space = other.default_value_unit_space;
+		this->default_adaptive_decimal_places = other.default_adaptive_decimal_places;
 
 		// Copy CString members using StrCpyNW
 		StrCpyNW(this->pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN),

@@ -79,7 +79,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CLRSupport>true</CLRSupport>
-    <SpectreMitigation>SpectreLoadCF</SpectreMitigation>
+    <SpectreMitigation>Spectre</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -107,7 +107,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CLRSupport>true</CLRSupport>
-    <SpectreMitigation>SpectreLoadCF</SpectreMitigation>
+    <SpectreMitigation>Spectre</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -313,7 +313,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <CompileAsManaged>true</CompileAsManaged>
+      <CompileAsManaged>false</CompileAsManaged>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
@@ -410,7 +410,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <CompileAsManaged>true</CompileAsManaged>
+      <CompileAsManaged>false</CompileAsManaged>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
@@ -527,6 +527,7 @@
   <ItemGroup>
     <Reference Include="LibreHardwareMonitorLib">
       <HintPath>lib\LibreHardwareMonitorLib.dll</HintPath>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

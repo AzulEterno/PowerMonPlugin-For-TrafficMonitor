@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "LibreHWMonInterOp.h" 
 
-
+#if WINRT_USE_FLAG
 namespace InterOpLibreHWMon {
 	void PowerSensorUpdateVisitor::VisitComputer(IComputer^ computer)
 	{
@@ -70,3 +70,4 @@ namespace InterOpLibreHWMon {
 		return sensor.GetSensorType() == SensorTypeCopy::Power;
 	};
 }
+#endif

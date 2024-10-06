@@ -98,7 +98,7 @@ const wchar_t* BatteryCapacityMonItem::GetItemValueText() const
 		if (_lpBatteryInfoHandler->has_battery()) {
 
 			auto value = _lpBatteryInfoHandler->GetBatteryCapacity();
-			//FormatFloatValue(out_val_text, PrintValueBuffer, value, L"Wh");
+			//CFPRT_FormatRealValue(out_val_text, PrintValueBuffer, value, L"Wh");
 
 			_lpFormatHandler->FormatEnergyWattsHourStringFromMili(out_val_text,
 				PrintValueBuffer, value);

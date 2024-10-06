@@ -30,10 +30,13 @@ PowerMon::PowerMon()
 	b_cap_m_item.SetDataSource(&_vusf, &_bih);
 	b_volt_m_item.SetDataSource(&_vusf, &_bih);
 	b_time_m_item.SetDataSource(&_vusf, &_bih);
+
+#if WINRT_USE_FLAG
 	sm_m_item.SetDataSource(&_vusf, &_bih, &_hwpdp);
 
 	cpu_m_item.SetDataSource(&_vusf, &_hwpdp);
 	gpu_m_item.SetDataSource(&_vusf, &_hwpdp);
+#endif
 
 }
 
@@ -46,23 +49,26 @@ IPluginItem* PowerMon::GetItem(int index)
 {
 	switch (index)
 	{
-	case 1:
-		return &sm_m_item;
+		//Battery Status section
 	case 0:
 		return &bp_m_item;
-	case 5:
-		return &b_percentage_m_item;
-	case 2:
+	case 1:
 		return &b_cap_m_item;
-	case 3:
+	case 2:
 		return &b_volt_m_item;
-	case 4:
+	case 3:
 		return &b_time_m_item;
-
+	case 4:
+		return &b_percentage_m_item;
+#if WINRT_USE_FLAG
+		//Hardware aware section.
+	case 5:
+		return &sm_m_item;
 	case 6:
 		return &cpu_m_item;
 	case 7:
 		return &gpu_m_item;
+#endif
 	default:
 		break;
 	}
@@ -108,9 +114,10 @@ void PowerMon::DataRequired()
 	std::wstring hw_mon_power_str = L"";
 
 	if (g_data.m_setting_data.enable_cpu_monitor || g_data.m_setting_data.enable_gpu_monitor) {
+#if WINRT_USE_FLAG
 		updateBatteryInfoResult = _hwpdp.CallUpdateInfo();
 		hw_mon_power_str = _hwpdp.GetPowerSummaryStr(_vusf);
-
+#endif
 	}
 
 	//Battery part ended.
@@ -163,11 +170,20 @@ std::wstring PowerMon::GetBatteryPowerToolTipString(int updatePwrStateResult, in
 		switch (updateBatteryInfoResult) {
 		case 0:
 		{
-			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_PERCENTAGE_HEADER).GetString() << _bih.GetSystemBatteryLifePercent() << " %" << std::endl;
-			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_POWER_HEADER).GetString() << ((_bih.GetBatteryStatusPowerRate() > 0) ? "+" : "") << _bih.GetBatteryStatusPowerRate() << " mW" << std::endl;
-			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_CAPACITY_HEADER).GetString() << _bih.GetBatteryCapacity() << " mWh" << std::endl;
-			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_VOLTAGE_HEADER).GetString() << _bih.GetBatteryStatusVoltage() << " mV" << std::endl;
+			//wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_PERCENTAGE_HEADER).GetString() << _bih.GetSystemBatteryLifePercent() << " %" << std::endl;
+			//wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_POWER_HEADER).GetString() << ((_bih.GetBatteryStatusPowerRate() > 0) ? "+" : "") << _bih.GetBatteryStatusPowerRate() << " mW" << std::endl;
+			//wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_CAPACITY_HEADER).GetString() << _bih.GetBatteryCapacity() << " mWh" << std::endl;
+			//wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_VOLTAGE_HEADER).GetString() << _bih.GetBatteryStatusVoltage() << " mV" << std::endl;
 			//m_tooltip_info = wss.str();
+
+			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_PERCENTAGE_HEADER).GetString() << _vusf.WSTR_FormatFloatValue(_bih.GetSystemBatteryLifePercent(),
+				L"%", nullptr, false, 0, 0) << std::endl;
+			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_POWER_HEADER).GetString() << _vusf.WSTR_FormatFloatValue(_bih.GetBatteryStatusPowerRate() / 1000.0,
+				_vusf.GetPowerUnitString(), nullptr, false, 0, 3) << std::endl;
+			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_CAPACITY_HEADER).GetString() << _vusf.WSTR_FormatFloatValue(_bih.GetBatteryCapacity() / 1000.0,
+				_vusf.GetPowerCapacityString(), nullptr, false, 0, 3) << std::endl;
+			wss << g_data.StringRes(IDS_DISCRIPTIVE_BATERY_VOLTAGE_HEADER).GetString() << _vusf.WSTR_FormatFloatValue(_bih.GetBatteryStatusVoltage() / 1000.0,
+				_vusf.GetVoltageString(), nullptr, false, 0, 3) << std::endl;
 
 
 
@@ -273,7 +289,9 @@ void PowerMon::sync_g_settings()
 	_bih.is_dbg = this->is_dbg;
 
 	_vusf.LoadFromSettings(g_data.m_setting_data);
+#if WINRT_USE_FLAG
 	_hwpdp.SyncFromSettingData(g_data.m_setting_data);
+#endif
 	// Assuming g_data.m_setting_data.pwr_unit_str is an ATL::CSimpleStringT<wchar_t, true>
 	//const wchar_t* constPwrUnitStr = g_data.m_setting_data.pwr_unit_str.GetString();
 	//size_t length = wcslen(constPwrUnitStr) + 1;

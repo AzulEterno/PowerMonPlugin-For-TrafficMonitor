@@ -4,7 +4,6 @@
 #include "BatteryInfoHandler.h"
 #include "DataManager.h"
 #include "ValueUnitStringFormatter.h"
-#include "LibreHWMonInterOp.h"
 #pragma once
 class BatteryGrpMonBaseCLS : public IPluginItem {
 
@@ -102,7 +101,7 @@ public:
 		return L"BatteryPercentageMon";
 	};
 	virtual const wchar_t* GetItemLableText() const override {
-		return  g_data.StringRes(IDS_BATTERY);
+		return  g_data.StringRes(IDS_BATTERY_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
 	virtual const wchar_t* GetItemValueSampleText() const override;
