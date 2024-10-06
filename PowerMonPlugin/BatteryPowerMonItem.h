@@ -59,6 +59,13 @@ public:
 		return 0;
 	};
 
+	virtual const wchar_t* GetItemValueSampleText() const override
+	{
+		return GetItemValueText();
+	}
+
+
+
 };
 
 
@@ -83,8 +90,13 @@ public:
 		return g_data.StringRes(IDS_POWER_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override;
-
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = true,
+		int maximal_adaptive_decimal_places = 2,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const;
 };
 
 class BatteryPercentageMonItem : public BatteryGrpMonBaseCLS
@@ -104,9 +116,14 @@ public:
 		return  g_data.StringRes(IDS_BATTERY_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override;
 
-
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = 0,
+		int fixed_decimal_places = 0,
+		int value_unit_space = -1
+	) const;
 
 
 };
@@ -129,11 +146,14 @@ public:
 		return  g_data.StringRes(IDS_BATTERY_CAPACITY_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override {
-		return GetItemValueText();
-	};
 
-
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = 2,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const;
 
 
 };
@@ -155,9 +175,14 @@ public:
 		return  g_data.StringRes(IDS_BATTERY_VOLTAGE_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override {
-		return GetItemValueText();
-	};
+
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = 2,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const;
 
 
 
@@ -181,9 +206,13 @@ public:
 		return  g_data.StringRes(IDS_BATTERY_TIME_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override {
-		return GetItemValueText();
-	};
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = 2,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const;
 
 
 

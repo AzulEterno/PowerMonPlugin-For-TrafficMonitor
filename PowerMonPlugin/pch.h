@@ -40,8 +40,8 @@
 //#include "collection.h"
 #include "PluginInterface.h"
 
-#ifndef PrintValueBuffer
-#define PrintValueBuffer 32
+#ifndef PrintValueStrBufferSize
+#define PrintValueStrBufferSize 32
 #endif
 
 #ifdef MAX_PATH

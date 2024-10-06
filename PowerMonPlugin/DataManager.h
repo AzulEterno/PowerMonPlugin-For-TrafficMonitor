@@ -13,12 +13,13 @@ struct SettingData
 	bool enable_gpu_monitor = false;
 	bool enable_cpu_monitor = false;
 	INT64 default_value_unit_space = 1;
-	INT64 default_adaptive_decimal_places = 2;
+	INT64 default_max_adaptive_decimal_places = 2;
 	CString pwr_unit_str{};
 	CString electric_capacity_unit_str{};
 	CString electric_voltage_unit_str{};
 	CString hour_unit_str{};
 	CString minute_unit_str{};
+	CString nan_str{};
 	// Assignment operator
 	SettingData& operator=(const SettingData& other) {
 		if (this == &other) {
@@ -31,7 +32,7 @@ struct SettingData
 		this->enable_gpu_monitor = other.enable_gpu_monitor;
 		this->enable_cpu_monitor = other.enable_cpu_monitor;
 		this->default_value_unit_space = other.default_value_unit_space;
-		this->default_adaptive_decimal_places = other.default_adaptive_decimal_places;
+		this->default_max_adaptive_decimal_places = other.default_max_adaptive_decimal_places;
 
 		// Copy CString members using StrCpyNW
 		StrCpyNW(this->pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN),
@@ -44,6 +45,8 @@ struct SettingData
 			other.hour_unit_str.GetString(), UNIT_STR_MAXLEN);
 		StrCpyNW(this->minute_unit_str.GetBuffer(UNIT_STR_MAXLEN),
 			other.minute_unit_str.GetString(), UNIT_STR_MAXLEN);
+		StrCpyNW(this->nan_str.GetBuffer(UNIT_STR_MAXLEN),
+			other.nan_str.GetString(), UNIT_STR_MAXLEN);
 
 		// Release the buffers
 		this->pwr_unit_str.ReleaseBuffer();
@@ -51,6 +54,7 @@ struct SettingData
 		this->electric_voltage_unit_str.ReleaseBuffer();
 		this->hour_unit_str.ReleaseBuffer();
 		this->minute_unit_str.ReleaseBuffer();
+		this->nan_str.ReleaseBuffer();
 
 		return *this;
 	}

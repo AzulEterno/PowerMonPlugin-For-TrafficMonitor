@@ -39,6 +39,7 @@
 #define IDS_PLUGIN_CPU_POWER_METER_ITEM_NAME 129
 #define IDS_PLUGIN_GPU_POWER_METER_ITEM_NAME 130
 #define IDS_BATTERY_DISPLAY_LABEL       131
+#define IDS_DISCRIPTIVE_BATERY_TIME_HEADER 132
 #define IDC_CHECKBOX_DBGMODE            1001
 #define IDC_BUTTON_BTRDRIVER            1003
 #define IDC_Change_Unit_String          1005
@@ -47,6 +48,7 @@
 #define IDC_PWR_UNIT_STR_INPUT          1008
 #define IDC_Change_Unit_String4         1009
 #define IDC_Change_Unit_String5         1010
+#define IDC_Change_Unit_String6         1011
 #define IDC_TAB_MAIN                    1014
 #define IDC_BUTTON_REPO_URL             1016
 #define IDC_DEBUG_MODE_SWITCH           1017
@@ -56,6 +58,8 @@
 #define IDC_UNIT_STRING_GRP             1022
 #define IDC_HOUR_UNIT_STR_INPUT         1023
 #define IDC_MINUTE_UNIT_STR_INPUT       1024
+#define IDC_MINUTE_UNIT_STR_INPUT2      1025
+#define IDC_NAN_STR_INPUT               1025
 #define IDC_SENSOR_TREE                 1026
 #define IDC_CHECK_ENABLE_CPU_MON        1027
 #define IDC_CHECK_ENABLE_GPU_MON        1028

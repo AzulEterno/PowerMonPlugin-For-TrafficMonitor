@@ -57,7 +57,7 @@ protected:
 
 	//bool is_relative_battery_rate = false;
 
-	BatteryPowerMonItem bp_m_item;
+	BatteryPowerMonItem b_power_m_item;
 	BatteryPercentageMonItem b_percentage_m_item;
 	BatteryCapacityMonItem b_cap_m_item;
 	BatteryVoltageMonItem b_volt_m_item;

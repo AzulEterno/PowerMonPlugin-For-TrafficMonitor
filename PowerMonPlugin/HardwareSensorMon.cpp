@@ -6,7 +6,7 @@
 const wchar_t* SmartPowerMeterMonItem::GetItemValueText() const
 {
 
-	static wchar_t out_val_text[PrintValueBuffer];
+	static wchar_t out_val_text[PrintValueStrBufferSize] = L"";
 
 	if (!ReadyToPrint()) {
 		swprintf_s(out_val_text, g_data.StringRes(IDS_NO_DATA_SOURCE));
@@ -18,7 +18,7 @@ const wchar_t* SmartPowerMeterMonItem::GetItemValueText() const
 
 			_lpFormatHandler->FormatPowerWattsStringFromMili(
 				out_val_text,
-				PrintValueBuffer,
+				PrintValueStrBufferSize,
 				_lpBatteryInfoHandler->GetBatteryStatusPowerRate());
 
 		}
@@ -26,7 +26,7 @@ const wchar_t* SmartPowerMeterMonItem::GetItemValueText() const
 			float pwr_val = _lpHWSensorDP->GetSmartCaculatePowerMeter();
 			_lpFormatHandler->FormatPowerWattsString(
 				out_val_text,
-				PrintValueBuffer,
+				PrintValueStrBufferSize,
 				pwr_val, L"Invaild", false);
 		}
 	}
@@ -35,7 +35,7 @@ const wchar_t* SmartPowerMeterMonItem::GetItemValueText() const
 
 const wchar_t* CPUPowerMonItem::GetItemValueText() const
 {
-	static wchar_t out_val_text[PrintValueBuffer];
+	static wchar_t out_val_text[PrintValueStrBufferSize] = L"";
 
 	if (!ReadyToPrint()) {
 		swprintf_s(out_val_text, g_data.StringRes(IDS_NO_DATA_SOURCE));
@@ -45,7 +45,7 @@ const wchar_t* CPUPowerMonItem::GetItemValueText() const
 		float pwr_val = _lpHWSensorDP->GetCPUTotalPower();
 		_lpFormatHandler->FormatPowerWattsString(
 			out_val_text,
-			PrintValueBuffer,
+			PrintValueStrBufferSize,
 			pwr_val, L"Invaild", false);
 	}
 	return out_val_text;
@@ -53,7 +53,7 @@ const wchar_t* CPUPowerMonItem::GetItemValueText() const
 
 const wchar_t* GPUPowerMonItem::GetItemValueText() const
 {
-	static wchar_t out_val_text[PrintValueBuffer];
+	static wchar_t out_val_text[PrintValueStrBufferSize] = L"";
 
 	if (!ReadyToPrint()) {
 		swprintf_s(out_val_text, g_data.StringRes(IDS_NO_DATA_SOURCE));
@@ -63,7 +63,7 @@ const wchar_t* GPUPowerMonItem::GetItemValueText() const
 		float pwr_val = _lpHWSensorDP->GetGPUTotalPower();
 		_lpFormatHandler->FormatPowerWattsString(
 			out_val_text,
-			PrintValueBuffer,
+			PrintValueStrBufferSize,
 			pwr_val, L"Invaild", false);
 	}
 	return out_val_text;
