@@ -47,7 +47,7 @@ public:
 		const wchar_t* unit_str,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
@@ -114,7 +114,7 @@ public:
 		const wchar_t* unit_str,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
@@ -141,7 +141,7 @@ public:
 		double value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = true,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
@@ -157,7 +157,7 @@ public:
 		double mili_watts_value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = true,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
@@ -171,7 +171,7 @@ public:
 		double watts_value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = true,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
@@ -185,7 +185,7 @@ public:
 		int value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {

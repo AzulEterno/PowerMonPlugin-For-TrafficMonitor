@@ -24,7 +24,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedButtonRefreshCpuSensor();
 
 	afx_msg void OnTvnSelchangedSensorTree(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnBnClickedButtonRefreshHwSensors();
 };

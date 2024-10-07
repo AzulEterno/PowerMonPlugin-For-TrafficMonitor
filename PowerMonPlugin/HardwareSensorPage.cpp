@@ -28,9 +28,9 @@ void HardwareSensorPage::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(HardwareSensorPage, CDialogEx)
-	ON_BN_CLICKED(IDC_BUTTON_REFRESH_CPU_SENSOR, &HardwareSensorPage::OnBnClickedButtonRefreshCpuSensor)
 
-	ON_NOTIFY(TVN_SELCHANGED, IDC_SENSOR_TREE, &HardwareSensorPage::OnTvnSelchangedSensorTree)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_SENSOR, &HardwareSensorPage::OnTvnSelchangedSensorTree)
+	ON_BN_CLICKED(IDC_BUTTON_REFRESH_HW_SENSORS, &HardwareSensorPage::OnBnClickedButtonRefreshHwSensors)
 END_MESSAGE_MAP()
 
 
@@ -41,7 +41,7 @@ void HardwareSensorPage::SyncTreeViewContent() {
 
 	auto& datasrc = PowerMon::Instance().GetHWPowerSensorDataProvider();
 
-	auto m_TreeCtrl = (CTreeCtrl*)this->GetDlgItem(IDC_SENSOR_TREE);
+	auto m_TreeCtrl = (CTreeCtrl*)this->GetDlgItem(IDC_TREE_SENSOR);
 	if (!m_TreeCtrl) {
 		return;
 	}
@@ -75,7 +75,7 @@ void HardwareSensorPage::SyncTreeViewContent() {
 				sensor_iter++) {
 				auto& sensor = sensor_iter->second;
 				std::wstringstream wss;
-				wss << sensor.GetName() << ": " << sensor.GetValue() << GetSensorTypeUnitString(sensor.GetSensorType());
+				wss << sensor.GetName() << L": " << sensor.GetValue() << GetSensorTypeUnitString(sensor.GetSensorType());
 
 				HTREEITEM cpu_sensor_node = m_TreeCtrl->InsertItem(
 					wss.str().c_str(), cpu_instance_node);
@@ -102,7 +102,7 @@ void HardwareSensorPage::SyncTreeViewContent() {
 				sensor_iter++) {
 				auto& sensor = sensor_iter->second;
 				std::wstringstream wss;
-				wss << sensor.GetName() << ": " << sensor.GetValue() << GetSensorTypeUnitString(sensor.GetSensorType());
+				wss << sensor.GetName() << L": " << sensor.GetValue() << GetSensorTypeUnitString(sensor.GetSensorType());
 
 				HTREEITEM gpu_sensor_node = m_TreeCtrl->InsertItem(
 					wss.str().c_str(), gpu_instance_node);
@@ -112,15 +112,11 @@ void HardwareSensorPage::SyncTreeViewContent() {
 		//delete& gpu_iterator;
 
 	}
-	return;
 #endif
+	return;
+
 }
 
-void HardwareSensorPage::OnBnClickedButtonRefreshCpuSensor()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	SyncTreeViewContent();
-}
 
 
 
@@ -129,4 +125,13 @@ void HardwareSensorPage::OnTvnSelchangedSensorTree(NMHDR* pNMHDR, LRESULT* pResu
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
+}
+
+
+
+void HardwareSensorPage::OnBnClickedButtonRefreshHwSensors()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	SyncTreeViewContent();
 }

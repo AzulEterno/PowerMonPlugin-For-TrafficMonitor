@@ -46,24 +46,30 @@
 #define IDC_Change_Unit_String2         1006
 #define IDC_Change_Unit_String3         1007
 #define IDC_PWR_UNIT_STR_INPUT          1008
+#define IDC_INPUT_PWR_UNIT_STR          1008
 #define IDC_Change_Unit_String4         1009
 #define IDC_Change_Unit_String5         1010
 #define IDC_Change_Unit_String6         1011
+#define IDC_Change_Unit_String7         1012
+#define IDC_Change_Unit_String8         1013
 #define IDC_TAB_MAIN                    1014
 #define IDC_BUTTON_REPO_URL             1016
-#define IDC_DEBUG_MODE_SWITCH           1017
+#define IDC_CHECK_DEBUG_MODE            1017
 #define IDC_TEXT_DESCRIPTION            1018
-#define IDC_WH_UNIT_STR_INPUT           1020
-#define IDC_VOLT_UNIT_STR_INPUT         1021
+#define IDC_INPUT_WH_UNIT_STR           1020
+#define IDC_INPUT_VOLT_UNIT_STR         1021
 #define IDC_UNIT_STRING_GRP             1022
-#define IDC_HOUR_UNIT_STR_INPUT         1023
-#define IDC_MINUTE_UNIT_STR_INPUT       1024
-#define IDC_MINUTE_UNIT_STR_INPUT2      1025
-#define IDC_NAN_STR_INPUT               1025
-#define IDC_SENSOR_TREE                 1026
-#define IDC_CHECK_ENABLE_CPU_MON        1027
-#define IDC_CHECK_ENABLE_GPU_MON        1028
-#define IDC_BUTTON_REFRESH_CPU_SENSOR   1029
+#define IDC_INPUT_HOUR_UNIT_STR         1023
+#define IDC_INPUT_MINUTE_UNIT_STR       1024
+#define IDC_INPUT_NAN_STR               1025
+#define IDC_UNIT_LEN_GRP                1026
+#define IDC_TREE_SENSOR                 1027
+#define IDC_CHECK_ENABLE_CPU_MON        1028
+#define IDC_INPUT_SPACING_SIZE          1029
+#define IDC_CHECK_ENABLE_GPU_MON        1030
+#define IDC_INPUT_DISPLAY_MAX_DECI_PLACES 1031
+#define IDC_BUTTON_REFRESH_HW_INFO      1032
+#define IDC_BUTTON_REFRESH_HW_SENSORS   1033
 
 // Next default values for new objects
 // 
@@ -71,7 +77,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        113
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1031
+#define _APS_NEXT_CONTROL_VALUE         1034
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif

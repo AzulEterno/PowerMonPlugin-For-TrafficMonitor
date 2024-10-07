@@ -51,12 +51,14 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 
 	//TODO: 在此添加载入配置的代码
 	{
-		m_setting_data.settings_altered_counter = (GetPrivateProfileInt(L"config", L"settings_altered_counter", 0, m_config_path.c_str()) != 0);
+		m_setting_data.settings_altered_counter = GetPrivateProfileInt(L"config", L"settings_altered_counter", 0, m_config_path.c_str());
 		m_setting_data.is_dbg_mode = (GetPrivateProfileInt(L"config", L"is_dbg_mode", 0, m_config_path.c_str()) != 0);
 		m_setting_data.enable_cpu_monitor = (GetPrivateProfileInt(L"config", L"enable_cpu_monitor", 0, m_config_path.c_str()) != 0);
 		m_setting_data.enable_gpu_monitor = (GetPrivateProfileInt(L"config", L"enable_gpu_monitor", 0, m_config_path.c_str()) != 0);
-		m_setting_data.default_value_unit_space = (GetPrivateProfileInt(L"config", L"default_value_unit_space", 1, m_config_path.c_str()) != 0);
-		m_setting_data.default_max_adaptive_decimal_places = (GetPrivateProfileInt(L"config", L"default_max_adaptive_decimal_places", 2, m_config_path.c_str()) != 0);
+		m_setting_data.default_value_unit_space = GetPrivateProfileInt(L"config", L"default_value_unit_space",
+			1, m_config_path.c_str());
+		m_setting_data.default_max_adaptive_decimal_places = GetPrivateProfileInt(L"config",
+			L"default_max_adaptive_decimal_places", 2, m_config_path.c_str());
 
 		::GetPrivateProfileString(L"config", L"pwr_unit_str", L"",
 			m_setting_data.pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),

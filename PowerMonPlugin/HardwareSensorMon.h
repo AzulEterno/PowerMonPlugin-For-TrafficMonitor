@@ -56,6 +56,10 @@ public:
 	int OnMouseEvent(MouseEventType type, int x, int y, void* hWnd, int flag) {
 		return 0;
 	};
+
+	virtual const wchar_t* GetItemValueSampleText() const override {
+		return GetItemValueText();
+	};
 };
 
 class CPUPowerMonItem :public HardwareSensorMonBase {
@@ -73,9 +77,15 @@ public:
 		return  g_data.StringRes(IDS_POWER_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override {
-		return GetItemValueText();
-	};
+
+
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = -1,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const;
 };
 
 
@@ -94,9 +104,13 @@ public:
 		return  g_data.StringRes(IDS_POWER_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override {
-		return GetItemValueText();
-	};
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = -1,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const;
 };
 
 
@@ -137,9 +151,13 @@ public:
 		return  g_data.StringRes(IDS_POWER_DISPLAY_LABEL);
 	};
 	virtual const wchar_t* GetItemValueText() const override;
-	virtual const wchar_t* GetItemValueSampleText() const override {
-		return GetItemValueText();
-	};
+	const wchar_t* DetailFormatItemValueText(
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = -1,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const;
 
 };
 

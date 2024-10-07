@@ -104,26 +104,47 @@ BOOL COptionsDlg::OnInitDialog()
 int COptionsDlg::SyncWidgetWithSettingData() {
 
 	//CheckDlgButton(IDC_CHECKBOX_DBGMODE, m_data.is_dbg_mode);
-	//SetDlgItemText(IDC_PWR_UNIT_STR_INPUT, m_data.pwr_unit_str.GetString());
-	unit_string_page.SetDlgItemText(IDC_PWR_UNIT_STR_INPUT, m_data.pwr_unit_str.GetString());
-	unit_string_page.SetDlgItemText(IDC_WH_UNIT_STR_INPUT, m_data.electric_capacity_unit_str.GetString());
-	unit_string_page.SetDlgItemText(IDC_VOLT_UNIT_STR_INPUT, m_data.electric_voltage_unit_str.GetString());
+	//SetDlgItemText(IDC_INPUT_PWR_UNIT_STR, m_data.pwr_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_INPUT_PWR_UNIT_STR, m_data.pwr_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_INPUT_WH_UNIT_STR, m_data.electric_capacity_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_INPUT_VOLT_UNIT_STR, m_data.electric_voltage_unit_str.GetString());
 
-	unit_string_page.SetDlgItemText(IDC_HOUR_UNIT_STR_INPUT, m_data.hour_unit_str.GetString());
-	unit_string_page.SetDlgItemText(IDC_MINUTE_UNIT_STR_INPUT, m_data.minute_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_INPUT_HOUR_UNIT_STR, m_data.hour_unit_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_INPUT_MINUTE_UNIT_STR, m_data.minute_unit_str.GetString());
 
-	unit_string_page.SetDlgItemText(IDC_NAN_STR_INPUT, m_data.nan_str.GetString());
+	unit_string_page.SetDlgItemText(IDC_INPUT_NAN_STR, m_data.nan_str.GetString());
 
-	info_page.CheckDlgButton(IDC_DEBUG_MODE_SWITCH, m_data.is_dbg_mode);
+
+
+
+
+	info_page.CheckDlgButton(IDC_CHECK_DEBUG_MODE, m_data.is_dbg_mode);
 	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_CPU_MON, m_data.enable_cpu_monitor);
 	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_GPU_MON, m_data.enable_gpu_monitor);
+
+	unit_string_page.SetDlgItemInt(IDC_INPUT_SPACING_SIZE, m_data.default_value_unit_space, FALSE);
+	unit_string_page.SetDlgItemInt(IDC_INPUT_DISPLAY_MAX_DECI_PLACES, m_data.default_max_adaptive_decimal_places, FALSE);
+
 	return 0;
 }
 
 
 int COptionsDlg::SyncSettingDataWithWidget() {
 
-	m_data.is_dbg_mode = (bool)info_page.IsDlgButtonChecked(IDC_DEBUG_MODE_SWITCH);
+	m_data.is_dbg_mode = (bool)info_page.IsDlgButtonChecked(IDC_CHECK_DEBUG_MODE);
+
+	BOOL bTranslated = FALSE;
+	m_data.default_value_unit_space = unit_string_page.GetDlgItemInt(IDC_INPUT_SPACING_SIZE, &bTranslated, FALSE);
+
+	if (!bTranslated) {
+		m_data.default_value_unit_space = 1;
+	}
+	bTranslated = FALSE;
+	m_data.default_max_adaptive_decimal_places = unit_string_page.GetDlgItemInt(IDC_INPUT_DISPLAY_MAX_DECI_PLACES, &bTranslated, FALSE);
+
+	if (!bTranslated) {
+		m_data.default_max_adaptive_decimal_places = 2;
+	}
 
 
 #if WINRT_USE_FLAG
@@ -146,33 +167,31 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 		}
 
 	}
-
-
 #endif
 	wchar_t unit_str_temp_store[UNIT_STR_MAXLEN + 1] = L"";
 
 	//PWR Unit
-	unit_string_page.GetDlgItemText(IDC_PWR_UNIT_STR_INPUT, unit_str_temp_store, UNIT_STR_MAXLEN);
+	unit_string_page.GetDlgItemText(IDC_INPUT_PWR_UNIT_STR, unit_str_temp_store, UNIT_STR_MAXLEN);
 	StrCpyNW(m_data.pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
 		unit_str_temp_store, UNIT_STR_MAXLEN);
 
-	unit_string_page.GetDlgItemText(IDC_WH_UNIT_STR_INPUT, unit_str_temp_store, UNIT_STR_MAXLEN);
+	unit_string_page.GetDlgItemText(IDC_INPUT_WH_UNIT_STR, unit_str_temp_store, UNIT_STR_MAXLEN);
 	StrCpyNW(m_data.electric_capacity_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
 		unit_str_temp_store, UNIT_STR_MAXLEN);
 
-	unit_string_page.GetDlgItemText(IDC_VOLT_UNIT_STR_INPUT, unit_str_temp_store, UNIT_STR_MAXLEN);
+	unit_string_page.GetDlgItemText(IDC_INPUT_VOLT_UNIT_STR, unit_str_temp_store, UNIT_STR_MAXLEN);
 	StrCpyNW(m_data.electric_voltage_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
 		unit_str_temp_store, UNIT_STR_MAXLEN);
 
-	unit_string_page.GetDlgItemText(IDC_HOUR_UNIT_STR_INPUT, unit_str_temp_store, UNIT_STR_MAXLEN);
+	unit_string_page.GetDlgItemText(IDC_INPUT_HOUR_UNIT_STR, unit_str_temp_store, UNIT_STR_MAXLEN);
 	StrCpyNW(m_data.hour_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
 		unit_str_temp_store, UNIT_STR_MAXLEN);
 
-	unit_string_page.GetDlgItemText(IDC_MINUTE_UNIT_STR_INPUT, unit_str_temp_store, UNIT_STR_MAXLEN);
+	unit_string_page.GetDlgItemText(IDC_INPUT_MINUTE_UNIT_STR, unit_str_temp_store, UNIT_STR_MAXLEN);
 	StrCpyNW(m_data.minute_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
 		unit_str_temp_store, UNIT_STR_MAXLEN);
 
-	unit_string_page.GetDlgItemText(IDC_NAN_STR_INPUT, unit_str_temp_store, UNIT_STR_MAXLEN);
+	unit_string_page.GetDlgItemText(IDC_INPUT_NAN_STR, unit_str_temp_store, UNIT_STR_MAXLEN);
 	StrCpyNW(m_data.nan_str.GetBuffer(UNIT_STR_MAXLEN + 1),
 		unit_str_temp_store, UNIT_STR_MAXLEN);
 

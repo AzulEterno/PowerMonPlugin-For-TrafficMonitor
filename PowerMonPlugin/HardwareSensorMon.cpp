@@ -3,9 +3,15 @@
 
 
 #if WINRT_USE_FLAG
+
 const wchar_t* SmartPowerMeterMonItem::GetItemValueText() const
 {
+	return DetailFormatItemValueText();
 
+}
+
+const wchar_t* SmartPowerMeterMonItem::DetailFormatItemValueText(const wchar_t* zero_value_alternative, bool force_sign, int maximal_adaptive_decimal_places, int fixed_decimal_places, int value_unit_space) const
+{
 	static wchar_t out_val_text[PrintValueStrBufferSize] = L"";
 
 	if (!ReadyToPrint()) {
@@ -19,21 +25,30 @@ const wchar_t* SmartPowerMeterMonItem::GetItemValueText() const
 			_lpFormatHandler->FormatPowerWattsStringFromMili(
 				out_val_text,
 				PrintValueStrBufferSize,
-				_lpBatteryInfoHandler->GetBatteryStatusPowerRate());
+				_lpBatteryInfoHandler->GetBatteryStatusPowerRate(),
+				zero_value_alternative, force_sign, maximal_adaptive_decimal_places,
+				fixed_decimal_places, value_unit_space
+			);
 
 		}
 		else {
-			float pwr_val = _lpHWSensorDP->GetSmartCaculatePowerMeter();
+			auto pwr_val = _lpHWSensorDP->GetSmartCaculatePowerMeter();
 			_lpFormatHandler->FormatPowerWattsString(
 				out_val_text,
 				PrintValueStrBufferSize,
-				pwr_val, L"Invaild", false);
+				pwr_val, zero_value_alternative, force_sign, maximal_adaptive_decimal_places,
+				fixed_decimal_places, value_unit_space);
 		}
 	}
 	return out_val_text;
 }
 
 const wchar_t* CPUPowerMonItem::GetItemValueText() const
+{
+	return DetailFormatItemValueText();
+}
+
+const wchar_t* CPUPowerMonItem::DetailFormatItemValueText(const wchar_t* zero_value_alternative, bool force_sign, int maximal_adaptive_decimal_places, int fixed_decimal_places, int value_unit_space) const
 {
 	static wchar_t out_val_text[PrintValueStrBufferSize] = L"";
 
@@ -46,12 +61,18 @@ const wchar_t* CPUPowerMonItem::GetItemValueText() const
 		_lpFormatHandler->FormatPowerWattsString(
 			out_val_text,
 			PrintValueStrBufferSize,
-			pwr_val, L"Invaild", false);
+			pwr_val, (zero_value_alternative == nullptr) ? _lpFormatHandler->GetNaNString() : zero_value_alternative, force_sign, maximal_adaptive_decimal_places,
+			fixed_decimal_places, value_unit_space);
 	}
 	return out_val_text;
 }
 
 const wchar_t* GPUPowerMonItem::GetItemValueText() const
+{
+	return DetailFormatItemValueText();
+}
+
+const wchar_t* GPUPowerMonItem::DetailFormatItemValueText(const wchar_t* zero_value_alternative, bool force_sign, int maximal_adaptive_decimal_places, int fixed_decimal_places, int value_unit_space) const
 {
 	static wchar_t out_val_text[PrintValueStrBufferSize] = L"";
 
@@ -64,7 +85,8 @@ const wchar_t* GPUPowerMonItem::GetItemValueText() const
 		_lpFormatHandler->FormatPowerWattsString(
 			out_val_text,
 			PrintValueStrBufferSize,
-			pwr_val, L"Invaild", false);
+			pwr_val, (zero_value_alternative == nullptr) ? _lpFormatHandler->GetNaNString() : zero_value_alternative, force_sign, maximal_adaptive_decimal_places,
+			fixed_decimal_places, value_unit_space);
 	}
 	return out_val_text;
 }

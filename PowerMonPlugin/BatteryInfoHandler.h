@@ -358,21 +358,21 @@ public:
 		return -1;
 	};
 	void ReleaseResources() {
-		std::wstringstream wss;
+		//std::wstringstream wss;
 
 		if (_h_Battery != INVALID_HANDLE_VALUE) {
 			CloseHandle(_h_Battery);
 			_h_Battery = INVALID_HANDLE_VALUE;
 
-			wss << "hBattery closed." << std::hex << (void*)_h_Battery << std::endl;
+			//wss << "hBattery closed." << std::hex << (void*)_h_Battery << std::endl;
 		}
 		if (_pdidd != nullptr) {
 			LocalFree(_pdidd);
 			_pdidd = nullptr;
-			wss << "pdidd freed." << std::hex << (void*)_pdidd << std::endl;
+			//wss << "pdidd freed." << std::hex << (void*)_pdidd << std::endl;
 		}
-		if (is_dbg)
-			MessageBox(NULL, wss.str().c_str(), L"Battery Driver Block Reset Info", MB_OK);
+		//if (is_dbg)
+		//	MessageBox(NULL, wss.str().c_str(), L"Battery Driver Block Reset Info", MB_OK);
 
 	};
 

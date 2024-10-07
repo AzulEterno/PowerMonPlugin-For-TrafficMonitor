@@ -93,7 +93,7 @@ public:
 	const wchar_t* DetailFormatItemValueText(
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = true,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const;
@@ -150,7 +150,7 @@ public:
 	const wchar_t* DetailFormatItemValueText(
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const;
@@ -179,7 +179,7 @@ public:
 	const wchar_t* DetailFormatItemValueText(
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const;
@@ -209,7 +209,7 @@ public:
 	const wchar_t* DetailFormatItemValueText(
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = 2,
+		int maximal_adaptive_decimal_places = -1,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const;
