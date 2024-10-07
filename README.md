@@ -24,7 +24,6 @@
 > 因为我也需要用。  
 > 因为WinRT运行时和ARM64EC或原生不兼容，所以请ARM64用户暂时使用X64版本
 > 请拷贝LibreHardwareMonitorLib.dll 替换原有的Traffic Monitor
-<<<<<<< HEAD
 >
 
 
@@ -36,3 +35,17 @@
 > Removed debug build.
 > Attempted bug fix for setting's persistance.
 > 
+
+2024-09-14
+> Fixed settings load caused internal sync failed.
+
+2024-10-07
+
+> Fixed string format issue.
+> Added multiple new functions.
+> Fixed battery time display, but futher improvements can be done.
+> Added battery in sensor tree object.
+> Recovered ARM64X compile config, but it's not been tested and does not have CPU and GPU monitor capibility. 
+> Added digi length control.
+> Added spacing control.
+
