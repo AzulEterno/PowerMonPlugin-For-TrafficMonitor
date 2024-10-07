@@ -38,6 +38,10 @@ public:
 	void sync_g_settings();
 
 	~PowerMon();
+	ValueUnitStringFormatter& GetValueUnitStringFormatter() {
+		return _vusf;
+	}
+
 
 	BatteryInfoHandler& GetBatteryInfoProvider() {
 		return _bih;

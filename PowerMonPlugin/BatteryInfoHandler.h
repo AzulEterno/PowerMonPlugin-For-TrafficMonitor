@@ -81,11 +81,17 @@ public:
 		return _sys_pwr_state.SystemStatusFlag;
 	}
 
-	DWORD GetBatteryLifeTime() const {
+	INT64 GetBatteryLifeTime() const {
+		if (_sys_pwr_state.BatteryLifeTime == MAX_UINT32) {
+			return -1;
+		}
 		return _sys_pwr_state.BatteryLifeTime;
 	}
 
-	DWORD GetBatteryFullLifeTime() const {
+	INT64 GetBatteryFullLifeTime() const {
+		if (_sys_pwr_state.BatteryFullLifeTime == MAX_UINT32) {
+			return -1;
+		}
 		return _sys_pwr_state.BatteryFullLifeTime;
 	}
 

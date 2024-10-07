@@ -44,6 +44,8 @@
 #define PrintValueStrBufferSize 32
 #endif
 
+#define MAX_UINT32 4294967295U
+
 #ifdef MAX_PATH
 #undef MAX_PATH
 #define MAX_PATH 32767

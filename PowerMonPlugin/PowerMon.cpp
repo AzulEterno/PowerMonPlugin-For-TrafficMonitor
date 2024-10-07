@@ -90,7 +90,7 @@ void PowerMon::DataRequired()
 
 	if (updatePwrStateResult && this->is_dbg) {
 		std::wstringstream wss;
-		wss << "Something went wrong when calling UpdateSystemPowerStatus:" << updatePwrStateResult << std::endl;
+		wss << L"Something went wrong when calling UpdateSystemPowerStatus:" << updatePwrStateResult << std::endl;
 		//		wss << g_data.StringRes(IDS_BATTERY_DRIVER_REBUILDING).GetString() << std::endl;
 		//m_tooltip_info = wss.str();
 
@@ -104,7 +104,7 @@ void PowerMon::DataRequired()
 
 	if (updateBatteryInfoResult && this->is_dbg) {
 		std::wstringstream wss;
-		wss << "Something went wrong when calling UpdateBatteryInfo:" << updateBatteryInfoResult << std::endl;
+		wss << L"Something went wrong when calling UpdateBatteryInfo:" << updateBatteryInfoResult << std::endl;
 		//		wss << g_data.StringRes(IDS_BATTERY_DRIVER_REBUILDING).GetString() << std::endl;
 		//m_tooltip_info = wss.str();
 
@@ -138,7 +138,7 @@ std::wstring PowerMon::GetBatteryPowerToolTipString(int updatePwrStateResult, in
 			break;
 		default:
 
-			wss << "UpdatePwrStateResultCode: " << updatePwrStateResult << std::endl;
+			wss << L"UpdatePwrStateResultCode: " << updatePwrStateResult << std::endl;
 		}
 		if (!updatePwrStateResult) {
 

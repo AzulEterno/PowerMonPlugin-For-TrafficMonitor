@@ -10,6 +10,8 @@
 
 std::wstring GenerateRepeatString(const std::wstring& str, const int& x);
 
+
+
 class ValueUnitStringFormatter
 {
 protected:
@@ -24,21 +26,67 @@ protected:
 
 public:
 
-	static int ConecateTwoStrWithRepeatedWord(
-		wchar_t* out_val_text,
-		int safe_length,
-		const wchar_t* first_str,
-		const wchar_t* second_str,
-		const int repeat_times = 1,
-		const wchar_t* interval_word = L" "
-	) {
-		//Pre-format string with space interval
-		swprintf_s(out_val_text, safe_length, L"%s%s%s", first_str,
-			GenerateRepeatString(interval_word, repeat_times).c_str(), second_str);
+	std::wstring FormatRealValue(
+		double value,
+		const wchar_t* unit_str,
+		const wchar_t* zero_value_alternative = nullptr,
+		bool force_sign = false,
+		int maximal_adaptive_decimal_places = -1,
+		int fixed_decimal_places = -1,
+		int value_unit_space = -1
+	) const {
+		if (value_unit_space < 0) {
+			value_unit_space = _default_value_unit_space;
+		}
 
-		return 0;
+		if (maximal_adaptive_decimal_places < 0) {
+
+			maximal_adaptive_decimal_places = max(_default_max_adaptive_decimal_places, 0);
+
+		}
+
+		std::wstringstream stream;
+
+		if (fixed_decimal_places < 0) {
+			int calculated_precision = maximal_adaptive_decimal_places;
+			if (std::fabs(value) >= 1) {
+				calculated_precision = maximal_adaptive_decimal_places - static_cast<int>(std::floor(std::log10(std::fabs(value))));
+			}
+
+			if (calculated_precision < 0) {
+				calculated_precision = 0;
+			}
+			stream.precision(calculated_precision);
+		}
+		else {
+			stream.precision(fixed_decimal_places);
+
+		}
+
+
+		stream << std::fixed;
+
+		if (std::fabs(value) < 1e-5) {
+			if (zero_value_alternative) {
+				stream << zero_value_alternative;
+			}
+			else {
+				stream << L"0" << std::wstring(value_unit_space, L' ') << unit_str;
+			}
+		}
+		else {
+			if (force_sign) {
+				stream << std::showpos;
+			}
+			stream << value;
+			if (value_unit_space > 0) {
+				stream << std::wstring(value_unit_space, L' ');
+			}
+			stream << unit_str;
+		}
+
+		return stream.str();
 	}
-
 
 	int CFPRT_FormatRealValue(
 		wchar_t* out_val_text,
@@ -51,90 +99,61 @@ public:
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
-		const wchar_t* format_str = nullptr;
+		if (false)
+		{
+			const wchar_t* format_str = nullptr;
 
-		if (value_unit_space < 0) {
-			value_unit_space = _default_value_unit_space;
-		}
-		const static int format_buffer_size = 24;
-		//static wchar_t value_unit_str_pre_format[extended_unit_size] = L"";
-		static wchar_t format_buffer[format_buffer_size] = L"",
-			formated_value_str[format_buffer_size] = L"";
+			if (value_unit_space < 0) {
+				value_unit_space = _default_value_unit_space;
+			}
+
+			if (fabs(value) < 1e-5) {
+				if (zero_value_alternative) {
+					swprintf_s(out_val_text, safe_length, L"%s", zero_value_alternative);
+				}
+				else {
+
+					swprintf_s(out_val_text, safe_length, L"0%s", unit_str);
+				}
+				return 0;
+			}
+
+			// Build format string based on decimal places and force_sign flag
+
+			int decimal_places = ((fixed_decimal_places < 0) ?
+				max(maximal_adaptive_decimal_places - floor(log10(fabs(value))), 0) : fixed_decimal_places);
+
+			const int format_buffer_size = 24, extended_unit_size = UNIT_STR_MAXLEN + 4;
+			static wchar_t value_unit_str_pre_format[extended_unit_size] = L"";
+			static wchar_t format_buffer[format_buffer_size] = L"";
+
+			//Pre-format string with space interval
+			swprintf_s(value_unit_str_pre_format, extended_unit_size, L"%s%s", GenerateRepeatString(L" ",
+				value_unit_space).c_str(), unit_str);
 
 
-
-		if (fabs(value) < 1e-5) {
-			if (zero_value_alternative) {
-				swprintf_s(out_val_text, safe_length, L"%s", zero_value_alternative);
+			if (force_sign) {
+				swprintf_s(format_buffer, format_buffer_size, L"%%+.%dlf%%s", decimal_places);
 			}
 			else {
-
-				//swprintf_s(out_val_text, safe_length, L"0%s", unit_str);
-
-				ConecateTwoStrWithRepeatedWord(out_val_text, safe_length, L"0", unit_str, value_unit_space);
+				swprintf_s(format_buffer, format_buffer_size, L"%%.%dlf%%s", decimal_places);
 			}
-			return 0;
-		}
-
-		if (maximal_adaptive_decimal_places < 0) {
-			maximal_adaptive_decimal_places = _default_max_adaptive_decimal_places;
-		}
-
-		// Build format string based on decimal places and force_sign flag
-
-		int decimal_places = ((fixed_decimal_places < 0) ?
-			max(maximal_adaptive_decimal_places - floor(log10(fabs(value))), 0) : fixed_decimal_places);
+			format_str = format_buffer;
 
 
 
-
-
-
-		if (force_sign) {
-			swprintf_s(format_buffer, format_buffer_size, L"%%+.%dlf", decimal_places);
+			//OutputDebugString(format_buffer);
+			// Format the output string
+			swprintf_s(out_val_text, safe_length, format_str, value, value_unit_str_pre_format);
 		}
 		else {
-			swprintf_s(format_buffer, format_buffer_size, L"%%.%dlf", decimal_places);
+
+			auto result = FormatRealValue(value, unit_str, zero_value_alternative,
+				force_sign, maximal_adaptive_decimal_places, fixed_decimal_places, value_unit_space);
+			swprintf_s(out_val_text, safe_length, L"%s", result.c_str());
 		}
-		format_str = format_buffer;
-
-
-
-		//OutputDebugString(format_buffer);
-		// Format the output string
-		swprintf_s(formated_value_str, safe_length, format_str, value);
-		ConecateTwoStrWithRepeatedWord(out_val_text, safe_length, formated_value_str, unit_str, value_unit_space);
-
 
 		return 0;
-	}
-
-	std::wstring WSTR_FormatFloatValue(
-		double value,
-		const wchar_t* unit_str,
-		const wchar_t* zero_value_alternative = nullptr,
-		bool force_sign = false,
-		int maximal_adaptive_decimal_places = -1,
-		int fixed_decimal_places = -1,
-		int value_unit_space = -1
-	) const {
-		const int max_safe_str_len = 1024;
-		static wchar_t _format_buffer[max_safe_str_len] = L"";
-
-		CFPRT_FormatRealValue(
-			_format_buffer,
-			max_safe_str_len,
-			value,
-			unit_str,
-			zero_value_alternative,
-			force_sign,
-			maximal_adaptive_decimal_places,
-			fixed_decimal_places,
-			value_unit_space
-		);
-
-		return std::wstring(_format_buffer);
-
 	}
 
 	int FormatPercentageString(wchar_t* out_val_text, int safe_length,
@@ -157,41 +176,41 @@ public:
 		double mili_watts_value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = true,
-		int maximal_adaptive_decimal_places = -1,
+		int maximal_adaptive_decimal_places = 2,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
 		return CFPRT_FormatRealValue(out_val_text, safe_length,
 			mili_watts_value / 1000.0f, GetPowerUnitString(), zero_value_alternative,
 			force_sign, maximal_adaptive_decimal_places,
-			fixed_decimal_places, value_unit_space);
+			fixed_decimal_places);
 
 	}
 	int FormatPowerWattsString(wchar_t* out_val_text, int safe_length,
 		double watts_value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = true,
-		int maximal_adaptive_decimal_places = -1,
+		int maximal_adaptive_decimal_places = 2,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
 		return CFPRT_FormatRealValue(out_val_text, safe_length,
 			watts_value, GetPowerUnitString(), zero_value_alternative,
 			force_sign, maximal_adaptive_decimal_places,
-			fixed_decimal_places, value_unit_space);
+			fixed_decimal_places);
 
 	}
 	int FormatEnergyWattsHourStringFromMili(wchar_t* out_val_text, int safe_length,
 		int value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = -1,
+		int maximal_adaptive_decimal_places = 2,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	) const {
 		return CFPRT_FormatRealValue(out_val_text, safe_length,
 			value / 1000.f, GetPowerCapacityString(), zero_value_alternative,
-			force_sign, maximal_adaptive_decimal_places, fixed_decimal_places, value_unit_space);
+			force_sign, maximal_adaptive_decimal_places, fixed_decimal_places);
 
 	}
 
@@ -199,26 +218,22 @@ public:
 		int value,
 		const wchar_t* zero_value_alternative = nullptr,
 		bool force_sign = false,
-		int maximal_adaptive_decimal_places = -1,
+		int maximal_adaptive_decimal_places = 3,
 		int fixed_decimal_places = -1,
 		int value_unit_space = -1
 	)const {
 
 		return CFPRT_FormatRealValue(out_val_text, safe_length,
 			value / 1000.0f, GetVoltageString(), zero_value_alternative,
-			force_sign, maximal_adaptive_decimal_places, fixed_decimal_places, value_unit_space);
+			force_sign, maximal_adaptive_decimal_places, fixed_decimal_places);
 	}
 
-	int FormatTimerStringFromSeconds(
-		wchar_t* out_val_text,
+	int FormatTimerStringFromSeconds(wchar_t* out_val_text,
 		int safe_length,
 		INT64 seconds,
 		const wchar_t* zero_value_alternative = nullptr
 	) const {
-		if (seconds < 0) {
-			return swprintf_s(out_val_text, safe_length, L"?");
-		}
-		return swprintf_s(out_val_text, safe_length, L"%lld%s%02lld%s", seconds / 3600, hour_unit_str,
+		return swprintf_s(out_val_text, safe_length, L"%ld%s%02ld%s", seconds / 3600, hour_unit_str,
 			(seconds / 60) % 60, minute_unit_str);
 
 	}

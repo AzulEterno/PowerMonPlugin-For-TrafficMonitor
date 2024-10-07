@@ -136,13 +136,13 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 	BOOL bTranslated = FALSE;
 	m_data.default_value_unit_space = unit_string_page.GetDlgItemInt(IDC_INPUT_SPACING_SIZE, &bTranslated, FALSE);
 
-	if (!bTranslated) {
+	if (!bTranslated || m_data.default_value_unit_space < 0) {
 		m_data.default_value_unit_space = 1;
 	}
 	bTranslated = FALSE;
 	m_data.default_max_adaptive_decimal_places = unit_string_page.GetDlgItemInt(IDC_INPUT_DISPLAY_MAX_DECI_PLACES, &bTranslated, FALSE);
 
-	if (!bTranslated) {
+	if (!bTranslated || m_data.default_max_adaptive_decimal_places < 0) {
 		m_data.default_max_adaptive_decimal_places = 2;
 	}
 
@@ -158,7 +158,7 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 
 	std::set<INT64> disabled_widgets = { IDC_CHECK_ENABLE_CPU_MON ,IDC_CHECK_ENABLE_GPU_MON };
 
-	foreach(auto idc :disabled_widgets) {
+	for (auto idc : disabled_widgets) {
 		CButton* pCheckBox = (CButton*)hw_sensor_page.GetDlgItem(idc);
 		if (pCheckBox != nullptr)
 		{

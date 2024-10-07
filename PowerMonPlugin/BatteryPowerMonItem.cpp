@@ -204,13 +204,25 @@ const wchar_t* BatteryTimeMonItem::DetailFormatItemValueText(
 			switch (_lpBatteryInfoHandler->GetACLineStatus()) {
 			case 1:
 			{
-				_lpFormatHandler->FormatTimerStringFromSeconds(out_val_text, PrintValueStrBufferSize,
-					_lpBatteryInfoHandler->GetBatteryFullLifeTime());
+				if (_lpBatteryInfoHandler->GetBatteryFullLifeTime() == -1) {
+					swprintf_s(out_val_text, _lpFormatHandler->GetNaNString());
+				}
+				else {
+					_lpFormatHandler->FormatTimerStringFromSeconds(out_val_text, PrintValueStrBufferSize,
+						_lpBatteryInfoHandler->GetBatteryFullLifeTime());
+				}
+
 			}break;
 			case 0:
 			{
-				_lpFormatHandler->FormatTimerStringFromSeconds(out_val_text, PrintValueStrBufferSize,
-					_lpBatteryInfoHandler->GetBatteryLifeTime());
+				if (_lpBatteryInfoHandler->GetBatteryLifeTime() == -1) {
+					swprintf_s(out_val_text, _lpFormatHandler->GetNaNString());
+				}
+				else {
+					_lpFormatHandler->FormatTimerStringFromSeconds(out_val_text, PrintValueStrBufferSize,
+						_lpBatteryInfoHandler->GetBatteryLifeTime());
+				}
+
 			}break;
 			default:
 			{
