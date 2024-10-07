@@ -6,7 +6,6 @@
 #define IDD_OPTIONS_DIALOG              102
 #define IDS_PLUGIN_NAME                 103
 #define IDS_PLUGIN_DESCRIPTION          104
-#define IDS_PLUGIN_ITEM_NAME            105
 #define IDS_PLUGIN_BATTERY_POWER_ITEM_NAME 105
 #define IDS_BATTERY_POWER_DISPLAY_LABEL 106
 #define IDS_POWER_DISPLAY_LABEL         106
@@ -40,12 +39,10 @@
 #define IDS_PLUGIN_GPU_POWER_METER_ITEM_NAME 130
 #define IDS_BATTERY_DISPLAY_LABEL       131
 #define IDS_DISCRIPTIVE_BATERY_TIME_HEADER 132
-#define IDC_CHECKBOX_DBGMODE            1001
 #define IDC_BUTTON_BTRDRIVER            1003
 #define IDC_Change_Unit_String          1005
 #define IDC_Change_Unit_String2         1006
 #define IDC_Change_Unit_String3         1007
-#define IDC_PWR_UNIT_STR_INPUT          1008
 #define IDC_INPUT_PWR_UNIT_STR          1008
 #define IDC_Change_Unit_String4         1009
 #define IDC_Change_Unit_String5         1010
@@ -68,8 +65,8 @@
 #define IDC_INPUT_SPACING_SIZE          1029
 #define IDC_CHECK_ENABLE_GPU_MON        1030
 #define IDC_INPUT_DISPLAY_MAX_DECI_PLACES 1031
-#define IDC_BUTTON_REFRESH_HW_INFO      1032
 #define IDC_BUTTON_REFRESH_HW_SENSORS   1033
+#define IDC_BUTTON1                     1034
 
 // Next default values for new objects
 // 
@@ -77,7 +74,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        113
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1034
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif

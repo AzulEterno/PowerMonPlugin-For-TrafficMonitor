@@ -135,3 +135,5 @@ void HardwareSensorPage::OnBnClickedButtonRefreshHwSensors()
 
 	SyncTreeViewContent();
 }
+
+
