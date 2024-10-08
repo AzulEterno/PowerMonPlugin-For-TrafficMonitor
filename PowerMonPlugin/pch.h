@@ -58,6 +58,21 @@
 
 #define WINRT_USE_FLAG (_M_CEE)
 
+#ifdef _M_ARM64X
+#define PLATFORM_STR L"ARM64X"
+#elif defined(_M_ARM64EC)
+#define PLATFORM_STR L"ARM64EC"
+#elif defined(_M_ARM64)
+#define PLATFORM_STR L"ARM64"
+#elif defined(_M_X64) || defined(__amd64__)
+#define PLATFORM_STR L"x64"
+#elif defined(_M_IX86) || defined(__i386__)
+#define PLATFORM_STR L"x86"
+#else
+#define PLATFORM_STR L"Unknown"
+#endif
+
+
 #define SAFE_DELETE(p) do \
 {\
     if(p != nullptr) \

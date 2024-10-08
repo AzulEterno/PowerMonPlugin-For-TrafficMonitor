@@ -25,4 +25,7 @@ public:
 	afx_msg void OnBnClickedButtonRepoUrl();
 	afx_msg void OnStnClickedTextDescription();
 	afx_msg void OnBnClickedButtonBtrdriver();
+	BOOL OnInitDialog() override;
+
+	CString GenerateInfoText();
 };

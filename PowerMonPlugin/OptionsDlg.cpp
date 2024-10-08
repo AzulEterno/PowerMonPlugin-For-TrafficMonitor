@@ -119,8 +119,21 @@ int COptionsDlg::SyncWidgetWithSettingData() {
 
 
 	info_page.CheckDlgButton(IDC_CHECK_DEBUG_MODE, m_data.is_dbg_mode);
+
+
+
+
+#if WINRT_USE_FLAG
 	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_CPU_MON, m_data.enable_cpu_monitor);
 	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_GPU_MON, m_data.enable_gpu_monitor);
+
+#else
+	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_CPU_MON, false);
+	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_GPU_MON, false);
+
+#endif
+
+
 
 	unit_string_page.SetDlgItemInt(IDC_INPUT_SPACING_SIZE, m_data.default_value_unit_space, FALSE);
 	unit_string_page.SetDlgItemInt(IDC_INPUT_DISPLAY_MAX_DECI_PLACES, m_data.default_max_adaptive_decimal_places, FALSE);
@@ -147,26 +160,13 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 	}
 
 
-#if WINRT_USE_FLAG
+#if WINRT_ENABLE_FLAG
 	m_data.enable_cpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_CPU_MON);
 	m_data.enable_gpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_GPU_MON);
 #else
 	//Disable related options.
 	m_data.enable_cpu_monitor = false;
 	m_data.enable_gpu_monitor = false;
-
-
-	std::set<INT64> disabled_widgets = { IDC_CHECK_ENABLE_CPU_MON ,IDC_CHECK_ENABLE_GPU_MON };
-
-	for (auto idc : disabled_widgets) {
-		CButton* pCheckBox = (CButton*)hw_sensor_page.GetDlgItem(idc);
-		if (pCheckBox != nullptr)
-		{
-			// Disable the checkbox
-			pCheckBox->EnableWindow(FALSE);
-		}
-
-	}
 #endif
 	wchar_t unit_str_temp_store[UNIT_STR_MAXLEN + 1] = L"";
 

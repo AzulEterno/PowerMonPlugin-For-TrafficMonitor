@@ -5,6 +5,7 @@
 #include "afxdialogex.h"
 #include "InformationPage.h"
 #include "PowerMon.h"
+#include <sysinfoapi.h>
 
 
 // InformationPage 对话框
@@ -25,7 +26,15 @@ void InformationPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
+BOOL InformationPage::OnInitDialog() {
+	CDialogEx::OnInitDialog();
 
+	// Generate and set the text for IDC_TEXT_DESCRIPTION
+	CString descriptionText = GenerateInfoText();
+	GetDlgItem(IDC_TEXT_DESCRIPTION)->SetWindowText(descriptionText);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+}
 
 BEGIN_MESSAGE_MAP(InformationPage, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_REPO_URL, &InformationPage::OnBnClickedButtonRepoUrl)
@@ -73,4 +82,42 @@ void InformationPage::OnBnClickedButtonBtrdriver()
 		//return 1;
 
 	}
+}
+
+
+CString InformationPage::GenerateInfoText() {
+	// Retrieve the Windows version
+	OSVERSIONINFO osvi;
+	ZeroMemory(&osvi, sizeof(osvi));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+	GetVersionEx(&osvi);
+
+	// Retrieve PowerMon version
+	auto version_str = PowerMon::Instance().GetInfo(ITMPlugin::PluginInfoIndex::TMI_VERSION);
+
+	// Format the text
+	CString infoText;
+	infoText.Format(
+		L"Windows Version: %d.%d.%d\n"
+		L"Build: %d\n"
+		L"Service Pack: %s\n"
+		L"PowerMon version: %s, %s\n"
+#if WINRT_USE_FLAG
+		L"WinRT enabled version of PowerMon.\n"
+#else
+		L"WinRT disabled version of PowerMon.\n"
+#endif
+		,
+		osvi.dwMajorVersion,
+		osvi.dwMinorVersion,
+		osvi.dwBuildNumber,
+		osvi.dwBuildNumber,
+		osvi.szCSDVersion,
+		version_str,
+		PLATFORM_STR
+	);
+
+
+	return infoText;
 }

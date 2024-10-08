@@ -26,6 +26,28 @@ void HardwareSensorPage::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
+BOOL HardwareSensorPage::OnInitDialog() {
+	CDialogEx::OnInitDialog();
+#if !(WINRT_USE_FLAG)
+	std::set<INT64> disabled_widgets = { IDC_CHECK_ENABLE_CPU_MON ,IDC_CHECK_ENABLE_GPU_MON };
+	CheckDlgButton(IDC_CHECK_ENABLE_CPU_MON, false);
+	CheckDlgButton(IDC_CHECK_ENABLE_GPU_MON, false);
+	for (auto idc : disabled_widgets) {
+		CButton* pCheckBox = (CButton*)GetDlgItem(idc);
+		if (pCheckBox != nullptr)
+		{
+			// Disable the checkbox
+			pCheckBox->EnableWindow(FALSE);
+		}
+
+	}
+#endif
+	// Generate and set the text for IDC_TEXT_DESCRIPTION
+	SyncTreeViewContent();
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+}
+
 
 BEGIN_MESSAGE_MAP(HardwareSensorPage, CDialogEx)
 
