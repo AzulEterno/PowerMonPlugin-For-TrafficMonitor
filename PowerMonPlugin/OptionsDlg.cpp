@@ -160,7 +160,7 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 	}
 
 
-#if WINRT_ENABLE_FLAG
+#if WINRT_USE_FLAG
 	m_data.enable_cpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_CPU_MON);
 	m_data.enable_gpu_monitor = (bool)hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_GPU_MON);
 #else

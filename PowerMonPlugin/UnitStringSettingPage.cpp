@@ -25,6 +25,13 @@ void UnitStringSettingPage::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
+BOOL UnitStringSettingPage::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+}
+
 
 BEGIN_MESSAGE_MAP(UnitStringSettingPage, CDialogEx)
 END_MESSAGE_MAP()

@@ -115,7 +115,11 @@ const wchar_t* BatteryCapacityMonItem::GetItemValueText() const
 	return DetailFormatItemValueText();
 }
 
-const wchar_t* BatteryCapacityMonItem::DetailFormatItemValueText(const wchar_t* zero_value_alternative, bool force_sign, int maximal_adaptive_decimal_places, int fixed_decimal_places, int value_unit_space) const
+const wchar_t* BatteryCapacityMonItem::DetailFormatItemValueText(const wchar_t* zero_value_alternative,
+	bool force_sign,
+	int maximal_adaptive_decimal_places,
+	int fixed_decimal_places,
+	int value_unit_space) const
 {
 	static wchar_t out_val_text[PrintValueStrBufferSize] = L"";
 	//wchar_t output_str[16];

@@ -741,7 +741,7 @@ namespace InterOpLibreHWMon {
 				for (auto& [cpu_key, cpu_instance] : _cpu_map) {
 					double device_pwr = GetDevicePower(cpu_instance);
 
-					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 2);
+					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 3);
 
 					wss_cpu << L"\t" <<
 						cpu_instance.GetName();
@@ -750,7 +750,7 @@ namespace InterOpLibreHWMon {
 
 					power_cal += device_pwr;
 				}
-				vusf.FormatPowerWattsString(format_str_buffer, max_format_len, power_cal, nullptr, false, -1, 2);
+				vusf.FormatPowerWattsString(format_str_buffer, max_format_len, power_cal, nullptr, false, -1, 3);
 				wss_res << L"CPU: <" << format_str_buffer <<
 					L">" << std::endl << wss_cpu.str();
 			}
@@ -760,14 +760,14 @@ namespace InterOpLibreHWMon {
 			{
 				for (auto& [gpu_key, gpu_instance] : _gpu_map) {
 					double device_pwr = GetDevicePower(gpu_instance);
-					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 2);
+					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 3);
 					wss_gpu << L"\t" <<
 						gpu_instance.GetName() << L": " << format_str_buffer << std::endl;
 
 					power_cal += device_pwr;
 
 				}
-				vusf.FormatPowerWattsString(format_str_buffer, max_format_len, power_cal, nullptr, false, -1, 2);
+				vusf.FormatPowerWattsString(format_str_buffer, max_format_len, power_cal, nullptr, false, -1, 3);
 				wss_res << L"GPU: <" << format_str_buffer <<
 					L">" << std::endl << wss_gpu.str();
 			}
