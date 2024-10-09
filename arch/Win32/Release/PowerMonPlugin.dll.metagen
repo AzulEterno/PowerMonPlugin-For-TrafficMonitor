@@ -1,0 +1,63 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly PowerMonPlugin, Version=0.0.*, Culture=固定语言(固定国家/地区): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly LibreHardwareMonitorLib, Version=0.9.*, Culture=固定语言(固定国家/地区): 
+	hash=None, flags=None
+Assembly System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data.DataSetExtensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Assembly System.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class InterOpLibreHWMon.PowerSensorUpdateVisitor: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    LibreHardwareMonitor.Hardware.IVisitor
+  Methods:
+    SetCpuMonitorEnable(Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    SetGpuMonitorEnable(Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    VisitComputer(IComputer): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    VisitHardware(IHardware): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    VisitSensor(ISensor): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    VisitParameter(IParameter): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+Class InterOpLibreHWMon.LibreHWMonInterOpProxy: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(Boolean): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    Instance(): PrivateScope, Public, Static, HideBySig
+    GetUpdateVistor(): PrivateScope, Public, HideBySig
+    GetComputorInfoInstance(): PrivateScope, Public, HideBySig
+    CallUpdateComputorInfo(): PrivateScope, Public, HideBySig
+    SyncFromSettingData(SettingData* IsImplicitlyDereferenced): PrivateScope, Public, HideBySig
+    PrepareInterOpObjects(): PrivateScope, Public, HideBySig
+    ReleaseResources(): PrivateScope, Public, HideBySig
+    SetInterOpComputorSettings(): PrivateScope, Public, HideBySig
+    OpenInterOpComputorObject(): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Struct InterOpLibreHWMon.SensorRepresentiveBase: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+Struct InterOpLibreHWMon.HardwareRepresentiveBase: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+Struct InterOpLibreHWMon.CPUHardwareRep: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+Struct InterOpLibreHWMon.GPUHardwareRep: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+Struct InterOpLibreHWMon.HardwareSensorDataProvider: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+Struct InterOpLibreHWMon.SensorTypeCopy: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+Struct InterOpLibreHWMon.SensorRepresentiveBase+<lambda_1>: AutoLayout, AnsiClass, Class, NestedPublic, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
