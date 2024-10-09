@@ -66,13 +66,12 @@
 #define IDC_CHECK_ENABLE_GPU_MON        1030
 #define IDC_INPUT_DISPLAY_MAX_DECI_PLACES 1031
 #define IDC_BUTTON_REFRESH_HW_SENSORS   1033
-#define IDC_BUTTON1                     1034
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        113
+#define _APS_NEXT_RESOURCE_VALUE        115
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           103
