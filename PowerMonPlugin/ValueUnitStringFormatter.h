@@ -233,7 +233,7 @@ public:
 		INT64 seconds,
 		const wchar_t* zero_value_alternative = nullptr
 	) const {
-		return swprintf_s(out_val_text, safe_length, L"%l64d%s%02l64d%s", seconds / 3600, hour_unit_str,
+		return swprintf_s(out_val_text, safe_length, L"%ld%s%02ld%s", seconds / 3600, hour_unit_str,
 			(seconds / 60) % 60, minute_unit_str);
 
 	}
