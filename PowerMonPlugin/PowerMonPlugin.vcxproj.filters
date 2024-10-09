@@ -38,6 +38,9 @@
     <ClCompile Include="HardwareSensorMon.cpp">
       <Filter>MonitorInterface</Filter>
     </ClCompile>
+    <ClCompile Include="TabDlg.cpp">
+      <Filter>Base\Dlg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PowerMon.h" />
@@ -86,6 +89,9 @@
     <ClInclude Include="WinCPP_Utility.h">
       <Filter>Base</Filter>
     </ClInclude>
+    <ClInclude Include="TabDlg.h">
+      <Filter>Base\Dlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PowerMon.rc" />
@@ -102,6 +108,9 @@
     </Filter>
     <Filter Include="MonitorInterface">
       <UniqueIdentifier>{ec0ac050-a17d-4500-9faa-8be6155b91f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Dlg">
+      <UniqueIdentifier>{fbbf9fbb-2239-414b-ba33-e7b2dd4b9f02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

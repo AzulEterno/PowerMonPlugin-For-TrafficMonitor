@@ -10,10 +10,10 @@
 
 // InformationPage 对话框
 
-IMPLEMENT_DYNAMIC(InformationPage, CDialogEx)
+IMPLEMENT_DYNAMIC(InformationPage, CTabDlg)
 
 InformationPage::InformationPage(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_INFO_PAGE, pParent)
+	: CTabDlg(IDD_INFO_PAGE, pParent)
 {
 
 }
@@ -24,10 +24,10 @@ InformationPage::~InformationPage()
 
 void InformationPage::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CTabDlg::DoDataExchange(pDX);
 }
 BOOL InformationPage::OnInitDialog() {
-	CDialogEx::OnInitDialog();
+	CTabDlg::OnInitDialog();
 
 	// Generate and set the text for IDC_TEXT_DESCRIPTION
 	CString descriptionText = GenerateInfoText();
@@ -36,7 +36,7 @@ BOOL InformationPage::OnInitDialog() {
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
 
-BEGIN_MESSAGE_MAP(InformationPage, CDialogEx)
+BEGIN_MESSAGE_MAP(InformationPage, CTabDlg)
 	ON_BN_CLICKED(IDC_BUTTON_REPO_URL, &InformationPage::OnBnClickedButtonRepoUrl)
 	ON_STN_CLICKED(IDC_TEXT_DESCRIPTION, &InformationPage::OnStnClickedTextDescription)
 	ON_BN_CLICKED(IDC_BUTTON_BTRDRIVER, &InformationPage::OnBnClickedButtonBtrdriver)

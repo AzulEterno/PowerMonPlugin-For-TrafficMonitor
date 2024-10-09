@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-
+#include "TabDlg.h"
 
 // InformationPage 对话框
 
-class InformationPage : public CDialogEx
+class InformationPage : public CTabDlg
 {
 	DECLARE_DYNAMIC(InformationPage)
 

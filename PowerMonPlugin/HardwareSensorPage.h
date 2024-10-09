@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include "afxdialogex.h"
+#include "TabDlg.h"
 
 
 // HardwareSensorPage 对话框
 
-class HardwareSensorPage : public CDialogEx
+class HardwareSensorPage : public CTabDlg
 {
 	DECLARE_DYNAMIC(HardwareSensorPage)
 

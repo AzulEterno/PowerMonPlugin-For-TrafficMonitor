@@ -7,6 +7,13 @@
 #include "HardwareSensorPage.h"
 // COptionsDlg 对话框
 
+#ifndef OPTIONDLG_TAB_COUNT
+
+#define OPTIONDLG_TAB_COUNT 3
+
+#endif
+
+
 class COptionsDlg : public CDialog
 {
 	DECLARE_DYNAMIC(COptionsDlg)
@@ -31,15 +38,22 @@ protected:
 
 
 	CTabCtrl m_tab;
-	int m_CurSelTab = 0;
+	int m_cur_select_tab = -1;
 	UnitStringSettingPage unit_string_page;
 	InformationPage info_page;
 	HardwareSensorPage hw_sensor_page;
-	CDialog* pDialogs[5];
+	CTabDlg* p_tab_dialogs[OPTIONDLG_TAB_COUNT];
+	std::vector<CRect> p_tab_rect_vec;
+
+	void SyncTabPageSize();
 public:
 	virtual BOOL OnInitDialog();
 	int SyncWidgetWithSettingData();
 	int SyncSettingDataWithWidget();
+
+
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedRevertConfiguration();
 	afx_msg void OnTcnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult);

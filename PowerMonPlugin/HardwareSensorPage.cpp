@@ -9,10 +9,10 @@
 
 // HardwareSensorPage 对话框
 
-IMPLEMENT_DYNAMIC(HardwareSensorPage, CDialogEx)
+IMPLEMENT_DYNAMIC(HardwareSensorPage, CTabDlg)
 
 HardwareSensorPage::HardwareSensorPage(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_HARDWARE_SENSOR_PAGE, pParent)
+	: CTabDlg(IDD_HARDWARE_SENSOR_PAGE, pParent)
 {
 	//SyncTreeViewContent();
 }
@@ -23,11 +23,11 @@ HardwareSensorPage::~HardwareSensorPage()
 
 void HardwareSensorPage::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CTabDlg::DoDataExchange(pDX);
 }
 
 BOOL HardwareSensorPage::OnInitDialog() {
-	CDialogEx::OnInitDialog();
+	CTabDlg::OnInitDialog();
 #if !(WINRT_USE_FLAG)
 	std::set<INT64> disabled_widgets = { IDC_CHECK_ENABLE_CPU_MON ,IDC_CHECK_ENABLE_GPU_MON };
 	CheckDlgButton(IDC_CHECK_ENABLE_CPU_MON, false);
@@ -49,7 +49,7 @@ BOOL HardwareSensorPage::OnInitDialog() {
 }
 
 
-BEGIN_MESSAGE_MAP(HardwareSensorPage, CDialogEx)
+BEGIN_MESSAGE_MAP(HardwareSensorPage, CTabDlg)
 
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_SENSOR, &HardwareSensorPage::OnTvnSelchangedSensorTree)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH_HW_SENSORS, &HardwareSensorPage::OnBnClickedButtonRefreshHwSensors)

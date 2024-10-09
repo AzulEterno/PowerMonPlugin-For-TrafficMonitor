@@ -84,5 +84,7 @@
 
 
 
+float GetDPIScaledSize(float size);
+
 
 #endif //PCH_H

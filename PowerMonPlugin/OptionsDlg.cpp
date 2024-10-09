@@ -29,6 +29,8 @@ void COptionsDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(COptionsDlg, CDialog)
+	ON_WM_GETMINMAXINFO()
+	ON_WM_SIZE()
 	ON_BN_CLICKED(IDOK, &COptionsDlg::OnBnClickedOk)
 	ON_BN_CLICKED(ID_REVERT_CONFIGURATION, &COptionsDlg::OnBnClickedRevertConfiguration)
 
@@ -39,6 +41,32 @@ END_MESSAGE_MAP()
 
 // COptionsDlg 消息处理程序
 
+
+void COptionsDlg::SyncTabPageSize()
+{
+	if (m_cur_select_tab < 0 || m_cur_select_tab >= OPTIONDLG_TAB_COUNT) {
+		return;
+	}
+	//设定在Tab内显示的范围
+	CRect rc;
+	m_tab.GetClientRect(rc);
+	m_tab.AdjustRect(FALSE, &rc);
+
+	//rc.top += 40;
+	//rc.bottom -= 0;
+	//rc.left += 0;
+	//rc.right -= 0;
+	unit_string_page.MoveWindow(&rc);
+	hw_sensor_page.MoveWindow(&rc);
+	info_page.MoveWindow(&rc);
+
+	//为每个子窗口设置滚动信息
+	for (size_t i = 0; i < OPTIONDLG_TAB_COUNT; i++)
+	{
+		p_tab_dialogs[i]->SetScrollbarInfo(rc.Height(), p_tab_rect_vec[i].Height());
+		//初始化滚动条
+	}
+}
 
 BOOL COptionsDlg::OnInitDialog()
 {
@@ -55,28 +83,30 @@ BOOL COptionsDlg::OnInitDialog()
 		info_page.Create(IDD_INFO_PAGE, &m_tab);
 		hw_sensor_page.Create(IDD_HARDWARE_SENSOR_PAGE, &m_tab);
 
-		//设定在Tab内显示的范围
-		CRect rc;
-		m_tab.GetClientRect(rc);
-		m_tab.AdjustRect(FALSE, &rc);
 
-		//rc.top += 40;
-		//rc.bottom -= 0;
-		//rc.left += 0;
-		//rc.right -= 0;
-		unit_string_page.MoveWindow(&rc);
-		hw_sensor_page.MoveWindow(&rc);
-		info_page.MoveWindow(&rc);
 
 		//把对话框对象指针保存起来
-		pDialogs[0] = &unit_string_page;
-		pDialogs[1] = &hw_sensor_page;
-		pDialogs[2] = &info_page;
+		p_tab_dialogs[0] = &unit_string_page;
+		p_tab_dialogs[1] = &hw_sensor_page;
+		p_tab_dialogs[2] = &info_page;
 		//显示初始页面
-		pDialogs[0]->ShowWindow(SW_SHOW);
-		pDialogs[1]->ShowWindow(SW_HIDE);
-		pDialogs[2]->ShowWindow(SW_HIDE);
+		p_tab_dialogs[0]->ShowWindow(SW_SHOW);
+		p_tab_dialogs[1]->ShowWindow(SW_HIDE);
+		p_tab_dialogs[2]->ShowWindow(SW_HIDE);
+
+		m_cur_select_tab = 0;
 		//保存当前选择
+
+
+			//获取子对话框的初始高度
+		for (const auto* pDlg : p_tab_dialogs)
+		{
+			CRect rect;
+			pDlg->GetWindowRect(rect);
+			p_tab_rect_vec.push_back(rect);
+		}
+
+		SyncTabPageSize();
 
 	}
 
@@ -202,6 +232,26 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 
 
 
+void COptionsDlg::OnSize(UINT nType, int cx, int cy)
+{
+
+	CDialog::OnSize(nType, cx, cy);
+	if (nType != SIZE_MINIMIZED)
+	{
+
+		SyncTabPageSize();
+	}
+
+}
+
+void COptionsDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{//限制窗口最小大小
+	lpMMI->ptMinTrackSize.x = GetDPIScaledSize(360);		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = GetDPIScaledSize(400);		//设置最小高度
+
+	CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
 void COptionsDlg::OnBnClickedOk()
 {
 
@@ -253,13 +303,16 @@ void COptionsDlg::OnBnClickedRevertConfiguration()
 
 void COptionsDlg::OnTcnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
 {
+	if (m_cur_select_tab < 0 || m_cur_select_tab >= OPTIONDLG_TAB_COUNT) {
+		return;
+	}
 	// TODO: 在此添加控件通知处理程序代码
 		//把当前的页面隐藏起来
-	pDialogs[m_CurSelTab]->ShowWindow(SW_HIDE);
+	p_tab_dialogs[m_cur_select_tab]->ShowWindow(SW_HIDE);
 	//得到新的页面索引
-	m_CurSelTab = m_tab.GetCurSel();
+	m_cur_select_tab = m_tab.GetCurSel();
 	//把新的页面显示出来
-	pDialogs[m_CurSelTab]->ShowWindow(SW_SHOW);
+	p_tab_dialogs[m_cur_select_tab]->ShowWindow(SW_SHOW);
 
 	*pResult = 0;
 }

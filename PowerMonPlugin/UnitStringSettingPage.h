@@ -1,10 +1,14 @@
-﻿#pragma once
+﻿
+
+
+#pragma once
+#include "TabDlg.h"
 #include "afxdialogex.h"
 
 
 // UnitStringSettingPage 对话框
 
-class UnitStringSettingPage : public CDialogEx
+class UnitStringSettingPage : public CTabDlg
 {
 	DECLARE_DYNAMIC(UnitStringSettingPage)
 
