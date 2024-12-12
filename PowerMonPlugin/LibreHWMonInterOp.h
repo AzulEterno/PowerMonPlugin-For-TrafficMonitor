@@ -414,14 +414,21 @@ namespace InterOpLibreHWMon {
 	protected:
 		UINT64 _thread_count = 0;
 		UINT64 _phy_core_count = 0;
-
+		INT64 _cpu_id = 0;
 	public:
 		CPUHardwareRep() {};
 		// Constructor with required ID and optional name
-		CPUHardwareRep(const std::wstring& identity, const std::wstring& name = L"", UINT64 thread_count = 0,
+		CPUHardwareRep(const std::wstring& identity, const std::wstring& name = L"",const INT64& cpu_id = 0, UINT64 thread_count = 0,
 			UINT64 phy_core_count = 0, UINT64 update_iter_index = 0)
 			: HardwareRepresentiveBase(identity, name, update_iter_index),
 			_thread_count(thread_count), _phy_core_count(phy_core_count) {
+
+			
+		}
+
+		INT64 GetCpuIndex() const {
+
+			return _cpu_id;
 		}
 	};
 
@@ -459,6 +466,8 @@ namespace InterOpLibreHWMon {
 		//Structure
 		//
 		UINT64 _update_index = 0;
+
+		INT64 _cpu_id_counter = 0;
 		float _cpu_total_pwr = 0, _gpu_total_pwr = 0;
 
 	public:
@@ -468,6 +477,19 @@ namespace InterOpLibreHWMon {
 		}
 		std::map<std::wstring, GPUHardwareRep>& GetGPUSensorDataMap() {
 			return _gpu_map;
+		}
+
+
+
+		CPUHardwareRep* GetCPUHardwareRepByIndex(const INT64& index) {
+			for (auto& pair : _cpu_map) {
+				if (pair.second.GetCpuIndex() == index) {
+
+					return &pair.second;
+				}
+			}
+
+			return  nullptr;
 		}
 
 		HardwareSensorDataProvider(bool auto_load_settings = true) {
@@ -538,7 +560,7 @@ namespace InterOpLibreHWMon {
 			std::wstring hwid = ClrStringToStdWstring(hw->Identifier->ToString());
 
 			if (!val_store.contains(hwid)) {
-				val_store[hwid] = CPUHardwareRep(hwid, ClrStringToStdWstring(hw->Name));
+				val_store[hwid] = CPUHardwareRep(hwid, ClrStringToStdWstring(hw->Name), _cpu_id_counter++);
 			}
 
 			val_store[hwid].SetUpdateIterIndex(_update_index);
@@ -582,14 +604,31 @@ namespace InterOpLibreHWMon {
 		bool RecordGPUSensorsValueByHardware(IHardware^ hw, std::map<std::wstring, GPUHardwareRep>& val_store) {
 			auto sensor_list = hw->Sensors;
 
-			std::wstring hwid = ClrStringToStdWstring(hw->Identifier->ToString());
+			std::wstring hwid = ClrStringToStdWstring(hw->Identifier->ToString()),
+				hw_name = ClrStringToStdWstring(hw->Name);
 
 			if (!val_store.contains(hwid)) {
 				INT64 cpu_bind_id = -1;
 				if (hwid.find(L"integrated") != std::wstring::npos) {
 					cpu_bind_id = 0;
 				}
-				val_store[hwid] = GPUHardwareRep(hwid, ClrStringToStdWstring(hw->Name), 0, cpu_bind_id);
+				else if (hwid.find(L"gpu-amd") != std::wstring::npos) {
+
+					CPUHardwareRep* lp_cpu = GetCPUHardwareRepByIndex(0);
+
+					std::wstring amd_gpu_name = hw_name,
+						header = L"AMD ";
+
+					if (amd_gpu_name.find(header) == 0) {
+						amd_gpu_name = amd_gpu_name.substr(header.length());
+					}
+
+					if (lp_cpu && lp_cpu->GetName().find(amd_gpu_name) != std::wstring::npos) {
+
+						cpu_bind_id = 0;
+					}
+				}
+				val_store[hwid] = GPUHardwareRep(hwid, hw_name, 0, cpu_bind_id);
 			}
 
 			val_store[hwid].SetUpdateIterIndex(_update_index);
