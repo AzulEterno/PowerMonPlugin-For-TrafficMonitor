@@ -49,3 +49,7 @@
 > Added digi length control.
 > Added spacing control.
 
+2024-12-12
+
+> Added AMD integrated GPU detect logic.
+> 
