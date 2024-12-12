@@ -360,7 +360,8 @@ namespace InterOpLibreHWMon {
 		// Constructor with required ID and optional name
 		HardwareRepresentiveBase(const std::wstring& identity, const std::wstring& name = L"",
 			UINT64 update_iter_index = 0)
-			: _identity(identity), _name(name), _update_iter_index(update_iter_index) {}
+			: _identity(identity), _name(name), _update_iter_index(update_iter_index) {
+		}
 
 		bool IsValid()const {
 			return _identity.length() > 0;
@@ -418,12 +419,12 @@ namespace InterOpLibreHWMon {
 	public:
 		CPUHardwareRep() {};
 		// Constructor with required ID and optional name
-		CPUHardwareRep(const std::wstring& identity, const std::wstring& name = L"",const INT64& cpu_id = 0, UINT64 thread_count = 0,
+		CPUHardwareRep(const std::wstring& identity, const std::wstring& name = L"", const INT64& cpu_id = 0, UINT64 thread_count = 0,
 			UINT64 phy_core_count = 0, UINT64 update_iter_index = 0)
 			: HardwareRepresentiveBase(identity, name, update_iter_index),
 			_thread_count(thread_count), _phy_core_count(phy_core_count) {
 
-			
+
 		}
 
 		INT64 GetCpuIndex() const {
@@ -676,21 +677,35 @@ namespace InterOpLibreHWMon {
 			//First Scan if there's package power. Otherwise add all power meters.
 			const auto& gpu_sensors = hw.SelectSensorsByKey(wanted_sensor_keys);
 
-			double device_power = 0.;
+			double device_power = 0., package_pwr = 0., plaftform_pwr = 0.;
 
 			hw.SetHasPackagePowerSensor(false);
 
 			for (const auto& sensor : gpu_sensors) {
-				if (sensor.GetName().find(L"Package") != std::wstring::npos) {
-					device_power = sensor.GetValue();
-					hw.SetHasPackagePowerSensor(true);
-					break;
+
+				if (sensor.GetName().find(L"Platform") != std::wstring::npos) {
+					plaftform_pwr = sensor.GetValue();
+					continue;
+
+				}
+				else if (sensor.GetName().find(L"Package") != std::wstring::npos) {
+					package_pwr = sensor.GetValue();
+					continue;
 				}
 
 				device_power += sensor.GetValue();
 			}
+			if (plaftform_pwr > 0.) {
+				hw.SetHasPackagePowerSensor(true);
+				return plaftform_pwr;
 
+			}
+			else if (package_pwr > 0.) {
+				hw.SetHasPackagePowerSensor(true);
 
+				return package_pwr;
+			}
+			hw.SetHasPackagePowerSensor(false);
 			return device_power;
 		}
 
