@@ -52,4 +52,8 @@
 2024-12-12
 
 > Added AMD integrated GPU detect logic.
+
+2024-12-13
+
+> Added Platform power handle logic.
 > 
