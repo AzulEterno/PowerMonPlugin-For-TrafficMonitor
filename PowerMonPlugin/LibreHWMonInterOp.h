@@ -469,7 +469,7 @@ namespace InterOpLibreHWMon {
 		UINT64 _update_index = 0;
 
 		INT64 _cpu_id_counter = 0;
-		float _cpu_total_pwr = 0, _gpu_total_pwr = 0;
+		//float _cpu_total_pwr = 0, _gpu_total_pwr = 0;
 
 	public:
 
@@ -507,7 +507,7 @@ namespace InterOpLibreHWMon {
 		int SyncFromSettingData(const SettingData& setting_data) {
 
 			LibreHWMonInterOpProxy::Instance()->SyncFromSettingData(setting_data);
-
+			ResetAllRecordedValues();
 
 			return 0;
 
@@ -518,40 +518,43 @@ namespace InterOpLibreHWMon {
 		}
 
 		bool ResetAllRecordedValues() {
-			std::map<std::wstring, CPUHardwareRep>::iterator
-				cpu_sensor_iterator;
-			for (cpu_sensor_iterator = _cpu_map.begin();
-				cpu_sensor_iterator != _cpu_map.end();
-				cpu_sensor_iterator++)
-			{
-				std::map<std::wstring, SensorRepresentiveBase>::iterator sensor_iter;
-				for (sensor_iter = cpu_sensor_iterator->second.GetSensorsMap().begin();
-					sensor_iter != cpu_sensor_iterator->second.GetSensorsMap().end();
-					sensor_iter++) {
-					//sensor_iter->second = -1;
+			//std::map<std::wstring, CPUHardwareRep>::iterator
+			//	cpu_sensor_iterator;
+			//for (cpu_sensor_iterator = _cpu_map.begin();
+			//	cpu_sensor_iterator != _cpu_map.end();
+			//	cpu_sensor_iterator++)
+			//{
+			//	std::map<std::wstring, SensorRepresentiveBase>::iterator sensor_iter;
+			//	for (sensor_iter = cpu_sensor_iterator->second.GetSensorsMap().begin();
+			//		sensor_iter != cpu_sensor_iterator->second.GetSensorsMap().end();
+			//		sensor_iter++) {
+			//		//sensor_iter->second = -1;
 
-				}
-			}
+			//	}
+			//}
 
-			//delete& cpu_sensor_iterator;
+			////delete& cpu_sensor_iterator;
 
 
-			std::map<std::wstring, GPUHardwareRep>::iterator
-				gpu_sensor_iterator;
-			for (gpu_sensor_iterator = _gpu_map.begin();
-				gpu_sensor_iterator != _gpu_map.end();
-				gpu_sensor_iterator++)
-			{
-				std::map<std::wstring, SensorRepresentiveBase>::iterator sensor_iter;
-				for (sensor_iter = gpu_sensor_iterator->second.GetSensorsMap().begin();
-					sensor_iter != gpu_sensor_iterator->second.GetSensorsMap().end();
-					sensor_iter++) {
-					//sensor_iter->second = -1;
+			//std::map<std::wstring, GPUHardwareRep>::iterator
+			//	gpu_sensor_iterator;
+			//for (gpu_sensor_iterator = _gpu_map.begin();
+			//	gpu_sensor_iterator != _gpu_map.end();
+			//	gpu_sensor_iterator++)
+			//{
+			//	std::map<std::wstring, SensorRepresentiveBase>::iterator sensor_iter;
+			//	for (sensor_iter = gpu_sensor_iterator->second.GetSensorsMap().begin();
+			//		sensor_iter != gpu_sensor_iterator->second.GetSensorsMap().end();
+			//		sensor_iter++) {
+			//		//sensor_iter->second = -1;
 
-				}
-			}
+			//	}
+			//}
 
-			_cpu_total_pwr = 0, _gpu_total_pwr = 0;
+			//_cpu_total_pwr = 0, _gpu_total_pwr = 0;
+
+			_cpu_map.clear();
+			_gpu_map.clear();
 			return true;
 		}
 
@@ -675,17 +678,17 @@ namespace InterOpLibreHWMon {
 		double GetDevicePower(HardwareRepresentiveBase& hw) {
 			const auto& wanted_sensor_keys = hw.GetSelectedSensorKeyList(SensorRepresentiveBase::select_power_sensor_fun);
 			//First Scan if there's package power. Otherwise add all power meters.
-			const auto& gpu_sensors = hw.SelectSensorsByKey(wanted_sensor_keys);
+			const auto& hw_sensors = hw.SelectSensorsByKey(wanted_sensor_keys);
 
-			double device_power = 0., package_pwr = 0., plaftform_pwr = 0.;
+			double device_power = 0., package_pwr = 0., platform_pwr = 0.;
 
 			hw.SetHasPackagePowerSensor(false);
 
-			for (const auto& sensor : gpu_sensors) {
+			for (const auto& sensor : hw_sensors) {
 
 				if (sensor.GetName().find(L"Platform") != std::wstring::npos) {
-					plaftform_pwr = sensor.GetValue();
-					continue;
+					platform_pwr = sensor.GetValue();
+					break;
 
 				}
 				else if (sensor.GetName().find(L"Package") != std::wstring::npos) {
@@ -695,9 +698,9 @@ namespace InterOpLibreHWMon {
 
 				device_power += sensor.GetValue();
 			}
-			if (plaftform_pwr > 0.) {
+			if (platform_pwr > 0.) {
 				hw.SetHasPackagePowerSensor(true);
-				return plaftform_pwr;
+				return platform_pwr;
 
 			}
 			else if (package_pwr > 0.) {
@@ -736,7 +739,7 @@ namespace InterOpLibreHWMon {
 
 		int CallUpdateInfo() {
 
-			ResetAllRecordedValues();
+			//ResetAllRecordedValues();
 			LibreHWMonInterOpProxy::Instance()->CallUpdateComputorInfo();
 
 			Computer^ comp_info = LibreHWMonInterOpProxy::Instance()->GetComputorInfoInstance();
@@ -810,7 +813,7 @@ namespace InterOpLibreHWMon {
 			}
 
 			power_cal = 0.;
-			if (g_data.m_setting_data.enable_cpu_monitor)
+			if (g_data.m_setting_data.enable_gpu_monitor)
 			{
 				for (auto& [gpu_key, gpu_instance] : _gpu_map) {
 					double device_pwr = GetDevicePower(gpu_instance);

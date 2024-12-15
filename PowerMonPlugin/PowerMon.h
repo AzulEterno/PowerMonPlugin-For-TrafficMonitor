@@ -35,7 +35,7 @@ public:
 	virtual void OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data) override;
 
 
-	void sync_g_settings();
+	int SyncSettingsData(bool save_config_file = false);
 
 	~PowerMon();
 	ValueUnitStringFormatter& GetValueUnitStringFormatter() {

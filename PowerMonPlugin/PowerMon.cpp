@@ -232,7 +232,7 @@ ITMPlugin::OptionReturn PowerMon::ShowOptionsDialog(void* hParent)
 	{
 		g_data.m_setting_data = dlg.m_data;
 		//更新自身设置
-		sync_g_settings();
+		SyncSettingsData(true);
 
 
 		return ITMPlugin::OR_OPTION_CHANGED;
@@ -284,7 +284,7 @@ void PowerMon::OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data)
 		//从配置文件读取配置
 		g_data.LoadConfig(std::wstring(data));
 
-		sync_g_settings();
+		SyncSettingsData();
 		break;
 	default:
 		break;
@@ -292,7 +292,7 @@ void PowerMon::OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data)
 }
 
 
-void PowerMon::sync_g_settings()
+int PowerMon::SyncSettingsData(bool save_config_file)
 {
 	this->is_dbg = g_data.m_setting_data.is_dbg_mode;
 	_bih.is_dbg = this->is_dbg;
@@ -311,11 +311,17 @@ void PowerMon::sync_g_settings()
 
 	//this->b_power_m_item.SetPowerUnitStr(mutablePwrUnitStr);
 
+	if (save_config_file) {
+
+		g_data.SaveConfig();
+	}
 
 
 	// Don't forget to delete the dynamically allocated memory to avoid memory leaks
 
 	//StrCpy(this->pwr_unit_str, g_data.m_setting_data.pwr_unit_str.GetString());
+
+	return 0;
 }
 
 PowerMon::~PowerMon()

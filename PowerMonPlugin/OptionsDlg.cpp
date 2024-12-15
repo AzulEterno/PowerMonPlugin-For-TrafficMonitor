@@ -272,6 +272,11 @@ void COptionsDlg::OnBnClickedOk()
 	//ExportConfig
 	m_data.settings_altered_counter += 1;
 
+
+	//m_data.CopyTo(&g_data.m_setting_data);
+
+
+
 	CDialog::OnOK();
 	//Save immediately 
 	//g_data.SaveConfig();
