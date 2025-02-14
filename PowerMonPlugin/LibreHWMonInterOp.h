@@ -187,7 +187,7 @@ namespace InterOpLibreHWMon {
 		Flow, // L/h
 		Control, // %
 		Level, // %
-		Factor, // 1
+		Factor, // Unit
 		Data, // GB = 2^30 Bytes
 		SmallData, // MB = 2^20 Bytes
 		Throughput, // B/s
@@ -219,7 +219,7 @@ namespace InterOpLibreHWMon {
 		case SensorTypeCopy::Flow:
 			return L"L/h";
 		case SensorTypeCopy::Factor:
-			return L"1";
+			return L"Unit";
 		case SensorTypeCopy::Data:
 			return L"GB";
 		case SensorTypeCopy::SmallData:
@@ -667,15 +667,9 @@ namespace InterOpLibreHWMon {
 			return true;
 		}
 
-		double GetCPUTotalPower() {
-			double power_cal = 0.;
-			for (auto& [cpu_key, cpu_instance] : _cpu_map) {
-				power_cal += GetDevicePower(cpu_instance);
-			}
-			return power_cal;
-		}
 
-		double GetDevicePower(HardwareRepresentiveBase& hw) {
+
+		double GetDevicePower(HardwareRepresentiveBase& hw, bool allow_platform_power = true,bool allow_package_power = true) {
 			const auto& wanted_sensor_keys = hw.GetSelectedSensorKeyList(SensorRepresentiveBase::select_power_sensor_fun);
 			//First Scan if there's package power. Otherwise add all power meters.
 			const auto& hw_sensors = hw.SelectSensorsByKey(wanted_sensor_keys);
@@ -686,19 +680,19 @@ namespace InterOpLibreHWMon {
 
 			for (const auto& sensor : hw_sensors) {
 
-				if (sensor.GetName().find(L"Platform") != std::wstring::npos) {
+				if (allow_platform_power && sensor.GetName().find(L"Platform") != std::wstring::npos) {
 					platform_pwr = sensor.GetValue();
-					break;
+					continue;
 
 				}
-				else if (sensor.GetName().find(L"Package") != std::wstring::npos) {
+				else if (allow_package_power && sensor.GetName().find(L"Package") != std::wstring::npos) {
 					package_pwr = sensor.GetValue();
 					continue;
 				}
 
 				device_power += sensor.GetValue();
 			}
-			if (platform_pwr > 0.) {
+			if (platform_pwr > 0. && platform_pwr >= package_pwr) {
 				hw.SetHasPackagePowerSensor(true);
 				return platform_pwr;
 
@@ -711,7 +705,14 @@ namespace InterOpLibreHWMon {
 			hw.SetHasPackagePowerSensor(false);
 			return device_power;
 		}
-
+		
+		double GetCPUTotalPower(bool allow_platform_power = false) {
+			double power_cal = 0.;
+			for (auto& [cpu_key, cpu_instance] : _cpu_map) {
+				power_cal += GetDevicePower(cpu_instance, allow_platform_power,true);
+			}
+			return power_cal;
+		}
 		double GetGPUTotalPower(bool skip_intergated_gpu = false) {
 			double power_cal = 0.;
 
@@ -724,7 +725,7 @@ namespace InterOpLibreHWMon {
 					continue;
 				}
 
-				power_cal += GetDevicePower(gpu_instance);;
+				power_cal += GetDevicePower(gpu_instance,true,true);
 
 			}
 
@@ -734,7 +735,7 @@ namespace InterOpLibreHWMon {
 
 		double GetSmartCaculatePowerMeter() {
 
-			return GetCPUTotalPower() + GetGPUTotalPower(true);
+			return GetCPUTotalPower(true) + GetGPUTotalPower(true);
 		}
 
 		int CallUpdateInfo() {
