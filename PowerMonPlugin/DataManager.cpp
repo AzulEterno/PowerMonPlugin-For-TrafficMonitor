@@ -85,6 +85,12 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 		if (isFirstInital) {
 
 			altered_flag = true;
+
+#if WINRT_USE_FLAG
+			m_setting_data.enable_cpu_monitor = 1;
+			m_setting_data.enable_gpu_monitor = 1;
+
+#endif
 		}
 
 		if (isFirstInital ||
