@@ -34,8 +34,8 @@ if ($LASTEXITCODE -ne 0) {
     throw 'GitHub CLI is not authenticated. Run ''gh auth login'' and try again.'
 }
 
-if ((git status --porcelain).Count -gt 0) {
-    throw 'The working tree is not clean. Commit, stash, or discard local changes before creating a release.'
+if ((git status --porcelain --untracked-files=no).Count -gt 0) {
+    throw 'Tracked files have uncommitted changes. Commit, stash, or discard them before creating a release.'
 }
 
 $head = (git rev-parse HEAD).Trim()
