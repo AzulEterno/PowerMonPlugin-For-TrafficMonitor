@@ -1,51 +1,57 @@
-# 这时一个简易的电池功耗计量插件
+# PowerMon Plugin for TrafficMonitor
 
-感谢你来到这里下载。本人的源码水平相当丑陋所以暂时不~~懒得~~开源。
+PowerMon is a [TrafficMonitor](https://github.com/zhongyang219/TrafficMonitor) plug-in for displaying battery, CPU, GPU, platform, and other power-related sensor information.
 
-# 日志
-
-2024-05-22
-> 使用最新构建工具重新构建。添加了ARM64EC平台的支持。
-
-2024-07-21
-
-> Added unit string change functionality.
-
-2024-08-17
-
-> ![1723880812341](image/README/1723880812341.png)  
-> 添加所有电池相关的可选监控项目。 重构部分代码。可以调整单位字符设置。
+> **Open-source announcement — 2026-07-26**
 >
-2024-08-22
+> Starting today, this project is fully open source. The complete source code and build files are available here. Issues, bug reports, and contributions are welcome.
 
-> ![image](https://github.com/user-attachments/assets/f2731d15-1c09-4169-b67c-181ea9b2b72c)  
-> 添加了智能功耗显示，在使用电池的时候显示电池放电功耗，接入电源的时候显示所有GPU+CPU功耗。
-> 重构了大量代码，加入了winrt运行时。 从本版本开始仅支持含有LibreHardwareMonitorLib.dll的TrafficMonitor
-> 因为我也需要用。  
-> 因为WinRT运行时和ARM64EC或原生不兼容，所以请ARM64用户暂时使用X64版本
-> 请拷贝LibreHardwareMonitorLib.dll 替换原有的Traffic Monitor
->
+## Features
 
+- Battery power, percentage, capacity, voltage, and remaining-time items
+- CPU, GPU, and platform power monitoring where supported by the hardware
+- Configurable value precision, units, spacing, and display formatting
+- Smart power display: battery discharge power on battery, or combined CPU/GPU power when connected to external power
 
-2024-08-24
-> 添加CPU和GPU监控模块。
->
+## Install a release
 
-2024-09-12
-> Removed debug build.
-> Attempted bug fix for setting's persistance.
-> 
+1. Install a compatible version of [TrafficMonitor](https://github.com/zhongyang219/TrafficMonitor). Its plug-in system is available in TrafficMonitor 1.82 and later.
+2. Download the ZIP for your CPU architecture from this repository’s **Releases** page. **x64 is recommended**; ARM64 and ARM64EC builds are less thoroughly tested.
+3. Close TrafficMonitor, then copy `PowerMonPlugin.dll` into the `plugins` directory next to `TrafficMonitor.exe`.
+4. If the release includes `LibreHardwareMonitorLib.dll`, copy that file next to `TrafficMonitor.exe` — **not** into `plugins`. Keep the files from the same release together; incompatible library versions can prevent the plug-in from loading.
+5. Start TrafficMonitor. Open **More Functions → Plugin Management** to confirm that PowerMon loaded, then enable its items in the display settings.
 
-2024-09-14
-> Fixed settings load caused internal sync failed.
+If TrafficMonitor does not start after installation, remove `PowerMonPlugin.dll` from its `plugins` directory and restart it. Please include your TrafficMonitor version, Windows version, CPU architecture, and any error message when reporting an issue.
 
-2024-10-07
+## Build from source
 
-> Fixed string format issue.
-> Added multiple new functions.
-> Fixed battery time display, but futher improvements can be done.
-> Added battery in sensor tree object.
-> Recovered ARM64X compile config, but it's not been tested and does not have CPU and GPU monitor capibility. 
-> Added digi length control.
-> Added spacing control.
+### Prerequisites
 
+- Windows
+- Visual Studio 2022 or Visual Studio Build Tools with the C++ desktop workload (MSVC v143)
+- Windows SDK
+- .NET Framework 4.7.2 targeting pack
+
+The repository includes the compatible `LibreHardwareMonitorLib.dll` under `PowerMonPlugin/lib`.
+
+Build the default x64 release from PowerShell:
+
+```powershell
+.\shell\build-powermon.ps1 -Configuration Release -Platform x64
+```
+
+Or open `TrafficMonitorPlugins.sln` in Visual Studio, select the `PowerMonPlugin` project, choose `Release` and the target platform (`Win32`, `x64`, `ARM64`, or `ARM64EC`), and build it. The output is written to:
+
+```text
+bin\PowerMonPlugin\Release\<platform>\PowerMonPlugin.dll
+```
+
+## License and third-party software
+
+This repository includes code and assets originating from the TrafficMonitor plug-in ecosystem. Preserve the existing notices when redistributing or modifying that code.
+
+`LibreHardwareMonitorLib.dll` is third-party software distributed under the Mozilla Public License 2.0. Its source code and license are available from the [LibreHardwareMonitor project](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor).
+
+## 历史说明
+
+**2026-07-26：本项目从今天起全面开源。** 源代码、构建文件和发布流程现已公开，欢迎提交 Issue、Bug 报告和贡献。
