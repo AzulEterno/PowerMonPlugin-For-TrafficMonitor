@@ -64,6 +64,8 @@ Then create a release (the tag must use the `vMAJOR.MINOR.PATCH` format):
 
 By default, the script produces separate x64, ARM64, and ARM64EC ZIP files. Add `-Draft` to inspect the release before publishing, or pass `-Platform x64,Win32` if you need a 32-bit build instead.
 
+Use `-Notes "Your release notes"` to prepend a release note to GitHub's generated change log.
+
 ## License and third-party software
 
 This repository includes code and assets originating from the TrafficMonitor plug-in ecosystem. Preserve the existing notices when redistributing or modifying that code.

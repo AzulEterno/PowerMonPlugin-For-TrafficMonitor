@@ -9,6 +9,8 @@ param(
 
     [string]$Repository = 'AzulEterno/PowerMonPlugin-For-TrafficMonitor',
 
+    [string]$Notes,
+
     [switch]$Draft,
     [switch]$Prerelease
 )
@@ -113,6 +115,10 @@ $releaseArgs.AddRange([string[]]@(
 ))
 if ($Draft) { $releaseArgs.Add('--draft') }
 if ($Prerelease) { $releaseArgs.Add('--prerelease') }
+if ($Notes) {
+    $releaseArgs.Add('--notes')
+    $releaseArgs.Add($Notes)
+}
 $releaseArgs.AddRange($assets)
 
 & gh @releaseArgs
