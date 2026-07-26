@@ -46,6 +46,24 @@ Or open `TrafficMonitorPlugins.sln` in Visual Studio, select the `PowerMonPlugin
 bin\PowerMonPlugin\Release\<platform>\PowerMonPlugin.dll
 ```
 
+## Publish a GitHub Release
+
+Use the local release script after `main` has been pushed to GitHub. It builds and packages the selected architectures, produces `SHA256SUMS.txt`, and creates a GitHub Release from the current commit.
+
+Install and authenticate [GitHub CLI](https://cli.github.com/) once:
+
+```powershell
+gh auth login
+```
+
+Then create a release (the tag must use the `vMAJOR.MINOR.PATCH` format):
+
+```powershell
+.\shell\publish-github-release.ps1 -Version v1.0.0
+```
+
+By default, the script produces separate x64, ARM64, and ARM64EC ZIP files. Add `-Draft` to inspect the release before publishing, or pass `-Platform x64,Win32` if you need a 32-bit build instead.
+
 ## License and third-party software
 
 This repository includes code and assets originating from the TrafficMonitor plug-in ecosystem. Preserve the existing notices when redistributing or modifying that code.
