@@ -47,6 +47,20 @@ public:
 
 		std::wstringstream stream;
 
+		// Invalid samples are passed through as NaN. Render them with the
+		// configured placeholder instead of the platform's "nan(ind)" text.
+		if (std::isnan(value)) {
+			// Invalid samples always render with the configured placeholder,
+			// never with the zero-value text: "0 W" and "no data" must stay
+			// distinguishable. An empty placeholder falls back to "NaN".
+			const wchar_t* placeholder = GetNaNString();
+			if (placeholder == nullptr || placeholder[0] == L'\0') {
+				placeholder = L"NaN";
+			}
+			stream << placeholder;
+			return stream.str();
+		}
+
 		if (fixed_decimal_places < 0) {
 			int calculated_precision = maximal_adaptive_decimal_places;
 			if (std::fabs(value) >= 1) {

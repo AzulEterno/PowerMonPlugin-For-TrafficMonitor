@@ -1,15 +1,32 @@
 #include "BatteryPowerMonItem.h"
 #include "LibreHWMonInterOp.h"
+#include <limits>
 #pragma once
 
 
 #if WINRT_USE_FLAG
+// Invalid samples are either rendered as NaN (default) or replaced by the
+// last valid value when keep_last_valid_value is enabled.
+inline double ResolveInvalidPowerDisplay(double value, bool valid,
+	double& last_valid_power, bool& has_last_valid_power) {
+	if (valid) {
+		last_valid_power = value;
+		has_last_valid_power = true;
+		return value;
+	}
+	if (g_data.m_setting_data.keep_last_valid_value && has_last_valid_power)
+		return last_valid_power;
+	return std::numeric_limits<double>::quiet_NaN();
+}
+
 class HardwareSensorMonBase :public IPluginItem {
 
 
 protected:
 	ValueUnitStringFormatter* _lpFormatHandler = nullptr;
 	InterOpLibreHWMon::HardwareSensorDataProvider* _lpHWSensorDP = nullptr;
+	mutable double _last_valid_power = 0.0;
+	mutable bool _has_last_valid_power = false;
 public:
 
 	bool ReadyToPrint() const {
@@ -119,6 +136,8 @@ class SmartPowerMeterMonItem :public BatteryGrpMonBaseCLS {
 protected:
 
 	InterOpLibreHWMon::HardwareSensorDataProvider* _lpHWSensorDP = nullptr;
+	mutable double _last_valid_power = 0.0;
+	mutable bool _has_last_valid_power = false;
 public:
 
 	bool ReadyToPrint() const {

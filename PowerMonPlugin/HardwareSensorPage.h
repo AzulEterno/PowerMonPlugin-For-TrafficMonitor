@@ -26,8 +26,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 
+	void SyncPowerFilterControls();
+
 	afx_msg void OnTvnSelchangedSensorTree(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBnClickedButtonRefreshHwSensors();
+	afx_msg void OnBnClickedCheckEnablePowerFilter();
 
 	BOOL OnInitDialog() override;
 };

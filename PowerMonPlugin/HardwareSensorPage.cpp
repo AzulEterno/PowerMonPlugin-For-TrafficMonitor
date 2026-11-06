@@ -53,10 +53,22 @@ BEGIN_MESSAGE_MAP(HardwareSensorPage, CTabDlg)
 
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_SENSOR, &HardwareSensorPage::OnTvnSelchangedSensorTree)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH_HW_SENSORS, &HardwareSensorPage::OnBnClickedButtonRefreshHwSensors)
+	ON_BN_CLICKED(IDC_CHECK_ENABLE_POWER_FILTER, &HardwareSensorPage::OnBnClickedCheckEnablePowerFilter)
 END_MESSAGE_MAP()
 
 
 // HardwareSensorPage 消息处理程序
+
+void HardwareSensorPage::SyncPowerFilterControls() {
+	CWnd* p_input = GetDlgItem(IDC_INPUT_MAX_POWER);
+	if (p_input != nullptr) {
+		p_input->EnableWindow(IsDlgButtonChecked(IDC_CHECK_ENABLE_POWER_FILTER) == BST_CHECKED);
+	}
+}
+
+void HardwareSensorPage::OnBnClickedCheckEnablePowerFilter() {
+	SyncPowerFilterControls();
+}
 
 void HardwareSensorPage::SyncTreeViewContent() {
 
@@ -165,10 +177,12 @@ void HardwareSensorPage::SyncTreeViewContent() {
 				sensor_iter++) {
 				auto& sensor = sensor_iter->second;
 				std::wstringstream wss;
-				wss << sensor.GetName() << L": " <<
-					vusf.FormatRealValue(sensor.GetValue(),
+				std::wstring value_text = sensor.HasValue()
+					? vusf.FormatRealValue(sensor.GetValue(),
 						GetSensorTypeUnitString(sensor.GetSensorType()).c_str(), nullptr, false,
-						0, 6, 1);
+						0, 6, 1)
+					: std::wstring(vusf.GetNaNString());
+				wss << sensor.GetName() << L": " << value_text;
 
 				HTREEITEM cpu_sensor_node = m_TreeCtrl->InsertItem(
 					wss.str().c_str(), cpu_instance_node);
@@ -198,10 +212,12 @@ void HardwareSensorPage::SyncTreeViewContent() {
 				sensor_iter++) {
 				auto& sensor = sensor_iter->second;
 				std::wstringstream wss;
-				wss << sensor.GetName() << L": " <<
-					vusf.FormatRealValue(sensor.GetValue(),
+				std::wstring value_text = sensor.HasValue()
+					? vusf.FormatRealValue(sensor.GetValue(),
 						GetSensorTypeUnitString(sensor.GetSensorType()).c_str(), nullptr, false,
-						0, 6, 1);
+						0, 6, 1)
+					: std::wstring(vusf.GetNaNString());
+				wss << sensor.GetName() << L": " << value_text;
 
 				HTREEITEM gpu_sensor_node = m_TreeCtrl->InsertItem(
 					wss.str().c_str(), gpu_instance_node);

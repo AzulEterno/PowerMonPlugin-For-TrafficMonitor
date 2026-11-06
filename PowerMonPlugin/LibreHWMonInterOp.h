@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DataManager.h"
 #include "ValueUnitStringFormatter.h"
+#include <limits>
 
 #pragma once
 
@@ -11,6 +12,14 @@ using namespace LibreHardwareMonitor::Hardware;
 
 //using namespace Windows::Foundation::Collections;
 namespace InterOpLibreHWMon {
+	// A power reading together with the validity of that sample. Invalid
+	// samples are never added to a device total; the display layer decides
+	// whether to show NaN or the last valid value.
+	struct PowerReading {
+		double value = 0.0;
+		bool valid = false;
+	};
+
 	//将CRL的String类型转换成C++的std::wstring类型
 	static std::wstring ClrStringToStdWstring(System::String^ str)
 	{
@@ -86,7 +95,6 @@ namespace InterOpLibreHWMon {
 			return _p_IO_Computer;
 		}
 
-
 		int CallUpdateComputorInfo() {
 
 			_p_IO_Computer->Accept(_power_sensor_update_visitor);
@@ -110,7 +118,6 @@ namespace InterOpLibreHWMon {
 
 			_power_sensor_update_visitor->SetCpuMonitorEnable(_cpu_mon_enable);
 			_power_sensor_update_visitor->SetGpuMonitorEnable(_gpu_mon_enable);
-
 
 
 			return SetInterOpComputorSettings();
@@ -192,8 +199,10 @@ namespace InterOpLibreHWMon {
 		SmallData, // MB = 2^20 Bytes
 		Throughput, // B/s
 		TimeSpan, // Seconds 
+		Timing, // ns
 		Energy, // milliwatt-hour (mWh)
 		Noise, // dBA
+		Conductivity, // uS/cm
 		Humidity // %
 	};
 	static std::wstring GetSensorTypeUnitString(SensorTypeCopy sensorType) {
@@ -207,7 +216,7 @@ namespace InterOpLibreHWMon {
 		case SensorTypeCopy::Clock:
 			return L"MHz";
 		case SensorTypeCopy::Temperature:
-			return L"°C";
+			return L"\u00B0C";
 		case SensorTypeCopy::Load:
 		case SensorTypeCopy::Control:
 		case SensorTypeCopy::Level:
@@ -228,10 +237,14 @@ namespace InterOpLibreHWMon {
 			return L"B/s";
 		case SensorTypeCopy::TimeSpan:
 			return L"Seconds";
+		case SensorTypeCopy::Timing:
+			return L"ns";
 		case SensorTypeCopy::Energy:
 			return L"mWh";
 		case SensorTypeCopy::Noise:
 			return L"dBA";
+		case SensorTypeCopy::Conductivity:
+			return L"uS/cm";
 		case SensorTypeCopy::Humidity:
 			return L"%";
 		default:
@@ -652,8 +665,10 @@ namespace InterOpLibreHWMon {
 					sensor_id, sen_type)) {
 					auto& sensor_rep = hw_rep.GetSensorsMap()[sensor_id];
 
-					hw_rep.GetSensorsMap()[sensor_id].SetValue(sensor->Value.HasValue ? sensor->Value.Value : -1,
-						_update_index);
+					if (sensor->Value.HasValue)
+						sensor_rep.SetValue(sensor->Value.Value, _update_index);
+					else
+						sensor_rep.SetValue(false);
 				}
 				else {
 
@@ -669,54 +684,101 @@ namespace InterOpLibreHWMon {
 
 
 
-		double GetDevicePower(HardwareRepresentiveBase& hw, bool allow_platform_power = true,bool allow_package_power = true) {
+		PowerReading GetDevicePower(HardwareRepresentiveBase& hw, bool allow_platform_power = true, bool allow_package_power = true) {
 			const auto& wanted_sensor_keys = hw.GetSelectedSensorKeyList(SensorRepresentiveBase::select_power_sensor_fun);
 			//First Scan if there's package power. Otherwise add all power meters.
 			const auto& hw_sensors = hw.SelectSensorsByKey(wanted_sensor_keys);
 
-			double device_power = 0., package_pwr = 0., platform_pwr = 0.;
-
 			hw.SetHasPackagePowerSensor(false);
+
+			// A device without any power sensor keeps the previous 0 W
+			// behavior. Only missing or implausible samples invalidate a
+			// device that actually exposes power sensors.
+			if (hw_sensors.empty())
+				return { 0.0, true };
+
+			const bool filter_enabled = g_data.m_setting_data.enable_power_filter;
+			const double max_power_w = (double)g_data.m_setting_data.max_plausible_power_w;
+
+			double device_power = 0., package_pwr = 0., platform_pwr = 0.;
+			bool platform_plausible = false, package_plausible = false;
+			bool platform_bad = false, package_bad = false;
+			bool auxiliary_plausible = true;
 
 			for (const auto& sensor : hw_sensors) {
+				// A sensor without a sample only loses its own contribution.
+				if (!sensor.HasValue())
+					continue;
+
+				const double value = sensor.GetValue();
+				const bool plausible = std::isfinite(value) && value >= 0.0 &&
+					(!filter_enabled || value <= max_power_w);
 
 				if (allow_platform_power && sensor.GetName().find(L"Platform") != std::wstring::npos) {
-					platform_pwr = sensor.GetValue();
-					continue;
-
+					if (plausible) {
+						platform_pwr = value;
+						platform_plausible = true;
+					}
+					else {
+						platform_bad = true;
+					}
 				}
 				else if (allow_package_power && sensor.GetName().find(L"Package") != std::wstring::npos) {
-					package_pwr = sensor.GetValue();
-					continue;
+					if (plausible) {
+						package_pwr = value;
+						package_plausible = true;
+					}
+					else {
+						package_bad = true;
+					}
 				}
-
-				device_power += sensor.GetValue();
+				else if (plausible) {
+					device_power += value;
+				}
+				else {
+					auxiliary_plausible = false;
+				}
 			}
-			if (platform_pwr > 0. && platform_pwr >= package_pwr) {
+
+			// Only the sensor that is actually reported decides whether the device
+			// is valid; the others are skipped instead of poisoning the whole device.
+			if (platform_plausible && platform_pwr > 0. && platform_pwr >= package_pwr) {
 				hw.SetHasPackagePowerSensor(true);
-				return platform_pwr;
-
+				return { platform_pwr, true };
 			}
-			else if (package_pwr > 0.) {
+			if (package_plausible && package_pwr > 0.) {
 				hw.SetHasPackagePowerSensor(true);
-
-				return package_pwr;
+				return { package_pwr, true };
 			}
-			hw.SetHasPackagePowerSensor(false);
-			return device_power;
+			// A Package or Platform sensor that reported an implausible value must
+			// not degrade silently to the sum of the remaining sensors.
+			if (platform_bad || package_bad)
+				return {};
+
+			if (!auxiliary_plausible)
+				return {};
+			return { device_power, true };
 		}
-		
-		double GetCPUTotalPower(bool allow_platform_power = false) {
-			double power_cal = 0.;
+
+		PowerReading GetCPUTotalPowerReading(bool allow_platform_power = false) {
+			PowerReading total{ 0.0, true };
 			for (auto& [cpu_key, cpu_instance] : _cpu_map) {
-				power_cal += GetDevicePower(cpu_instance, allow_platform_power,true);
+				PowerReading reading = GetDevicePower(cpu_instance, allow_platform_power, true);
+				if (!reading.valid)
+					total.valid = false;
+				else
+					total.value += reading.value;
 			}
-			return power_cal;
+			return total;
 		}
-		double GetGPUTotalPower(bool skip_intergated_gpu = false) {
-			double power_cal = 0.;
 
+		double GetCPUTotalPower(bool allow_platform_power = false) {
+			PowerReading reading = GetCPUTotalPowerReading(allow_platform_power);
+			return reading.valid ? reading.value : std::numeric_limits<double>::quiet_NaN();
+		}
 
+		PowerReading GetGPUTotalPowerReading(bool skip_intergated_gpu = false) {
+			PowerReading total{ 0.0, true };
 
 			for (auto& [gpu_key, gpu_instance] : _gpu_map) {
 
@@ -725,17 +787,33 @@ namespace InterOpLibreHWMon {
 					continue;
 				}
 
-				power_cal += GetDevicePower(gpu_instance,true,true);
+				PowerReading reading = GetDevicePower(gpu_instance, true, true);
+				if (!reading.valid)
+					total.valid = false;
+				else
+					total.value += reading.value;
 
 			}
 
+			return total;
+		}
 
-			return power_cal;
+		double GetGPUTotalPower(bool skip_intergated_gpu = false) {
+			PowerReading reading = GetGPUTotalPowerReading(skip_intergated_gpu);
+			return reading.valid ? reading.value : std::numeric_limits<double>::quiet_NaN();
+		}
+
+		PowerReading GetSmartCaculatePowerReading() {
+			PowerReading cpu = GetCPUTotalPowerReading(true);
+			PowerReading gpu = GetGPUTotalPowerReading(true);
+			if (!cpu.valid || !gpu.valid)
+				return {};
+			return { cpu.value + gpu.value, true };
 		}
 
 		double GetSmartCaculatePowerMeter() {
-
-			return GetCPUTotalPower(true) + GetGPUTotalPower(true);
+			PowerReading reading = GetSmartCaculatePowerReading();
+			return reading.valid ? reading.value : std::numeric_limits<double>::quiet_NaN();
 		}
 
 		int CallUpdateInfo() {
@@ -797,7 +875,8 @@ namespace InterOpLibreHWMon {
 			if (g_data.m_setting_data.enable_cpu_monitor)
 			{
 				for (auto& [cpu_key, cpu_instance] : _cpu_map) {
-					double device_pwr = GetDevicePower(cpu_instance);
+					PowerReading reading = GetDevicePower(cpu_instance);
+					double device_pwr = reading.valid ? reading.value : std::numeric_limits<double>::quiet_NaN();
 
 					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 3);
 
@@ -817,7 +896,8 @@ namespace InterOpLibreHWMon {
 			if (g_data.m_setting_data.enable_gpu_monitor)
 			{
 				for (auto& [gpu_key, gpu_instance] : _gpu_map) {
-					double device_pwr = GetDevicePower(gpu_instance);
+					PowerReading reading = GetDevicePower(gpu_instance);
+					double device_pwr = reading.valid ? reading.value : std::numeric_limits<double>::quiet_NaN();
 					vusf.FormatPowerWattsString(format_str_buffer, max_format_len, device_pwr, nullptr, false, -1, 3);
 					wss_gpu << L"\t" <<
 						gpu_instance.GetName() << L": " << format_str_buffer << std::endl;
