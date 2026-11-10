@@ -32,7 +32,9 @@ const wchar_t* SmartPowerMeterMonItem::DetailFormatItemValueText(const wchar_t* 
 
 		}
 		else {
-			auto pwr_val = _lpHWSensorDP->GetSmartCaculatePowerMeter();
+			auto reading = _lpHWSensorDP->GetSmartCaculatePowerReading();
+			double pwr_val = ResolveInvalidPowerDisplay(reading.value, reading.valid,
+				_last_valid_power, _has_last_valid_power);
 			_lpFormatHandler->FormatPowerWattsString(
 				out_val_text,
 				PrintValueStrBufferSize,
@@ -57,7 +59,9 @@ const wchar_t* CPUPowerMonItem::DetailFormatItemValueText(const wchar_t* zero_va
 	}
 	else {
 
-		float pwr_val = _lpHWSensorDP->GetCPUTotalPower();
+		auto reading = _lpHWSensorDP->GetCPUTotalPowerReading();
+		double pwr_val = ResolveInvalidPowerDisplay(reading.value, reading.valid,
+			_last_valid_power, _has_last_valid_power);
 		_lpFormatHandler->FormatPowerWattsString(
 			out_val_text,
 			PrintValueStrBufferSize,
@@ -81,7 +85,9 @@ const wchar_t* GPUPowerMonItem::DetailFormatItemValueText(const wchar_t* zero_va
 	}
 	else {
 
-		float pwr_val = _lpHWSensorDP->GetGPUTotalPower();
+		auto reading = _lpHWSensorDP->GetGPUTotalPowerReading();
+		double pwr_val = ResolveInvalidPowerDisplay(reading.value, reading.valid,
+			_last_valid_power, _has_last_valid_power);
 		_lpFormatHandler->FormatPowerWattsString(
 			out_val_text,
 			PrintValueStrBufferSize,

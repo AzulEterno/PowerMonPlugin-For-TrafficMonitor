@@ -23,6 +23,18 @@ PowerMon is a [TrafficMonitor](https://github.com/zhongyang219/TrafficMonitor) p
 
 If TrafficMonitor does not start after installation, remove `PowerMonPlugin.dll` from its `plugins` directory and restart it. Please include your TrafficMonitor version, Windows version, CPU architecture, and any error message when reporting an issue.
 
+## Configuration
+
+PowerMon reads `PowerMonPlugin.dll.ini` from the same directory as `PowerMonPlugin.dll` and creates it on first run.
+
+| Key | Default | Description |
+|---|---|---|
+| `enable_power_filter` | `0` | `1` treats power readings above `max_plausible_power_w` as invalid |
+| `max_plausible_power_w` | `1000` | Upper bound in watts, used only when the filter is enabled |
+| `keep_last_valid_value` | `0` | `0` shows `nan_str` for invalid readings, `1` keeps the last valid value |
+
+The filter is off by default. A sensor without a sample is skipped; a negative or non-finite sample invalidates the whole device.
+
 ## Build from source
 
 ### Prerequisites

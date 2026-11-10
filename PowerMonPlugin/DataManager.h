@@ -14,6 +14,12 @@ struct SettingData
 	bool enable_cpu_monitor = false;
 	INT64 default_value_unit_space = 1;
 	INT64 default_max_adaptive_decimal_places = 2;
+	// enable_power_filter turns the plausibility check on; max_plausible_power_w
+	// is the per-device upper bound in watts (10..100000). The threshold is kept
+	// while the filter is off, so toggling the checkbox restores the last value.
+	bool enable_power_filter = false;
+	INT64 max_plausible_power_w = 1000;
+	bool keep_last_valid_value = false;
 	CString pwr_unit_str{};
 	CString electric_capacity_unit_str{};
 	CString electric_voltage_unit_str{};
@@ -33,6 +39,9 @@ struct SettingData
 		this->enable_cpu_monitor = other.enable_cpu_monitor;
 		this->default_value_unit_space = other.default_value_unit_space;
 		this->default_max_adaptive_decimal_places = other.default_max_adaptive_decimal_places;
+		this->enable_power_filter = other.enable_power_filter;
+		this->max_plausible_power_w = other.max_plausible_power_w;
+		this->keep_last_valid_value = other.keep_last_valid_value;
 
 		// Copy CString members using StrCpyNW
 		StrCpyNW(this->pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN),

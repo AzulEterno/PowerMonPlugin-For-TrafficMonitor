@@ -6,6 +6,7 @@
 #include "OptionsDlg.h"
 #include "afxdialogex.h"
 #include "DataManager.h"
+#include <cstdlib>
 
 // COptionsDlg 对话框
 
@@ -165,6 +166,13 @@ int COptionsDlg::SyncWidgetWithSettingData() {
 
 
 
+	CString max_power_text;
+	max_power_text.Format(L"%lld", m_data.max_plausible_power_w);
+	hw_sensor_page.SetDlgItemText(IDC_INPUT_MAX_POWER, max_power_text);
+	hw_sensor_page.CheckDlgButton(IDC_CHECK_ENABLE_POWER_FILTER, m_data.enable_power_filter);
+	hw_sensor_page.CheckDlgButton(IDC_CHECK_KEEP_LAST_VALUE, m_data.keep_last_valid_value);
+	hw_sensor_page.SyncPowerFilterControls();
+
 	unit_string_page.SetDlgItemInt(IDC_INPUT_SPACING_SIZE, m_data.default_value_unit_space, FALSE);
 	unit_string_page.SetDlgItemInt(IDC_INPUT_DISPLAY_MAX_DECI_PLACES, m_data.default_max_adaptive_decimal_places, FALSE);
 
@@ -188,6 +196,29 @@ int COptionsDlg::SyncSettingDataWithWidget() {
 	if (!bTranslated || m_data.default_max_adaptive_decimal_places < 0) {
 		m_data.default_max_adaptive_decimal_places = 2;
 	}
+
+	m_data.enable_power_filter =
+		(hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_ENABLE_POWER_FILTER) != 0);
+
+	CString max_power_text;
+	hw_sensor_page.GetDlgItemText(IDC_INPUT_MAX_POWER, max_power_text);
+	max_power_text.Trim();
+	// 留空或非数字时保留原阈值；越界时钳到最近的边界，
+	// 不要把用户填的值静默换成默认值。
+	const int max_power_w = _wtoi(max_power_text);
+	if (!max_power_text.IsEmpty() && max_power_w > 0) {
+		if (max_power_w < 10) {
+			m_data.max_plausible_power_w = 10;
+		}
+		else if (max_power_w > 100000) {
+			m_data.max_plausible_power_w = 100000;
+		}
+		else {
+			m_data.max_plausible_power_w = max_power_w;
+		}
+	}
+	m_data.keep_last_valid_value =
+		(hw_sensor_page.IsDlgButtonChecked(IDC_CHECK_KEEP_LAST_VALUE) != 0);
 
 
 #if WINRT_USE_FLAG

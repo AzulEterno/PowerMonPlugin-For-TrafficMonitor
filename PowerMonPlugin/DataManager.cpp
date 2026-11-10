@@ -3,6 +3,7 @@
 #include "Common.h"
 #include <vector>
 #include <sstream>
+#include <cstdlib>
 
 CDataManager CDataManager::m_instance;
 
@@ -59,6 +60,30 @@ void CDataManager::LoadConfig(const std::wstring& config_dir)
 			1, m_config_path.c_str());
 		m_setting_data.default_max_adaptive_decimal_places = GetPrivateProfileInt(L"config",
 			L"default_max_adaptive_decimal_places", 2, m_config_path.c_str());
+		// Read both keys as text: GetPrivateProfileInt returns UINT, and the
+		// "key missing" case has to be told apart from a legitimate value so
+		// configs from the single-key (-1 = off) layout migrate correctly.
+		wchar_t max_power_buf[32] = L"";
+		::GetPrivateProfileString(L"config", L"max_plausible_power_w", L"",
+			max_power_buf, 32, m_config_path.c_str());
+		const bool has_max_power_key = max_power_buf[0] != L'\0';
+		const int raw_max_power_w = _wtoi(max_power_buf);
+		const bool max_power_in_range = raw_max_power_w >= 10 && raw_max_power_w <= 100000;
+		m_setting_data.max_plausible_power_w = max_power_in_range ? raw_max_power_w : 1000;
+
+		wchar_t filter_buf[16] = L"";
+		::GetPrivateProfileString(L"config", L"enable_power_filter", L"",
+			filter_buf, 16, m_config_path.c_str());
+		if (filter_buf[0] != L'\0')
+			m_setting_data.enable_power_filter = (_wtoi(filter_buf) != 0);
+		else
+			// Older configs only had the threshold: a valid threshold meant the
+			// filter was on, while -1 (or no key at all) meant it was off.
+			m_setting_data.enable_power_filter = has_max_power_key && max_power_in_range;
+
+		m_setting_data.keep_last_valid_value =
+			(GetPrivateProfileInt(L"config", L"keep_last_valid_value",
+				0, m_config_path.c_str()) != 0);
 
 		::GetPrivateProfileString(L"config", L"pwr_unit_str", L"",
 			m_setting_data.pwr_unit_str.GetBuffer(UNIT_STR_MAXLEN + 1),
@@ -151,6 +176,12 @@ void CDataManager::SaveConfig() const
 			(m_setting_data.default_value_unit_space), m_config_path.c_str());
 		WritePrivateProfileInt(L"config", L"default_max_adaptive_decimal_places",
 			(m_setting_data.default_max_adaptive_decimal_places), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"enable_power_filter",
+			(int)(m_setting_data.enable_power_filter), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"max_plausible_power_w",
+			(int)(m_setting_data.max_plausible_power_w), m_config_path.c_str());
+		WritePrivateProfileInt(L"config", L"keep_last_valid_value",
+			(int)(m_setting_data.keep_last_valid_value), m_config_path.c_str());
 
 		WritePrivateProfileString(L"config", L"pwr_unit_str",
 			m_setting_data.pwr_unit_str, m_config_path.c_str());
