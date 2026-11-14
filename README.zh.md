@@ -53,7 +53,7 @@ PowerMon 是一款 [TrafficMonitor](https://github.com/zhongyang219/TrafficMonit
 
 ### 前置条件
 
-1. **TrafficMonitor 1.82 或更高版本** — 插件系统自 1.82 版本引入
+1. **TrafficMonitor 1.85 或更高版本** — 插件系统自 1.82 版本引入；资源占用图功能需要 1.85+
 2. **Windows 10/11** — 支持 x64、ARM64 或 ARM64EC
 
 ### 安装步骤

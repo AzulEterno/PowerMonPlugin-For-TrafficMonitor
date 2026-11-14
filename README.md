@@ -53,7 +53,7 @@ PowerMon is a [TrafficMonitor](https://github.com/zhongyang219/TrafficMonitor) p
 
 ### Prerequisites
 
-1. **TrafficMonitor 1.82 or later** — the plugin system was introduced in version 1.82
+1. **TrafficMonitor 1.85 or later** — the plugin system was introduced in 1.82; resource usage graphs require 1.85+
 2. **Windows 10/11** — x64, ARM64, or ARM64EC
 
 ### Steps

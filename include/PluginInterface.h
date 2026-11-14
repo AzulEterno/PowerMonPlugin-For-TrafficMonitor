@@ -93,6 +93,8 @@ public:
         MT_LCLICKED,    /**< 点击了鼠标左键 */
         MT_RCLICKED,    /**< 点击了鼠标右键 */
         MT_DBCLICKED,   /**< 双击了鼠标左键 */
+        MT_WHEEL_UP,    /**< 向上滚动了鼠标滚轮 */
+        MT_WHEEL_DOWN,  /**< 向下滚动了鼠标滚轮 */
     };
 
     enum MouseEventFlag
@@ -112,14 +114,46 @@ public:
      */
     virtual int OnMouseEvent(MouseEventType type, int x, int y, void* hWnd, int flag) { return 0; }
 
+    enum KeyboardEventFlag
+    {
+        KF_TASKBAR_WND = 1 << 0,        /**< 是否为任务栏窗口的键盘事件 */
+    };
+
+    /**
+     * @brief   当插件显示区域有键盘事件时由主程序调用
+     * @param   int key 按下的键
+     * @param   bool ctrl 是否按下了Ctrl键
+     * @param   bool shift 是否按下了Shift键
+     * @param   bool alt 是否按下了Alt键
+     * @param   void* hWnd 产生此键盘事件的窗口的句柄（主窗口或任务栏窗口）
+     * @param   int flag 为若干KeyboardEventFlag枚举常量的组合
+     * @return  int 如果返回非0，则主程序认为插件已经对此键盘事件作出了全部的响应，主程序将不会再对此键盘事件做额外的响应。
+     */
+    virtual int OnKeboardEvent(int key, bool ctrl, bool shift, bool alt, void* hWnd, int flag) { return 0; }
+
     enum ItemInfoType
     {
 
     };
+    //预留的接口
     virtual void* OnItemInfo(ItemInfoType, void* para1, void* para2) { return 0; }
+
+    /**
+     * @brief 是否在在任务栏中显示此项目的资源占用图
+     * @return 1：显示，0：不显示
+     */
+    virtual int IsDrawResourceUsageGraph() const { return 0; }
+
+    /**
+     * @brief 获取资源占用图的值。当IsDrawResourceUsageGraphType返回值不为0时有效
+     * @return float 资源占用图的值，范围为0.0~1.0。
+     */
+    virtual float GetResourceUsageGraphValue() const { return 0.0; }
 };
 
+class ITrafficMonitor;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 //插件接口
 class ITMPlugin
 {
@@ -129,7 +163,7 @@ public:
      * @attention 插件开发者不应该修改这里的返回值，也不应该重写此虚函数。
      * @return  int
      */
-    virtual int GetAPIVersion() const { return 3; }
+    virtual int GetAPIVersion() const { return 7; }
 
     /**
      * @brief   获取插件显示项目的对象
@@ -193,6 +227,7 @@ public:
         int gpu_temperature{};
         int hdd_temperature{};
         int main_board_temperature{};
+        int cpu_freq{};
     };
 
     /**
@@ -240,7 +275,153 @@ public:
      */
     virtual void OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data) {}
 
+    /**
+     * @brief   获取插件的图标，HICON格式
+     */
+    virtual void* GetPluginIcon() { return nullptr; }
+
+    /**
+     * @brief   获取插件的命令的数量
+     * @return  int 插件的命令的数量
+     */
+    virtual int GetCommandCount() { return 0; }
+
+    /**
+     * @brief   获取插件的命令名称
+     * @param   int command_index 插件命令的索引（从0开始，小于GetCommandCount()的返回值）
+     * @return  wchar_t* 插件命令的名称
+     */
+    virtual const wchar_t* GetCommandName(int command_index) { return nullptr; }
+
+    /**
+     * @brief   获取插件的命令图标
+     * @param   int command_index 插件命令的索引（从0开始，小于GetCommandCount()的返回值）
+     * @return  void* 插件命令的图标，HICON格式
+     */
+    virtual void* GetCommandIcon(int command_index) { return nullptr; }
+
+    /**
+     * @brief   执行一个插件命令时由框架调用
+     * @param   int command_index 插件命令的索引（从0开始，小于GetCommandCount()的返回值）
+     * @param   void* hWnd 发送此命令的窗口句柄
+     * @param   void* para 预留参数
+     */
+    virtual void OnPluginCommand(int command_index, void* hWnd, void* para) {}
+
+    /**
+    * @brief   获取插件命令是否处于勾选状态
+    * @param   int command_index 插件命令的索引（从0开始，小于GetCommandCount()的返回值）
+    * @return  1：已勾选；0：未勾选
+    */
+    virtual int IsCommandChecked(int command_index) { return false; }
+
+    /**
+     * @brief   插件初始化
+     * @detail  当插件被加载时被调用，传递ITrafficMonitor接口的指针。插件可以保存此指针以调用ITrafficMonitor接口中的函数
+     * @param   pApp
+     */
+    virtual void OnInitialize(ITrafficMonitor* pApp) {}
 };
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//主程序接口
+class ITrafficMonitor
+{
+public:
+    /**
+     * @brief   获取此接口的版本。
+     * @attention 插件在调用ITrafficMonitor中的函数时需要先判断接口的版本
+     * @return  int
+     */
+    virtual int GetAPIVersion() = 0;
+
+    /**
+     * @brief   获取TrafficMonitor的版本。
+     * @return  const wchar_t*
+     */
+    virtual const wchar_t* GetVersion() = 0;
+
+    /** 主程序的所有监控信息 */
+    enum MonitorItem
+    {
+        MI_UP,                  /**< 上传速度 */
+        MI_DOWN,                /**< 下载速度 */
+        MI_CPU,                 /**< CPU利用率 */
+        MI_MEMORY,              /**< 内存利用率 */
+        MI_GPU_USAGE,           /**< 显卡利用率 */
+        MI_CPU_TEMP,            /**< CPU温度 */
+        MI_GPU_TEMP,            /**< 显卡温度 */
+        MI_HDD_TEMP,            /**< 硬盘温度 */
+        MI_MAIN_BOARD_TEMP,     /**< 主板温度 */
+        MI_HDD_USAGE,           /**< 硬盘利用率 */
+        MI_CPU_FREQ,            /**< CPU频率 */
+        MI_TODAY_UP_TRAFFIC,    /**< 今日上传流量 */
+        MI_TODAY_DOWN_TRAFFIC   /**< 今日下载流量 */
+    };
+
+    /**
+     * @brief   获取一个主程序的监控信息的数值
+     *          （ITMPlugin::OnMonitorInfo将被弃用）
+     * @param   item 要获取监控信息的项目
+     * @return  获取到监控信息
+     */
+    virtual double GetMonitorValue(MonitorItem item) = 0;
+
+    /**
+     * @brief   以字符串的形式获取一个主程序监控信息的数值
+     * @param   item 要获取监控信息的项目
+     * @param   is_main_window 是否为主窗口的数值
+     * @return  获取到监控信息
+     */
+    virtual const wchar_t* GetMonitorValueString(MonitorItem item, int is_main_window = false) = 0;
+
+    /**
+     * @brief   显示一个通知消息
+     * @param   strMsg 要显示的通知消息
+     */
+    virtual void ShowNotifyMessage(const wchar_t* strMsg) = 0;
+
+    /**
+     * @brief   获取当前语言id
+     * @return  当前主程序的语言id
+     */
+    virtual unsigned short GetLanguageId() const = 0;
+
+    /**
+     * @brief   获取配置文件目录
+     * @return  配置文件目录
+     */
+    virtual const wchar_t* GetPluginConfigDir() const = 0;
+
+    /** 主程序DPI类型 */
+    enum DPIType
+    {
+        DPI_MAIN_WND,   /**< 主窗口的DPI */
+        DPI_TASKBAR     /**< 任务栏窗口的DPI */
+    };
+
+    /**
+     * @brief   获取主程序DPI
+     * @return  主程序DPI
+     */
+    virtual int GetDPI(DPIType type) const = 0;
+
+    /**
+     * @brief   获取当前系统主题颜色
+     * @return  COLORREF格式的颜色值
+     */
+    virtual unsigned int GetThemeColor() const = 0;
+
+    /**
+     * @brief   获取当前语言的字符串资源
+     * @param   str_id 字符串资源id
+     * @param   str_section 字符串资源在ini文件中的段名称
+     * @return 
+     */
+    virtual const wchar_t* GetStringRes(const wchar_t* key, const wchar_t* section) = 0;
+};
+
 
 /*
 * 注意：插件dll需导出以下函数
@@ -252,6 +433,7 @@ public:
 
 /*
 * 更新记录：
+* ITMPlugin
 * -------------------------------------------------------------------------
 * API version |                       更新内容
 * -------------------------------------------------------------------------
@@ -260,5 +442,13 @@ public:
 *     2       | 新增 ITMPlugin::GetTooltipInfo 函数
 * -------------------------------------------------------------------------
 *     3       | 新增 IPluginItem::GetItemWidthEx, IPluginItem::OnMouseEvent 函数
+* -------------------------------------------------------------------------
+*     4       | 新增 IPluginItem::OnKeboardEvent IPluginItem::OnItemInfo 函数
+* -------------------------------------------------------------------------
+*     5       | 新增 ITMPlugin::GetCommandName ITMPlugin::GetCommandIcon ITMPlugin::OnPluginCommand 函数
+* -------------------------------------------------------------------------
+*     6       | 新增 IPluginItem::GetResourceUsageGraphType IPluginItem::GetResourceUsageGraphValue 函数
+* -------------------------------------------------------------------------
+*     7       | 新增 ITMPlugin::OnInitialize 函数
 * -------------------------------------------------------------------------
 */
