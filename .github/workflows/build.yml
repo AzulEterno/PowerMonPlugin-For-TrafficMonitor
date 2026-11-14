@@ -6,21 +6,34 @@ on:
     branches: [main, master]
 
 jobs:
-  build-x64:
+  build:
+    name: Build (${{ matrix.platform }})
     runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: x64
+          - platform: ARM64
+          - platform: ARM64EC
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: microsoft/setup-msbuild@v2
 
-      - name: Build PowerMonPlugin (Release x64)
-        run: msbuild TrafficMonitorPlugins.sln -t:PowerMonPlugin -p:Configuration=Release -p:Platform=x64 -m
+      - name: Build PowerMonPlugin (Release ${{ matrix.platform }})
+        run: >-
+          msbuild TrafficMonitorPlugins.sln
+          -t:PowerMonPlugin
+          -p:Configuration=Release
+          -p:Platform=${{ matrix.platform }}
+          -m
 
-      - name: Upload artifact
+      - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PowerMonPlugin-Release-x64
+          name: PowerMonPlugin-Release-${{ matrix.platform }}
           path: |
-            bin/PowerMonPlugin/Release/x64/PowerMonPlugin.dll
-            bin/PowerMonPlugin/Release/x64/PowerMonPlugin.pdb
-            bin/PowerMonPlugin/Release/x64/LibreHardwareMonitorLib.dll
+            bin/PowerMonPlugin/Release/${{ matrix.platform }}/*.dll
+          if-no-files-found: warn
