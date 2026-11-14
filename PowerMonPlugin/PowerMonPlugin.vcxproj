@@ -481,6 +481,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="PowerMon.h" />
     <ClInclude Include="BatteryPowerMonItem.h" />
+    <ClInclude Include="ResourceUsageGraphItems.h" />
     <ClInclude Include="TabDlg.h" />
     <ClInclude Include="UnitStringSettingPage.h" />
     <ClInclude Include="ValueUnitStringFormatter.h" />
@@ -507,6 +508,7 @@
     </ClCompile>
     <ClCompile Include="PowerMon.cpp" />
     <ClCompile Include="BatteryPowerMonItem.cpp" />
+    <ClCompile Include="ResourceUsageGraphItems.cpp" />
     <ClCompile Include="TabDlg.cpp" />
     <ClCompile Include="UnitStringSettingPage.cpp" />
     <ClCompile Include="ValueUnitStringFormatter.cpp" />

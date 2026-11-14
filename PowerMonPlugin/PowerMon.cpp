@@ -31,6 +31,11 @@ PowerMon::PowerMon()
 	b_volt_m_item.SetDataSource(&_vusf, &_bih);
 	b_time_m_item.SetDataSource(&_vusf, &_bih);
 
+	// Resource usage graph items (API v6, all platforms)
+	cpu_usage_graph_item.SetSource(ResourceUsageGraphMonItem::Source::CpuUsage);
+	gpu_usage_graph_item.SetSource(ResourceUsageGraphMonItem::Source::GpuUsage);
+	mem_usage_graph_item.SetSource(ResourceUsageGraphMonItem::Source::MemoryUsage);
+
 #if WINRT_USE_FLAG
 	sm_m_item.SetDataSource(&_vusf, &_bih, &_hwpdp);
 
@@ -69,6 +74,13 @@ IPluginItem* PowerMon::GetItem(int index)
 	case 7:
 		return &gpu_m_item;
 #endif
+		// Resource usage trend graph items (API v6, all platforms)
+	case 8:
+		return &cpu_usage_graph_item;
+	case 9:
+		return &gpu_usage_graph_item;
+	case 10:
+		return &mem_usage_graph_item;
 	default:
 		break;
 	}
@@ -289,6 +301,15 @@ void PowerMon::OnExtenedInfo(ExtendedInfoIndex index, const wchar_t* data)
 	default:
 		break;
 	}
+}
+
+void PowerMon::OnMonitorInfo(const MonitorInfo& monitor_info)
+{
+	// Cache host-provided monitoring data for use by resource usage graph items.
+	// This is the only path through which CPU/GPU/memory usage rates arrive —
+	// these values come from TrafficMonitor itself, not LibreHardwareMonitor,
+	// so they work on all platforms including ARM64.
+	m_cached_monitor_info = monitor_info;
 }
 
 
