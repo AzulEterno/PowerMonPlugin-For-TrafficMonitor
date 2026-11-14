@@ -23,9 +23,6 @@ permissions:
   contents: write
 
 jobs:
-  # Skip the build+publish when this was a plain push to main AND a tag push
-  # also fires — the tag push already covers the stable path.  When the push is
-  # branch-only we always produce a "latest" pre-release.
   meta:
     runs-on: ubuntu-latest
     outputs:
@@ -33,7 +30,6 @@ jobs:
       version: ${{ steps.resolve.outputs.version }}
       title: ${{ steps.resolve.outputs.title }}
       prerelease: ${{ steps.resolve.outputs.prerelease }}
-      skip: ${{ steps.resolve.outputs.skip }}
     steps:
       - name: Resolve release channel and version
         id: resolve
@@ -54,13 +50,11 @@ jobs:
               echo "version=$v" >> "$GITHUB_OUTPUT"
               echo "title=PowerMon Plugin $v" >> "$GITHUB_OUTPUT"
               echo "prerelease=false" >> "$GITHUB_OUTPUT"
-              echo "skip=false" >> "$GITHUB_OUTPUT"
             else
               echo "channel=latest" >> "$GITHUB_OUTPUT"
               echo "version=latest" >> "$GITHUB_OUTPUT"
               echo "title=PowerMon Plugin latest (main @ ${GITHUB_SHA:0:7})" >> "$GITHUB_OUTPUT"
               echo "prerelease=true" >> "$GITHUB_OUTPUT"
-              echo "skip=false" >> "$GITHUB_OUTPUT"
             fi
           elif [[ "$ref" == refs/tags/v* ]]; then
             v="${ref#refs/tags/}"
@@ -68,19 +62,15 @@ jobs:
             echo "version=$v" >> "$GITHUB_OUTPUT"
             echo "title=PowerMon Plugin $v" >> "$GITHUB_OUTPUT"
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "skip=false" >> "$GITHUB_OUTPUT"
           else
-            # push to branch without a tag -> "latest" channel
             echo "channel=latest" >> "$GITHUB_OUTPUT"
             echo "version=latest" >> "$GITHUB_OUTPUT"
             echo "title=PowerMon Plugin latest (main @ ${GITHUB_SHA:0:7})" >> "$GITHUB_OUTPUT"
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
   build:
     needs: meta
-    if: needs.meta.outputs.skip != 'true'
     runs-on: windows-2022
     strategy:
       fail-fast: false
@@ -117,8 +107,7 @@ jobs:
           pattern: PowerMonPlugin-Release-*
           path: staged
 
-      - name: Package release assets + SHA256SUMS.txt
-        id: package
+      - name: Package release zips + SHA256SUMS.txt
         shell: pwsh
         run: |
           $version = '${{ needs.meta.outputs.version }}'
@@ -133,7 +122,7 @@ jobs:
             'Restart TrafficMonitor and check More Functions > Plugin Management.'
           ) -join "`r`n"
 
-          $assets = [System.Collections.Generic.List[string]]::new()
+          $zipPaths = [System.Collections.Generic.List[string]]::new()
 
           foreach ($platform in @('x64','ARM64','ARM64EC')) {
             $src = "staged/PowerMonPlugin-Release-$platform"
@@ -148,21 +137,15 @@ jobs:
 
             $zip = "$releaseDir/PowerMonPlugin-$version-$platform.zip"
             Compress-Archive -Path "$pkg/*" -DestinationPath $zip
-            [void]$assets.Add($zip)
+            [void]$zipPaths.Add($zip)
           }
 
           $sumsPath = "$releaseDir/SHA256SUMS.txt"
-          $sums = foreach ($a in $assets) {
+          $sums = foreach ($a in $zipPaths) {
             $h = (Get-FileHash -LiteralPath $a -Algorithm SHA256).Hash.ToLowerInvariant()
             "$h  $(Split-Path -Leaf $a)"
           }
           $sums | Set-Content -LiteralPath $sumsPath -Encoding ascii
-          [void]$assets.Add($sumsPath)
-
-          $delim = [System.Guid]::NewGuid().ToString()
-          "assets<<$delim" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-          $assets -join "`n" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-          $delim | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Create GitHub Release
         shell: pwsh
@@ -172,8 +155,18 @@ jobs:
           $version    = '${{ needs.meta.outputs.version }}'
           $title      = '${{ needs.meta.outputs.title }}'
           $prerelease = [System.Convert]::ToBoolean('${{ needs.meta.outputs.prerelease }}')
-          $assetsFile = '${{ steps.package.outputs.assets }}'
-          $assetList  = $assetsFile -split "`n" | Where-Object { $_ -ne '' }
+          $releaseDir = "release/$version"
+
+          $assetPaths = @(
+            "$releaseDir/PowerMonPlugin-$version-x64.zip",
+            "$releaseDir/PowerMonPlugin-$version-ARM64.zip",
+            "$releaseDir/PowerMonPlugin-$version-ARM64EC.zip",
+            "$releaseDir/SHA256SUMS.txt"
+          )
+
+          foreach ($p in $assetPaths) {
+            if (-not (Test-Path -LiteralPath $p)) { throw "Missing asset: $p" }
+          }
 
           # For the rolling "latest" channel, remove any prior release+tag so
           # the new one can take its place at the current HEAD.
@@ -181,13 +174,20 @@ jobs:
             gh release delete latest --yes --cleanup-tag 2>$null
           }
 
-          $extraArgs = @()
-          if ($prerelease) { $extraArgs += '--prerelease' }
+          # Build argument list and splat to avoid PowerShell quoting issues
+          $ghArgs = [System.Collections.Generic.List[string]]::new()
+          $ghArgs.Add('release')
+          $ghArgs.Add('create')
+          $ghArgs.Add($version)
+          $ghArgs.Add('--repo')
+          $ghArgs.Add('${{ github.repository }}')
+          $ghArgs.Add('--target')
+          $ghArgs.Add('${{ github.sha }}')
+          $ghArgs.Add('--title')
+          $ghArgs.Add($title)
+          $ghArgs.Add('--generate-notes')
+          if ($prerelease) { $ghArgs.Add('--prerelease') }
+          $ghArgs.Add('--')
+          foreach ($a in $assetPaths) { $ghArgs.Add($a) }
 
-          gh release create $version `
-            --repo '${{ github.repository }}' `
-            --target '${{ github.sha }}' `
-            --title $title `
-            --generate-notes `
-            @extraArgs `
-            -- $assetList
+          & gh @ghArgs
