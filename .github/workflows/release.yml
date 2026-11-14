@@ -2,19 +2,85 @@ name: release-powermonplugin
 
 on:
   push:
+    branches: [main, master]
     tags:
       - 'v*'
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Release version, e.g. v1.2.3 (SemVer with optional pre-release/build suffix)'
+      channel:
+        description: 'Release channel: latest (rolling pre-release from main) or stable (versioned)'
         required: true
+        default: 'latest'
+        type: choice
+        options:
+          - latest
+          - stable
+      version:
+        description: 'Release version for stable channel, e.g. v1.2.3 (ignored for latest)'
+        required: false
 
 permissions:
   contents: write
 
 jobs:
+  # Skip the build+publish when this was a plain push to main AND a tag push
+  # also fires — the tag push already covers the stable path.  When the push is
+  # branch-only we always produce a "latest" pre-release.
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.resolve.outputs.channel }}
+      version: ${{ steps.resolve.outputs.version }}
+      title: ${{ steps.resolve.outputs.title }}
+      prerelease: ${{ steps.resolve.outputs.prerelease }}
+      skip: ${{ steps.resolve.outputs.skip }}
+    steps:
+      - name: Resolve release channel and version
+        id: resolve
+        shell: bash
+        run: |
+          ref="$GITHUB_REF"
+          event="${{ github.event_name }}"
+
+          if [[ "$event" == "workflow_dispatch" ]]; then
+            channel="${{ github.event.inputs.channel }}"
+            if [[ "$channel" == "stable" ]]; then
+              v="${{ github.event.inputs.version }}"
+              if [[ ! "$v" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+                echo "::error::Invalid version '$v'. Expected SemVer like v1.2.3."
+                exit 1
+              fi
+              echo "channel=stable" >> "$GITHUB_OUTPUT"
+              echo "version=$v" >> "$GITHUB_OUTPUT"
+              echo "title=PowerMon Plugin $v" >> "$GITHUB_OUTPUT"
+              echo "prerelease=false" >> "$GITHUB_OUTPUT"
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "channel=latest" >> "$GITHUB_OUTPUT"
+              echo "version=latest" >> "$GITHUB_OUTPUT"
+              echo "title=PowerMon Plugin latest (main @ ${GITHUB_SHA:0:7})" >> "$GITHUB_OUTPUT"
+              echo "prerelease=true" >> "$GITHUB_OUTPUT"
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            fi
+          elif [[ "$ref" == refs/tags/v* ]]; then
+            v="${ref#refs/tags/}"
+            echo "channel=stable" >> "$GITHUB_OUTPUT"
+            echo "version=$v" >> "$GITHUB_OUTPUT"
+            echo "title=PowerMon Plugin $v" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          else
+            # push to branch without a tag -> "latest" channel
+            echo "channel=latest" >> "$GITHUB_OUTPUT"
+            echo "version=latest" >> "$GITHUB_OUTPUT"
+            echo "title=PowerMon Plugin latest (main @ ${GITHUB_SHA:0:7})" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
+    needs: meta
+    if: needs.meta.outputs.skip != 'true'
     runs-on: windows-2022
     strategy:
       fail-fast: false
@@ -41,24 +107,10 @@ jobs:
           if-no-files-found: warn
 
   publish:
-    needs: build
+    needs: [meta, build]
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-
-      - name: Resolve version
-        id: version
-        shell: pwsh
-        run: |
-          $v = if ($env:GITHUB_REF -like 'refs/tags/*') {
-            $env:GITHUB_REF -replace 'refs/tags/',''
-          } else {
-            '${{ github.event.inputs.version }}'
-          }
-          if ($v -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$') {
-            throw "Invalid version: '$v'. Expected SemVer like v1.2.3."
-          }
-          "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - uses: actions/download-artifact@v4
         with:
@@ -69,7 +121,7 @@ jobs:
         id: package
         shell: pwsh
         run: |
-          $version = '${{ steps.version.outputs.version }}'
+          $version = '${{ needs.meta.outputs.version }}'
           $releaseDir = "release/$version"
           New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
 
@@ -114,12 +166,25 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $version = '${{ steps.version.outputs.version }}'
+          $version    = '${{ needs.meta.outputs.version }}'
+          $title      = '${{ needs.meta.outputs.title }}'
+          $prerelease = [System.Convert]::ToBoolean('${{ needs.meta.outputs.prerelease }}')
           $assetsFile = '${{ steps.package.outputs.assets }}'
-          $assetList = $assetsFile -split "`n" | Where-Object { $_ -ne '' }
+          $assetList  = $assetsFile -split "`n" | Where-Object { $_ -ne '' }
+
+          # For the rolling "latest" channel, remove any prior release+tag so
+          # the new one can take its place at the current HEAD.
+          if ($version -eq 'latest') {
+            gh release delete latest --yes --cleanup-tag 2>$null
+          }
+
+          $extraArgs = @()
+          if ($prerelease) { $extraArgs += '--prerelease' }
+
           gh release create $version `
             --repo '${{ github.repository }}' `
             --target '${{ github.sha }}' `
-            --title "PowerMon Plugin $version" `
+            --title $title `
             --generate-notes `
+            @extraArgs `
             -- $assetList
