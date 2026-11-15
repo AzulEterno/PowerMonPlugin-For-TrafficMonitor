@@ -46,6 +46,7 @@
 #define IDS_CPU_USAGE_GRAPH_LABEL       137
 #define IDS_GPU_USAGE_GRAPH_LABEL       138
 #define IDS_MEM_USAGE_GRAPH_LABEL       139
+#define IDD_HARDWARE_CHECK_PAGE         140
 #define IDC_BUTTON_BTRDRIVER            1003
 #define IDC_Change_Unit_String          1005
 #define IDC_Change_Unit_String2         1006
@@ -81,7 +82,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        115
+#define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           103

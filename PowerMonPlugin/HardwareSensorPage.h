@@ -21,15 +21,11 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-	void SyncTreeViewContent();
-
 	DECLARE_MESSAGE_MAP()
 public:
 
 	void SyncPowerFilterControls();
 
-	afx_msg void OnTvnSelchangedSensorTree(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnBnClickedButtonRefreshHwSensors();
 	afx_msg void OnBnClickedCheckEnablePowerFilter();
 
 	BOOL OnInitDialog() override;

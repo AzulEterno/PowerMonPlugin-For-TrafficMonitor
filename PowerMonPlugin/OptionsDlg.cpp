@@ -59,6 +59,7 @@ void COptionsDlg::SyncTabPageSize()
 	//rc.right -= 0;
 	unit_string_page.MoveWindow(&rc);
 	hw_sensor_page.MoveWindow(&rc);
+	hw_check_page.MoveWindow(&rc);
 	info_page.MoveWindow(&rc);
 
 	//为每个子窗口设置滚动信息
@@ -74,26 +75,30 @@ BOOL COptionsDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	{
-		//为Tab Control增加两个页面
+		//为Tab Control增加页面
 		m_tab.InsertItem(0, L"单位设置");
-		m_tab.InsertItem(1, L"硬件监控");
-		m_tab.InsertItem(2, L"信息");
+		m_tab.InsertItem(1, L"硬件监控设置");
+		m_tab.InsertItem(2, L"硬件检查");
+		m_tab.InsertItem(3, L"信息");
 
-		//创建两个对话框
+		//创建对话框
 		unit_string_page.Create(IDD_UNIT_DISPLAY_PAGE, &m_tab);
 		info_page.Create(IDD_INFO_PAGE, &m_tab);
 		hw_sensor_page.Create(IDD_HARDWARE_SENSOR_PAGE, &m_tab);
+		hw_check_page.Create(IDD_HARDWARE_CHECK_PAGE, &m_tab);
 
 
 
 		//把对话框对象指针保存起来
 		p_tab_dialogs[0] = &unit_string_page;
 		p_tab_dialogs[1] = &hw_sensor_page;
-		p_tab_dialogs[2] = &info_page;
+		p_tab_dialogs[2] = &hw_check_page;
+		p_tab_dialogs[3] = &info_page;
 		//显示初始页面
 		p_tab_dialogs[0]->ShowWindow(SW_SHOW);
 		p_tab_dialogs[1]->ShowWindow(SW_HIDE);
 		p_tab_dialogs[2]->ShowWindow(SW_HIDE);
+		p_tab_dialogs[3]->ShowWindow(SW_HIDE);
 
 		m_cur_select_tab = 0;
 		//保存当前选择

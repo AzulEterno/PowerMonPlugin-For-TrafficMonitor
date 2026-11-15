@@ -1,15 +1,16 @@
 ﻿#pragma once
 #include "DataManager.h"
 
-#include "windows.h" 
+#include "windows.h"
 #include "UnitStringSettingPage.h"
 #include "InformationPage.h"
 #include "HardwareSensorPage.h"
+#include "HardwareCheckPage.h"
 // COptionsDlg 对话框
 
 #ifndef OPTIONDLG_TAB_COUNT
 
-#define OPTIONDLG_TAB_COUNT 3
+#define OPTIONDLG_TAB_COUNT 4
 
 #endif
 
@@ -42,6 +43,7 @@ protected:
 	UnitStringSettingPage unit_string_page;
 	InformationPage info_page;
 	HardwareSensorPage hw_sensor_page;
+	HardwareCheckPage hw_check_page;
 	CTabDlg* p_tab_dialogs[OPTIONDLG_TAB_COUNT];
 	std::vector<CRect> p_tab_rect_vec;
 

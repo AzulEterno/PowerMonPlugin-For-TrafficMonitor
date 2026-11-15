@@ -474,6 +474,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="HardwareSensorMon.h" />
     <ClInclude Include="HardwareSensorPage.h" />
+    <ClInclude Include="HardwareCheckPage.h" />
     <ClInclude Include="InformationPage.h" />
     <ClInclude Include="LibreHWMonInterOp.h" />
     <ClInclude Include="OptionsDlg.h" />
@@ -493,6 +494,7 @@
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="HardwareSensorMon.cpp" />
     <ClCompile Include="HardwareSensorPage.cpp" />
+    <ClCompile Include="HardwareCheckPage.cpp" />
     <ClCompile Include="InformationPage.cpp" />
     <ClCompile Include="LibreHWMonInterOp.cpp" />
     <ClCompile Include="OptionsDlg.cpp" />
