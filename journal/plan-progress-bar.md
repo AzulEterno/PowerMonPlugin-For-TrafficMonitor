@@ -1,6 +1,6 @@
 # Plan: 进度条显示功能
 
-> **状态**: 草案
+> **状态**: 进行中
 > **日期**: 2026-11-14
 > **目标**: 为 PowerMon 插件的传感器显示项添加进度条/条形图渲染模式
 
@@ -234,21 +234,26 @@ ComboBox 选项：`文本 | 仅进度条 | 文本+进度条 | 进度条+文字`
 
 ## 4. 实现步骤
 
-### Phase 0: 资源占用趋势图（低成本，立即可用）
+### Phase 0: 资源占用趋势图（低成本，立即可用）— ✅ 已完成
 
-1. 为 CPU/GPU/内存占用率的 Item 实现 `IsDrawResourceUsageGraph()` → 返回 `1`
-2. 实现 `GetResourceUsageGraphValue()` → 返回缓存的占用率值（0.0–1.0）
-3. `PowerMon` 重写 `OnMonitorInfo()` 缓存主机数据
-4. 测试：验证 TrafficMonitor 自动在任务栏项目中绘制趋势折线图
+1. ✅ 为 CPU/GPU/内存占用率的 Item 实现 `IsDrawResourceUsageGraph()` → 返回 `1`
+2. ✅ 实现 `GetResourceUsageGraphValue()` → 返回缓存的占用率值（0.0–1.0）
+3. ✅ `PowerMon` 重写 `OnMonitorInfo()` 缓存主机数据
+4. ⏳ 测试：验证 TrafficMonitor 自动在任务栏项目中绘制趋势折线图（需在 Windows 上构建并测试）
 
-> 此阶段无需任何自定义绘制代码，完全由 TrafficMonitor 渲染。
+> ✅ 代码已提交至 dev 分支: `8cc589d` (2026-11-14)
+> 实现细节：单一 `ResourceUsageGraphMonItem` 类通过 `Source` 枚举参数化，3 个实例 (CPU/GPU/MEM) 注册在 GetItem() 索引 8–10。
+> 所有平台（含 ARM64）均可用，不受 `WINRT_USE_FLAG` 限制。
+> ✅ **构建验证通过**:
+> - GitHub Actions CI: x64/ARM64/ARM64EC 三平台 Release 全部成功
+> - 远程 Windows 本地构建: VS 18 Community MSBuild x64 Release, 0 errors / 58 warnings
 
 ### Phase 1: 基础设施
 
 1. 新增 `ProgressBarRenderer.h/.cpp` — GDI 进度条绘制辅助类
 2. 在 `SettingData` 中添加所有新配置字段
 3. 在 `DataManager::LoadConfig()` / `SaveConfig()` 中读写新 INI 键
-4. `PowerMon` 重写 `OnMonitorInfo()` 缓存主机数据
+4. ~~`PowerMon` 重写 `OnMonitorInfo()` 缓存主机数据~~ — ✅ 已在 Phase 0 完成
 
 ### Phase 2: 电池百分比进度条
 

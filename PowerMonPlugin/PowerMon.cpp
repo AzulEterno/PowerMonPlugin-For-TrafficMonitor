@@ -66,21 +66,30 @@ IPluginItem* PowerMon::GetItem(int index)
 	case 4:
 		return &b_percentage_m_item;
 #if WINRT_USE_FLAG
-		//Hardware aware section.
+		//Hardware aware section (C++/CLI builds only).
 	case 5:
 		return &sm_m_item;
 	case 6:
 		return &cpu_m_item;
 	case 7:
 		return &gpu_m_item;
-#endif
-		// Resource usage trend graph items (API v6, all platforms)
+		// Resource usage trend graph items follow at 8-10.
 	case 8:
 		return &cpu_usage_graph_item;
 	case 9:
 		return &gpu_usage_graph_item;
 	case 10:
 		return &mem_usage_graph_item;
+#else
+		// Resource usage trend graph items (API v6, all platforms).
+		// Indices 5-7 when WINRT_USE_FLAG is 0 (no hardware sensors).
+	case 5:
+		return &cpu_usage_graph_item;
+	case 6:
+		return &gpu_usage_graph_item;
+	case 7:
+		return &mem_usage_graph_item;
+#endif
 	default:
 		break;
 	}
