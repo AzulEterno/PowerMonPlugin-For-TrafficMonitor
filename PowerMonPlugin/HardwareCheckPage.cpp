@@ -1,4 +1,4 @@
-// HardwareCheckPage.cpp: 实现文件
+﻿// HardwareCheckPage.cpp: 实现文件
 // Displays a read-only device tree of all detected sensors and their current values.
 
 #include "pch.h"
