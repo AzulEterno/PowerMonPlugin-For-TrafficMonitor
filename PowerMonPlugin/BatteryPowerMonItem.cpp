@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "BatteryPowerMonItem.h"
 #include "DataManager.h"
 
@@ -219,12 +219,18 @@ const wchar_t* BatteryTimeMonItem::DetailFormatItemValueText(
 			}break;
 			case 0:
 			{
-				if (_lpBatteryInfoHandler->GetBatteryLifeTime() == -1) {
+				// Prefer Windows' own estimate; if Windows reports it as unknown
+				// (BatteryLifeTime == 0xFFFFFFFF), use the battery driver's
+				// BatteryEstimatedTime or Capacity / Rate instead of showing NaN.
+				INT64 secs = _lpBatteryInfoHandler->GetBatteryLifeTime();
+				if (secs < 0) {
+					secs = _lpBatteryInfoHandler->GetEstimatedRemainingSeconds();
+				}
+				if (secs < 0) {
 					swprintf_s(out_val_text, _lpFormatHandler->GetNaNString());
 				}
 				else {
-					_lpFormatHandler->FormatTimerStringFromSeconds(out_val_text, PrintValueStrBufferSize,
-						_lpBatteryInfoHandler->GetBatteryLifeTime());
+					_lpFormatHandler->FormatTimerStringFromSeconds(out_val_text, PrintValueStrBufferSize, secs);
 				}
 
 			}break;
@@ -235,6 +241,13 @@ const wchar_t* BatteryTimeMonItem::DetailFormatItemValueText(
 
 
 			}
+		}
+		else if (_lpBatteryInfoHandler->GetACLineStatus() == 0
+			&& _lpBatteryInfoHandler->GetEstimatedRemainingSeconds() >= 0) {
+			// Battery opened but not flagged as a system battery by
+			// BatteryInformation: still show the driver-derived estimate.
+			_lpFormatHandler->FormatTimerStringFromSeconds(out_val_text, PrintValueStrBufferSize,
+				_lpBatteryInfoHandler->GetEstimatedRemainingSeconds());
 		}
 		else {
 

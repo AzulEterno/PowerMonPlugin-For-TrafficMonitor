@@ -25,6 +25,12 @@ protected:
 	BATTERY_STATUS _qry_result_info = { 0 };
 	bool is_relative_battery_rate = false;
 
+	// Fallback remaining-time estimate (seconds, -1 = unknown). Used when
+	// GetSystemPowerStatus() reports BatteryLifeTime = BATTERY_LIFE_UNKNOWN,
+	// which is the case on e.g. Surface Laptop (Snapdragon / ARM64).
+	INT64 _est_seconds = -1;
+	double _est_ewma = -1.0;
+
 
 
 
@@ -79,6 +85,47 @@ public:
 	BYTE GetSystemStatusFlag() const {
 
 		return _sys_pwr_state.SystemStatusFlag;
+	}
+
+	INT64 GetEstimatedRemainingSeconds() const {
+		return _est_seconds;
+	}
+
+	// Called after every successful IOCTL_BATTERY_QUERY_STATUS.
+	// 1) ask the battery driver for BatteryEstimatedTime (AtRate = 0 -> current rate);
+	// 2) otherwise derive Capacity(mWh) / -Rate(mW).
+	// The result is smoothed (EWMA, ~30 samples) so the taskbar value is stable.
+	void UpdateEstimatedTime() {
+		INT64 raw = -1;
+		const bool discharging = (_qry_result_info.PowerState & BATTERY_DISCHARGING) != 0;
+		if (discharging && _h_Battery != INVALID_HANDLE_VALUE) {
+			BATTERY_QUERY_INFORMATION bqi = { 0 };
+			bqi.BatteryTag = _qry_bws_inf.BatteryTag;
+			bqi.InformationLevel = BatteryEstimatedTime;
+			bqi.AtRate = 0;
+			ULONG est = BATTERY_UNKNOWN_TIME;
+			DWORD dwOut = 0;
+			if (DeviceIoControl(_h_Battery, IOCTL_BATTERY_QUERY_INFORMATION,
+				&bqi, sizeof(bqi), &est, sizeof(est), &dwOut, NULL)
+				&& dwOut == sizeof(est) && est != BATTERY_UNKNOWN_TIME && est > 0) {
+				raw = (INT64)est;
+			}
+			else if (!is_relative_battery_rate
+				&& _qry_result_info.Rate != (LONG)BATTERY_UNKNOWN_RATE
+				&& _qry_result_info.Rate < 0
+				&& _qry_result_info.Capacity != BATTERY_UNKNOWN_CAPACITY
+				&& _qry_result_info.Capacity > 0) {
+				raw = (INT64)((double)_qry_result_info.Capacity * 3600.0
+					/ (double)(-(INT64)_qry_result_info.Rate));
+			}
+		}
+		if (raw < 0) {
+			_est_ewma = -1.0;
+			_est_seconds = -1;
+			return;
+		}
+		_est_ewma = (_est_ewma < 0) ? (double)raw : _est_ewma + ((double)raw - _est_ewma) / 30.0;
+		_est_seconds = (INT64)(_est_ewma + 0.5);
 	}
 
 	INT64 GetBatteryLifeTime() const {
@@ -347,9 +394,12 @@ public:
 				&dwOut,
 				NULL)) {
 
+				UpdateEstimatedTime();
 				return 0;
 			}
 			else {
+				_est_ewma = -1.0;
+				_est_seconds = -1;
 				DWORD err_code = GetLastError();
 				SetLastError(NO_ERROR);
 				ReleaseResources();
